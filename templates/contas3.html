@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+<style>
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
+{% block body %}
+<script type=text/javascript>
+  $(function() {
+    var submit_form = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_add_numbers2', {
+        a: $('input[name="a"]').val(),
+        b: $('input[name="b"]').val(),
+        c: 17
+      }, function(data) {
+        $('#result').text(data.result);
+        $('#tdata').text(data.hwdays);
+        $('#tdata2').text(data.hwdays2[1]);
+        $('#tdata3').text(data.cdia);
+        $('#tdata4').text(data.cdia2[0]);
+        $('input[name=a]').focus().select();
+      });
+      return false;
+    };
+
+    $('a#calculate').bind('click', submit_form);
+
+    $('input[type=text]').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        submit_form(e);
+      }
+    });
+
+    $('input[name=a]').focus();
+  });
+</script>
+<h1>jQuery Example</h1>
+<p>
+  <input type=text size=5 name=a> +
+  <input type=text size=5 name=b> =
+  <span id=result>?</span>
+<p><a href=# id=calculate>calculate server side</a><br />
+  <span id=tdata>?</span><br />
+  <span id=tdata2>?</span><br />
+  <span id=tdata3>?</span><br />
+  <span id=tdata4>?</span><br />
+<div id="viz"></div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript">
+
+      $.getJSON($SCRIPT_ROOT + '/_sendFoo', {
+        name: "fooname"
+      }, function(data) {
+
+    var sampleSVG = d3.select("#viz")
+        .append("svg")
+        //.attr("width", 100)
+        .attr("width", data.cdia2[0][2])
+        .attr("height", 100);    
+
+    sampleSVG.append("circle")
+        .style("stroke", "gray")
+        .style("fill", "green")
+        .attr("r", data.cdia2[0][2]/2)
+        .attr("cx", data.cdia2[0][2]/2)
+        .attr("cy", 50)
+        .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+        .on("mouseout", function(){d3.select(this).style("fill", "white");});
+      });
+    </script>
+
+<script>
+
+var margin = {top: 20, right: 100, bottom: 30, left: 120},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(20, "");
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+  $.getJSON($SCRIPT_ROOT + '/_sendTop', {
+        name: "fooname"
+      }, function(data) {
+//    alert(data.H);
+//    alert(data.N);
+});
+
+
+  $.getJSON($SCRIPT_ROOT + '/_sendFoo', {
+        name: "fooname"
+      }, function(data) {
+
+//d3.tsv("data.tsv", type, function(error, data) {
+  x.domain(data.cdia2.map(function(d) { return d[1]; }));
+  y.domain([0, d3.max(data.cdia2, function(d) { return d[2]; })]);
+document.adata=data;
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+//
+//  svg.append("g2")
+//      .attr("class", "x axis")
+//      .attr("transform", "translate(0," + height+100 + ")")
+//      .call(xAxis);
+//
+
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Number of tweets");
+
+  svg.selectAll(".bar")
+      .data(data.cdia2)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { document.thing=x(d[1]); return x(d[1]); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d[2]); })
+      .attr("height", function(d) { return height - y(d[2]); });
+
+});
+//
+//function type(d) {
+//  d[1] = +d[1];
+//  return d;
+//}
+//
+</script>
+
+{% endblock %}

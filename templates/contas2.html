@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type=text/javascript>
+  $(function() {
+    var submit_form = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_add_numbers2', {
+        a: $('input[name="a"]').val(),
+        b: $('input[name="b"]').val(),
+        c: 17
+      }, function(data) {
+        $('#result').text(data.result);
+        $('#tdata').text(data.hwdays);
+        $('#tdata2').text(data.hwdays2[1]);
+        $('#tdata3').text(data.cdia);
+        $('#tdata4').text(data.cdia2[0]);
+        $('input[name=a]').focus().select();
+      });
+      return false;
+    };
+
+    $('a#calculate').bind('click', submit_form);
+
+    $('input[type=text]').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        submit_form(e);
+      }
+    });
+
+    $('input[name=a]').focus();
+  });
+</script>
+<h1>jQuery Example</h1>
+<p>
+  <input type=text size=5 name=a> +
+  <input type=text size=5 name=b> =
+  <span id=result>?</span>
+<p><a href=# id=calculate>calculate server side</a><br />
+  <span id=tdata>?</span><br />
+  <span id=tdata2>?</span><br />
+  <span id=tdata3>?</span><br />
+  <span id=tdata4>?</span><br />
+<div id="viz"></div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript">
+
+      $.getJSON($SCRIPT_ROOT + '/_sendFoo', {
+        name: "fooname"
+      }, function(data) {
+
+    var sampleSVG = d3.select("#viz")
+        .append("svg")
+        //.attr("width", 100)
+        .attr("width", data.cdia2[0][2])
+        .attr("height", 100);    
+
+    sampleSVG.append("circle")
+        .style("stroke", "gray")
+        .style("fill", "green")
+        .attr("r", data.cdia2[0][2]/2)
+        .attr("cx", data.cdia2[0][2]/2)
+        .attr("cy", 50)
+        .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+        .on("mouseout", function(){d3.select(this).style("fill", "white");});
+      });
+    </script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type=text/javascript>
+  $(function() {
+    var submit_form = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
+        a: $('input[name="a"]').val(),
+        b: $('input[name="b"]').val(),
+        c: 17
+      }, function(data) {
+        $('#result').text(data.result);
+        $('#tdata').text(data.hwdays);
+        $('#tdata2').text(data.hwdays2[1]);
+        $('#tdata3').text(data.cdia);
+        $('#tdata4').text(data.cdia2[0]);
+        $('input[name=a]').focus().select();
+      });
+      return false;
+    };
+
+    $('a#calculate').bind('click', submit_form);
+
+    $('input[type=text]').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        submit_form(e);
+      }
+    });
+
+    $('input[name=a]').focus();
+  });
+</script>
+<h1>jQuery Example</h1>
+<p>
+  <input type=text size=5 name=a> +
+  <input type=text size=5 name=b> =
+  <span id=result>?</span>
+<p><a href=# id=calculate>calculate server side</a><br />
+  <span id=tdata>?</span><br />
+  <span id=tdata2>?</span><br />
+  <span id=tdata3>?</span><br />
+  <span id=tdata4>?</span><br />
+{% endblock %}
