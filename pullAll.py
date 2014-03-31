@@ -40,22 +40,18 @@ while 1:
     i=0
     while len(search['statuses'])>0:
         tweets +=search['statuses']
-        search = t.search(q='#arenaNETmundial',
-                          count=150,
-                          max_id=tweets[-1]['id']-1)
+        #search = t.search(q='#arenaNETmundial', count=150, max_id=tweets[-1]['id']-1)
         print "older", i, len(tweets),search['statuses']; i+=1
 
-    search = t.search(q='#arenaNETmundial',count=150,since_id=tweets[0]['id'])
+    search2 = t.search(q='#arenaNETmundial',count=150,since_id=tweets[0]['id'])
     i=0
-    while len(search['statuses'])>0:
-        tweets =search['statuses']+tweets
-        search = t.search(q='#arenaNETmundial',
-                          count=150,
-                          since_id=tweets[0]['id'])
-        print "newer", i, len(tweets),search['statuses']; i+=1
+    while len(search2['statuses'])>0:
+        tweets =search2['statuses']+tweets
+        #search = t.search(q='#arenaNETmundial', count=150, since_id=tweets[0]['id'])
+        print "newer", i, len(tweets),search2['statuses']; i+=1
 
     #db.twitter.remove()
-    if search['statuses']:
+    if search['statuses'] or search2['statuses']:
         print "tweets"
         db.sna.remove()
         #C = db['twitter'] #collection
@@ -63,4 +59,4 @@ while 1:
         db.sna.insert((i for i in tweets))
         #db2.sna.insert((i for i in db.sna.find()))
     print("atualizado")
-    T.sleep(2*60) # atualizar BD de 2 em 2 minutos
+    T.sleep(60*60) # atualizar BD de 2 em 2 minutos
