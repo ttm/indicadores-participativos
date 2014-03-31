@@ -167,16 +167,17 @@ aside {
 
 {% block body %}
 <body>
-<div id="viz"></div>
 <a href="https://labmacambira.sf.net" style="float:left"><img src="http://labmacambira.sourceforge.net/figs/original-logo.png" width="122" height="71" style="margin-top:20px"></a>
 
 <h1>#arenaNETmundial</h1>
 <h2>Indicadores e transparência na participação social</h2>
 
 <h3>Interfaces manipuláveis</h3>
-<h4>Grafos</h4>
+<h4>1. Grafos</h4>
+<div id="viz"></div>
+<h5 id="graus" style="background:#FFCFFF;text-align:center">1.1. veja os 5 mais conectatos (deixe o mouse aqui encima)</h5>
 
-<h4>Tabelas ordenáveis</h4>
+<h4>2. Tabelas ordenáveis</h4>
 <table>
     <thead></thead>
     <tbody></tbody>
@@ -184,7 +185,7 @@ aside {
 
 
 
-<h4>Filtros multivariáveis</h4>
+<h4>3. Filtros multivariáveis</h4>
 <div id="charts">
   <div id="hour-chart" class="chart">
     <div class="title">Hora do dia</div>
@@ -238,7 +239,7 @@ var color = d3.scale.category10();
 function colorByGroup(d) { return color(group(d)); }
 
 var width = 960,
-    height = 500;
+    height = 400;
 
 var svg = d3.select('#viz')
     .append('svg')
@@ -267,12 +268,13 @@ function recenterVoronoi(nodes) {
 }
 
 var force = d3.layout.force()
-    .charge(-3000)
-    .friction(0.30)
+    .charge(-9000)
+    .friction(0.300)
     .linkDistance(50)
     .size([width, height]);
 
 force.on('tick', function() {
+    //node.attr('transform', function(d) { return d.id==document.NNodes ? 'translate(0,0)' : 'translate('+d.x+','+d.y+')'; })
     node.attr('transform', function(d) { return 'translate('+d.x+','+d.y+')'; })
         .attr('clip-path', function(d) { return 'url(#clip-'+d.index+')'; });
 
@@ -334,6 +336,41 @@ document.pdata=data;
 });
 
     </script>
+
+
+
+<script type="text/javascript">
+
+function show (elem) {  /* added argument */
+    elem.style.display=document.OTEXTO; /* changed variable to argument */
+}
+function hide (elem) { /* added argument */
+    elem.style.display="";  /* changed variable to argument */
+}
+//TTM
+    document.flip=0;
+  $.getJSON($SCRIPT_ROOT + '/_dahJsonG2', {
+    name: "fooname"
+  }, function(data) {
+    document.jdata=data;
+
+da=document.jdata;
+//document.getElementById('graus').setAttribute('title', "AABBCC");
+LL=da["names"].length-1;
+document.NNodes=LL;
+//MC=[da["names"][LL],da["degrees"][LL]];
+MC=[]
+for (var i=0; i<5; i++)
+  { MC[i]=[da["names"][LL-i],da["degrees"][LL-i]];
+    }
+document.OTEXTO=String(MC);
+//document.getElementById('graus').setAttribute('title', String(da["degrees"]));
+document.getElementById('graus').setAttribute('title', String(MC));
+});
+
+</script>
+
+
 
 
 
