@@ -1,6 +1,6 @@
 #import __builtin__, as B
 from flask import Flask, render_template, make_response, session, redirect, url_for, escape, request,jsonify
-import pymongo
+import pymongo, __builtin__
 from dateutil import parser
 import time as T, networkx as x
 app = Flask(__name__)
@@ -21,8 +21,8 @@ foo=db.sna.find({},{"created_at":1,"user.name":1,"user.screen_name":1,"user.frie
 W=[ff for ff in foo]
 snames=[i["user"]["screen_name"] for i in W]
 IDS=[i["user"]["id"] for i in W]
-IDS_=range(len(W))
-IDS_=[str(I) for I in IDS_]
+IDS_=range(1,len(W)+1)
+IDS_=[I for I in IDS_]
 print 30
 
 client2=pymongo.MongoClient("mongodb://sna:Jockey67@oceanic.mongohq.com:10021/sna")
@@ -31,11 +31,12 @@ print 40
 ami=client2.sna.amizades.find()
 #amis=[aa for aa in ami]
 g=x.Graph()
-for aa in ami:
-    cha=aa.keys()
+#for aa in ami:
+for ii in xrange(5):
+    cha=ami[ii].keys()
     cha.pop(cha.index("_id"))
     id_orig=int(cha[0])
-    idss=[i for i in aa[cha[0]] if i in IDS]
+    idss=[i for i in ami[ii][cha[0]] if i in IDS]
     for iids in idss:
         g.add_edge(snames[IDS.index(id_orig)],snames[IDS.index(iids)])
 print 50
@@ -49,25 +50,55 @@ def crossf():
 def rosto():
     return render_template('crossf/rosto.html')
 from collections import OrderedDict
+IID=range(g.number_of_nodes())
+#IID=[str(ii) for ii in IID]
+INN=g.nodes()
+degree=g.degree()
+dd=OrderedDict(sorted(degree.items(), key=lambda t: t[1]))
+tnames=dd.keys()
+degrees=dd.values()
+@app.route('/_dahJsonG2')
+def dahJsonG2():
+    d={"names":tnames,"degrees":degrees}
+    return jsonify(d)
+
 @app.route('/_dahJsonG')
 def dahJsonG():
     N=g.number_of_nodes()
-    degree=g.degree()
-    dd=OrderedDict(sorted(degree.items(), key=lambda t: t[1]))
-    names=dd.keys()
-    GG={}
+    GG=OrderedDict()
     GG["nodes"]=[]
-    for name in names[-N/20:]:
-        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"0"})
-    for name in names[-N/5:-N/20]:
-        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"1"})
-    for name in names[:-N/5]:
-        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"2"})
+#    for name in names[-N/20:]:
+#        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"0"})
+#    for name in names[-N/5:-N/20]:
+#        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"1"})
+#    for name in names[:-N/5]:
+#        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"2"})
+    GG["links"]=[]
+#    for (N1,N2) in g.edges():
+#        GG["links"].append({"source":IDS_[snames.index(N1)],"target":IDS_[snames.index(N2)],"value":10})
+    ########3
+#    for name in tnames[:-N/5]: # perifericos
+#        GG["nodes"].append({"id":INN.index(name),"name":name,"group":2})
+#    for name in tnames[-N/5:-N/20]: #intermediarios
+#        GG["nodes"].append({"id":INN.index(name),"name":name,"group":1})
+#    for name in tnames[-N/20:]: #hubs
+#        GG["nodes"].append({"id":INN.index(name),"name":name,"group":0})
+#    GG["links"]=[]
+#    for (N1,N2) in g.edges():
+#        GG["links"].append({"source":INN.index(N1),"target":INN.index(N2),"value":1})
+    for name in tnames[:-N/5]: # perifericos
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":2})
+    for name in tnames[-N/5:-N/20]: #intermediarios
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":1})
+    for name in tnames[-N/20:]: #hubs
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":0})
     GG["links"]=[]
     for (N1,N2) in g.edges():
-        GG["links"].append({"source":IDS_[snames.index(N1)],"target":IDS_[snames.index(N2)],"value":10})
-#        print {"source":IDS_[snames.index(N1)],"target":IDS_[snames.index(N2)],"value":"1"}
+        GG["links"].append({"source":tnames.index(N1),"target":tnames.index(N2),"value":1})
 
+
+#        print {"source":IDS_[snames.index(N1)],"target":IDS_[snames.index(N2)],"value":"1"}
+    __builtin__.GG=GG
     return jsonify(GG)
 
 @app.route('/_dahJsonA')

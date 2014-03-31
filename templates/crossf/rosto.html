@@ -222,8 +222,16 @@ aside {
 
 
 <script>
+  $.getJSON($SCRIPT_ROOT + '/_dahJsonG2', {
+    name: "fooname"
+  }, function(data) {
+//d3.json('miserables.json', function(err, data) {
+document.pdata2=data;
+});
 
-function name(d) { return d.name; }
+
+//function ttname(d) { return d.name; }
+function ttname(d) { return String(d.id)+d.name; }
 function group(d) { return d.group; }
 
 var color = d3.scale.category10();
@@ -259,7 +267,7 @@ function recenterVoronoi(nodes) {
 }
 
 var force = d3.layout.force()
-    .charge(-2000)
+    .charge(-3000)
     .friction(0.30)
     .linkDistance(50)
     .size([width, height]);
@@ -285,12 +293,10 @@ force.on('tick', function() {
     clip.append('path')
         .attr('d', function(d) { return 'M'+d.join(',')+'Z'; });
 });
-
-//d3.json('https://raw.githubusercontent.com/d3/d3-plugins/master/graph/data/miserables.json', function(err, data) {
 //document.qdata=data;
 //});
   $.getJSON($SCRIPT_ROOT + '/_dahJsonG', {
-    name: "fooname"
+    foobar: "fooname"
   }, function(data) {
 //d3.json('miserables.json', function(err, data) {
 document.pdata=data;
@@ -302,18 +308,18 @@ document.pdata=data;
         .data( data.links )
       .enter().append('line')
         .attr('class', 'link')
-        .style("stroke-width", function(d) { return Math.sqrt(d.value+5); });
+        .style("stroke-width", function(d) { return Math.sqrt(d.value); });
 
-        alert(data.links.toSource());
+      //  alert(data.links.toSource());
     node = svg.selectAll('.node')
         .data( data.nodes )
       .enter().append('g')
-        .attr('title', name)
+        .attr('title', ttname)
         .attr('class', 'node')
         .call( force.drag );
 
     node.append('circle')
-        .attr('r', 30)
+        .attr('r', 10)
         .attr('fill', colorByGroup)
         .attr('fill-opacity', 0.5);
 
