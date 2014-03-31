@@ -2,7 +2,7 @@
 from flask import Flask, render_template, make_response, session, redirect, url_for, escape, request,jsonify
 import pymongo
 from dateutil import parser
-import time as T
+import time as T, networkx as x
 app = Flask(__name__)
 atime=T.time()
 
@@ -17,13 +17,26 @@ db = client['sna']
 print 20
 
 #foo=db.sna.find()
-foo=db.sna.find({},{"created_at":1,"user.name":1,"user.screen_name":1,"user.friends_count":1,"user.location":1,"user.followers_count":1,"user.statuses_count":1})
+foo=db.sna.find({},{"created_at":1,"user.name":1,"user.screen_name":1,"user.friends_count":1,"user.location":1,"user.followers_count":1,"user.statuses_count":1,"user.id":1})
 W=[ff for ff in foo]
+snames=[i["user"]["screen_name"] for i in W]
+IDS=[i["user"]["id"] for i in W]
 print 30
 
 client2=pymongo.MongoClient("mongodb://sna:Jockey67@oceanic.mongohq.com:10021/sna")
 print 40
 
+ami=client2.sna.amizades.find()
+#amis=[aa for aa in ami]
+g=x.Graph()
+for aa in ami:
+    cha=aa.keys()
+    cha.pop(cha.index("_id"))
+    id_orig=int(cha[0])
+    idss=[i for i in aa[cha[0]] if i in IDS]
+    for iids in idss:
+        g.add_edge(snames[IDS.index(id_orig)],snames[IDS.index(iids)])
+ 
 
 @app.route('/crossf/')
 def crossf():
