@@ -21,6 +21,10 @@ foo=db.sna.find({},{"created_at":1,"user.name":1,"user.screen_name":1,"user.frie
 W=[ff for ff in foo]
 print 30
 
+client2=pymongo.MongoClient("mongodb://sna:Jockey67@oceanic.mongohq.com:10021/sna")
+print 40
+
+
 @app.route('/crossf/')
 def crossf():
     return render_template('crossf/index.html')
