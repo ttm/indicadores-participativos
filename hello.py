@@ -21,6 +21,8 @@ foo=db.sna.find({},{"created_at":1,"user.name":1,"user.screen_name":1,"user.frie
 W=[ff for ff in foo]
 snames=[i["user"]["screen_name"] for i in W]
 IDS=[i["user"]["id"] for i in W]
+IDS_=range(len(W))
+IDS_=[str(I) for I in IDS_]
 print 30
 
 client2=pymongo.MongoClient("mongodb://sna:Jockey67@oceanic.mongohq.com:10021/sna")
@@ -36,6 +38,7 @@ for aa in ami:
     idss=[i for i in aa[cha[0]] if i in IDS]
     for iids in idss:
         g.add_edge(snames[IDS.index(id_orig)],snames[IDS.index(iids)])
+print 50
  
 
 @app.route('/crossf/')
@@ -45,6 +48,27 @@ def crossf():
 @app.route('/rosto/')
 def rosto():
     return render_template('crossf/rosto.html')
+from collections import OrderedDict
+@app.route('/_dahJsonG')
+def dahJsonG():
+    N=g.number_of_nodes()
+    degree=g.degree()
+    dd=OrderedDict(sorted(degree.items(), key=lambda t: t[1]))
+    names=dd.keys()
+    GG={}
+    GG["nodes"]=[]
+    for name in names[-N/20:]:
+        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"0"})
+    for name in names[-N/5:-N/20]:
+        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"1"})
+    for name in names[:-N/5]:
+        GG["nodes"].append({"id":IDS_[snames.index(name)],"name":name,"group":"2"})
+    GG["links"]=[]
+    for (N1,N2) in g.edges():
+        GG["links"].append({"source":IDS_[snames.index(N1)],"target":IDS_[snames.index(N2)],"value":10})
+#        print {"source":IDS_[snames.index(N1)],"target":IDS_[snames.index(N2)],"value":"1"}
+
+    return jsonify(GG)
 
 @app.route('/_dahJsonA')
 def dahJsonA():
