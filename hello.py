@@ -16,7 +16,8 @@ print 10
 db = client['sna']
 print 20
 
-foo=db.sna.find()
+#foo=db.sna.find()
+foo=db.sna.find({},{"created_at":1,"user.screen_name":1,"user.friends_count":1,"user.location":1,})
 W=[ff for ff in foo]
 print 30
 
