@@ -175,7 +175,7 @@ aside {
 <h3>Interfaces manipuláveis</h3>
 <h4>1. Grafos</h4>
 <div id="viz"></div>
-<h5 id="graus" style="background:#FFCFFF;text-align:center">1.1. veja os 5 mais conectatos (deixe o mouse aqui encima)</h5>
+<h5 id="graus" style="background:#FFCFFF;text-align:center">1.1. veja os 5 mais conectatos (deixe o mouse aqui encima). No Firefox pode-se também observar medidas de cada vértice do grafo.</h5>
 
 <h4>2. Tabelas ordenáveis</h4>
 <table>
@@ -232,7 +232,7 @@ document.pdata2=data;
 
 
 //function ttname(d) { return d.name; }
-function ttname(d) { return String(d.id)+d.name; }
+function ttname(d) { return d.name+",grau="+d.gra+",closeness="+d.clo+",clustering="+d.clu; }
 function group(d) { return d.group; }
 
 var color = d3.scale.category10();
@@ -340,13 +340,6 @@ document.pdata=data;
 
 
 <script type="text/javascript">
-
-function show (elem) {  /* added argument */
-    elem.style.display=document.OTEXTO; /* changed variable to argument */
-}
-function hide (elem) { /* added argument */
-    elem.style.display="";  /* changed variable to argument */
-}
 //TTM
     document.flip=0;
   $.getJSON($SCRIPT_ROOT + '/_dahJsonG2', {

@@ -32,7 +32,7 @@ ami=client2.sna.amizades.find()
 #amis=[aa for aa in ami]
 g=x.Graph()
 #for aa in ami:
-for ii in xrange(15):
+for ii in xrange(5):
     cha=ami[ii].keys()
     cha.pop(cha.index("_id"))
     id_orig=int(cha[0])
@@ -40,7 +40,6 @@ for ii in xrange(15):
     for iids in idss:
         g.add_edge(snames[IDS.index(id_orig)],snames[IDS.index(iids)])
 print 50
- 
 
 @app.route('/crossf/')
 def crossf():
@@ -54,6 +53,8 @@ IID=range(g.number_of_nodes())
 #IID=[str(ii) for ii in IID]
 INN=g.nodes()
 degree=g.degree()
+closeness=x.closeness.closeness_centrality(g) 
+clustering=x.clustering(g)
 dd=OrderedDict(sorted(degree.items(), key=lambda t: t[1]))
 tnames=dd.keys()
 degrees=dd.values()
@@ -87,11 +88,11 @@ def dahJsonG():
 #    for (N1,N2) in g.edges():
 #        GG["links"].append({"source":INN.index(N1),"target":INN.index(N2),"value":1})
     for name in tnames[:-N/5]: # perifericos
-        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":2})
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":2,"clo":"%.2f"%(closeness[name],),"clu":clustering[name],"gra":degree[name]})
     for name in tnames[-N/5:-N/20]: #intermediarios
-        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":1})
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":1,"clo":"%.2f"%(closeness[name],),"clu":clustering[name],"gra":degree[name]})
     for name in tnames[-N/20:]: #hubs
-        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":0})
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":0,"clo":closeness[name],"clu":"%.2f"%(clustering[name],),"gra":degree[name]})
     GG["links"]=[]
     for (N1,N2) in g.edges():
         GG["links"].append({"source":tnames.index(N1),"target":tnames.index(N2),"value":1})
