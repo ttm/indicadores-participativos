@@ -134,7 +134,7 @@ h1, h2 {
 
 #flight-list .flight div {
   display: inline-block;
-  width: 150px;
+  width: 122px;
 }
 
 #flight-list div.distance,
@@ -158,6 +158,7 @@ aside {
 </style>
 
 {% block body %}
+<body>
 
 <a href="https://labmacambira.sf.net" style="float:left"><img src="http://labmacambira.sourceforge.net/figs/original-logo.png" width="122" height="71" style="margin-top:20px"></a>
 
@@ -165,6 +166,12 @@ aside {
 <h2>Indicadores e transparência na participação social</h2>
 
 <h3>Interfaces manipuláveis</h3>
+<h4>Tabelas</h4>
+<table>
+    <thead></thead>
+    <tbody></tbody>
+</table>
+
 
 
 <h4>Filtros multivariáveis</h4>
@@ -202,6 +209,105 @@ aside {
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.7/crossfilter.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+
+
+<script type="text/javascript">
+//var i = 0, data = [
+//    {id: String(i++), ort: "Schlosskeller", name: "DnB for live", beginn: "1.11.2011, ab 22 Uhr"},
+//    {id: String(i++), ort: "603qm", name: "Electro Technik", beginn: "1.11.2011, ab 22 Uhr"},
+//    {id: String(i++), ort: "Krone", name: "da geht der Punk ", beginn: "1.11.2011, ab 20 Uhr"},
+//    {id: String(i++), ort: "Schlosskeller", name: "Wuerstchenfest", beginn: "2.11.2011, ab 20 Uhr"},
+//    {id: String(i++), ort: "Krone", name: "Karaoke", beginn: "2.11.2011, ab 21 Uhr"}
+//];
+//document.bdata=data;
+
+    document.flip=0;
+  $.getJSON($SCRIPT_ROOT + '/_dahJsonA', {
+    name: "fooname"
+  }, function(data) {
+    document.adata=data.M;
+
+da=document.adata;
+data=da;
+//var ordem=["posicao","nome","atividade","amigos"];
+//document.ordem=ordem;
+//data= new Object();
+//for (key in da){
+//    tobj=da[key];
+//    data[key]={ordem[0] : tobj[ordem[0]], ordem[1]:tobj[ordem[1]], ordem[2]:tobj[ordem[2], ordem[3]:tobj[ordem[3]]};
+//var i = 0, data = [
+//    {id: da[i]["posicao"], nome: da[i]["nome"], atividade: da[i]["atividade"], amigos : da[i++]["amigos"]},
+//    {id: da[i]["posicao"], nome: da[i]["nome"], atividade: da[i]["atividade"], amigos : da[i++]["amigos"]},
+//    {id: da[i]["posicao"], nome: da[i]["nome"], atividade: da[i]["atividade"], amigos : da[i++]["amigos"]},
+//    {id: da[i]["posicao"], nome: da[i]["nome"], atividade: da[i]["atividade"], amigos : da[i++]["amigos"]},
+//    {id: da[i]["posicao"], nome: da[i]["nome"], atividade: da[i]["atividade"], amigos : da[i++]["amigos"]}
+//];
+
+    document.cdata=data;
+
+
+function transform(attrName) {
+//data=document.cdata;
+data=document.cdata;
+    d3.select("tbody").selectAll("tr").remove();
+document.flip = document.flip ? 0 : 1;
+
+// Header
+    var th = d3.select("thead").selectAll("th")
+            .data(jsonToArray(data[0]))
+          .enter().append("th")
+            .attr("onclick", function (d, i) { return "document.transform('" + d[0] + "');";})
+            .text(function(d) { return d[0]; })
+
+// Rows
+    var tr = d3.select("tbody").selectAll("tr")
+            .data(data)
+          .enter().append("tr")
+            .sort(function (a, b) {   return a == null || b == null ? 0 : stringCompare(a[attrName], b[attrName]);});
+
+// Cells
+    var td = tr.selectAll("td")
+            .data(function(d) { return jsonToArray(d); })
+          .enter().append("td")
+            .attr("onclick", function (d, i) { return "document.transform('" + d[0] + "');";})
+            .text(function(d) { return d[1]; });
+
+
+}
+ document.transform=transform;
+ transform('id');
+});
+function stringCompare(a, b) {
+    if(typeof "aba" == typeof a){
+    a = a.toLowerCase();
+    b = b.toLowerCase();}
+    if (document.flip){
+    return a > b ? 1 : a == b ? 0 : -1;
+    } else {
+    return a < b ? 1 : a == b ? 0 : -1;
+    }
+}
+
+function jsonKeyValueToArray(k, v) {return [k, v];}
+
+function jsonToArray(json) {
+    var ret = new Array();
+    var key;
+    for (key in json) {
+        if (json.hasOwnProperty(key)) {
+            ret.push(jsonKeyValueToArray(key, json[key]));
+        }
+    }
+    return ret;
+};
+
+</script>
+
+
+
+
+
+
 <script>
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
@@ -234,6 +340,8 @@ aside {
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
       all = flight.groupAll(),
+      activity = flight.dimension(function(d) { return d.activity; }), // TTM
+      activities= activity.group(function(d) { return Math.floor(d / 100) * 100; }),
       date = flight.dimension(function(d) { return d.date; }),
       dates = date.group(d3.time.day),
       hour = flight.dimension(function(d) { return d.date.getHours() + d.date.getMinutes() / 60; }),
@@ -333,7 +441,7 @@ aside {
   };
 
   function flightList(div) {
-    var flightsByDate = nestByDate.entries(date.top(40));
+    var flightsByDate = nestByDate.entries(date.top(400));
 
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
@@ -373,6 +481,11 @@ aside {
           .attr("class", "delay")
           .classed("early", function(d) { return d.delay < 0; })
           .text(function(d) { return "segue " + formatChange(d.delay) ; });
+
+      flightEnter.append("div")
+          .attr("class", "act")
+          .classed("early", function(d) { return d.activity < 0; })
+          .text(function(d) { return "postou " + d.activity; });
 
       flight.exit().remove();
 
@@ -574,5 +687,5 @@ aside {
 });
 
 </script>
-
+</body>
 {% endblock %}

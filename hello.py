@@ -17,7 +17,7 @@ db = client['sna']
 print 20
 
 #foo=db.sna.find()
-foo=db.sna.find({},{"created_at":1,"user.name":1,"user.friends_count":1,"user.location":1,"user.followers_count":1,"user.statuses_count":1})
+foo=db.sna.find({},{"created_at":1,"user.name":1,"user.screen_name":1,"user.friends_count":1,"user.location":1,"user.followers_count":1,"user.statuses_count":1})
 W=[ff for ff in foo]
 print 30
 
@@ -29,8 +29,42 @@ def crossf():
 def rosto():
     return render_template('crossf/rosto.html')
 
-class Mensagem:
-    pass
+@app.route('/_dahJsonA')
+def dahJsonA():
+    dates=[parser.parse(i["created_at"]) for i in W]
+    #names=[i["user"]["screen_name"] for i in W]
+    names=[i["user"]["name"] for i in W]
+    snames=[i["user"]["screen_name"] for i in W]
+    fcount=[i["user"]["friends_count"] for i in W]
+    focount=[i["user"]["followers_count"] for i in W]
+    scount=[i["user"]["statuses_count"] for i in W]
+    location=[i["user"]["location"] for i in W]
+
+    names_=list(set(names))
+    hnames_=[names.count(i) for i in names_]
+    args=n.argsort(hnames_)
+    N=[names_[i] for i in  args][::-1]
+    H=[hnames_[i] for i in args][::-1]
+    M=[]
+    #for i in xrange(len(N)):
+    for i in xrange(20):
+        m={}
+        #m["date"]=dates[i]
+        #dt=dates[i]
+        #m["date"]=(dt.month,dt.day,dt.hour,dt.minute)
+        m["posicao"]=i+1
+        m["nome"]=N[i]
+        m["sname"]=snames[names.index(N[i])]
+        m["atividade"]=H[i]
+        m["amigos"]=fcount[names.index(N[i])]
+        m["location"]=location[names.index(N[i])]
+        m["atv_total"]=scount[names.index(N[i])]
+        m["comprom"]="%.2f"%((H[i]/float(scount[names.index(N[i])]))*100,)
+        M.append(m)
+    return jsonify(M=M)
+
+
+
 @app.route('/_dahJson')
 def dahJson():
     dates=[parser.parse(i["created_at"]) for i in W]
@@ -77,6 +111,7 @@ def dahJson():
         m["distance"]=focount[i]
         m["origin"]=names[i]
         m["destination"]=location[i]
+        m["activity"]=hnames_[names_.index(names[i])]
         M_.append(m)
 
 
