@@ -1,10 +1,21 @@
 import pymongo, time as T
 from twython import Twython
-client=pymongo.MongoClient()
-db = client['mytest']
-C = db['twitter'] #collection
-foo=C.find()
-tweets=[ff for ff in foo if "arenaNETmundial" in ff.keys()][0]["arenaNETmundial"]
+#client=pymongo.MongoClient()
+#db = client['mytest']
+#C = db['twitter'] #collection
+#foo=C.find()
+#tweets=[ff for ff in foo if "arenaNETmundial" in ff.keys()][0]["arenaNETmundial"]
+#
+print 0
+client=pymongo.MongoClient("mongodb://sna:Jockey67@ds041327.mongolab.com:41327/sna")
+print 10
+db = client['sna']
+print 20
+#C = db['twitter'] #collection
+foo=db.sna.find()#twitterArena
+print 30
+tweets=[ff for ff in foo]
+print 1
 
 import __builtin__ as B
 
@@ -43,8 +54,13 @@ while 1:
                           since_id=tweets[0]['id'])
         print "newer", i, len(tweets),search['statuses']; i+=1
 
-    db.twitter.remove()
-    C = db['twitter'] #collection
-    C.insert({"arenaNETmundial":tweets})
+    #db.twitter.remove()
+    if search['statuses']:
+        print "tweets"
+        db.sna.remove()
+        #C = db['twitter'] #collection
+        #C.insert({"arenaNETmundial":tweets})
+        db.sna.insert((i for i in tweets))
+        #db2.sna.insert((i for i in db.sna.find()))
     print("atualizado")
     T.sleep(2*60) # atualizar BD de 2 em 2 minutos

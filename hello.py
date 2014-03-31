@@ -6,9 +6,19 @@ import time as T
 app = Flask(__name__)
 atime=T.time()
 
-client=pymongo.MongoClient()
-db = client['mytest']
-C = db['twitter'] #collection
+#client=pymongo.MongoClient()
+#db = client['mytest']
+#C = db['twitter'] #collection
+
+print 0
+client=pymongo.MongoClient("mongodb://sna:Jockey67@ds041327.mongolab.com:41327/sna")
+print 10
+db = client['sna']
+print 20
+
+foo=db.sna.find()
+W=[ff for ff in foo]
+print 30
 
 @app.route('/crossf/')
 def crossf():
@@ -22,8 +32,6 @@ class Mensagem:
     pass
 @app.route('/_dahJson')
 def dahJson():
-    foo=C.find()
-    W=[ff for ff in foo if "arenaNETmundial" in ff.keys()][0]["arenaNETmundial"]
     dates=[parser.parse(i["created_at"]) for i in W]
     names=[i["user"]["screen_name"] for i in W]
     fcount=[i["user"]["friends_count"] for i in W]
