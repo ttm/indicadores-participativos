@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div><h3>{{nn[0]}} usuários neste canal:</h3>
+<div><h3>AA é Autorregulação Algorítmica</h3>
 <ul>
 São:
 {%for nnn in nn %}
@@ -19,13 +19,23 @@ anos de trabalho, sem dormir, ou
 {{ ((nn[1][1]*15)/60)/5 }} dias e {{ (((nn[1][1]*15)/60)/5)/364 }} anos
 de dedicação em um ritmo razoável de 5h diárias.
 Considerados 2/7 de dias de descanso, são {{ (((((nn[1][1]*15)/60)/5)/364)*(1+2/7)) }} anos
- .</div>
+.</div>
 
 <ul>
-{%for au in na %}
+{% for au in na %}
 <li><a href="{{url_for('aauser',nick=au[0])}}">
 <b>{{ au[0] }}</b>: {{au[1]}}</a></li>
 {% endfor %}
 </ul>
+<script>
+//    cur.execute("SELECT user_id, session_id,task_id,message,created,valid from messages ORDER BY created DESC limit 20;")
+</script>
+<ul>
+{%for msg in msgs %}
+<li><a href="{{url_for('aauser',nick=nicks[msg[0]])}}">
+<b>{{ nicks[msg[0]] }}</b>: {{ msg[3] }} /// {{msg[4]}}</a></li>
+{% endfor %}
+</ul>
+
 {% endblock %}
 

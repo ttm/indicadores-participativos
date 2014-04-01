@@ -361,6 +361,7 @@ def aajsonify(table=None):
     try:
         return jsonify(table=ttable)
     except:
+        #return jsonify(table=unicode(ttable,"utf-8","ignore"))
         return jsonify(table=str(ttable))
 
     return "in construction"
@@ -379,16 +380,22 @@ def aauser(nick=None):
     nid=cur.fetchall()[0][0]
     cur.execute("SELECT session_id,task_id,message,created,valid FROM messages WHERE user_id='%s';"%(nid,))
     msgs=cur.fetchall()
-    msgs_=[list(ff[:3])+[str(ff[3]),ff[4]] for ff in msgs]
+    #msgs_=[list(ff[:3])+[str(ff[3]),ff[4]] for ff in msgs]
     #aa=make_response(render_template('aauser.html', msgs=msgs))
     try:
-        return jsonify({"msgs":msgs_,"campos":["session_id","task_id","message","created_at","valid"]})
+        return jsonify({"msgs":msgs,"campos":["session_id","task_id","message","created_at","valid"]})
     except:
-        return jsonify({"msgs":str(msgs_),"campos":["session_id","task_id","message","created_at","valid"]})
+        msgs=[list(i) for i in msgs]
+        for i in xrange(len(msgs)):
+            #msgs[i][3]=msgs[i][3]
+            msgs[i][2]=unicode(msgs[i][2],"utf-8","ignore")
+            #msgs[i][2]=msgs[i][2].decode("utf-8")
+        return jsonify({"msgs":msgs,"campos":["session_id","task_id","message","created_at","valid"]})
 
 @app.route('/aa/<nusers>/<nmsgs1>/<nmsgs2>/')
 @app.route('/aa/')
 def aa(nusers=None,nmsgs1=None,nmsgs2=None):
+    global nicks
     db = MySQLdb.connect(host="mysql15.teia.org.br", # your host, usually localhost
                          user="teia16", # your username
                           passwd="pAAinelAAweb", # your password
@@ -402,17 +409,30 @@ def aa(nusers=None,nmsgs1=None,nmsgs2=None):
     cur.execute("SELECT COUNT(*) FROM sessions;")
     n_sessions=cur.fetchall()[0][0]
     nn_=(("users",n_users),("messages",n_messages),("sessions",n_sessions))
-    cur.execute("SELECT user_id, Count(*) as total FROM messages GROUP BY user_id ORDER BY Count(*) DESC LIMIT 20;")
+    cur.execute("SELECT user_id, Count(*) as total FROM messages GROUP BY user_id ORDER BY Count(*) DESC;")
     top_users=cur.fetchall()
-    tids=[i[0] for i in top_users]
-    acts=[i[1] for i in top_users]
+    tids=[i[0] for i in top_users[:20]]
+    acts=[i[1] for i in top_users[:20]]
     tids_=str(tids).replace("L","").replace("[","(").replace("]",")")
-    cur.execute("SELECT id,nick FROM users WHERE id in %s;"%(tids_,))
+    tids=[i[0] for i in top_users[:20]]
+    #cur.execute("SELECT id,nick FROM users WHERE id in %s;"%(tids_,))
+    cur.execute("SELECT id,nick FROM users")
+    #nicks=[i for i in cur.fetchall()]
     nicks=dict([i for i in cur.fetchall()])
+    print tids
     nicks_=[nicks[i] for i in tids]
-    na=zip(nicks_,acts)
+
+    na=zip(nicks_[:20],acts[:20])
+    cur.execute("SELECT user_id, session_id,task_id,message,created,valid from messages ORDER BY created DESC limit 20;")
+    newest_msgs=cur.fetchall()
+    print newest_msgs
+    newest_msgs=[list(i) for i in newest_msgs]
+    for i in xrange(len(newest_msgs)):
+        newest_msgs[i][3]=unicode(newest_msgs[i][3],"utf-8","ignore")
     # depois coloca as msgs + recentes
-    aa=make_response(render_template('aa.html', na=na,nn=nn_))
+    #print na
+    print newest_msgs
+    aa=make_response(render_template('aa.html', na=na,nn=nn_,msgs=newest_msgs,nicks=nicks))
     return aa
     #return "in construction %su %sm %ss"%(str(tids),str(acts),str(nicks_))
     #return "in construction %du %dm %ds"%(n_users,n_messages,n_sessions)
