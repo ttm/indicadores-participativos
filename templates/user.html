@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div><h3>dados do usuário:</h3>
+<div><h3>dados do usuário (ver <a href="{{url_for('users')}}">todos os usuários</a>):</h3>
 <ul>
 {%for chave in chaves%}
 <li><b>{{ chave }}</b>: {{ dados[chave] }}</li>

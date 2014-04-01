@@ -19,11 +19,11 @@
 {%if session.logged %}
 <div>Você está logad@ há {{session.ttime}}. (<a href="{{ url_for('logout') }}">logout</a>).</div>
 
-        Em domínio público e apoiado por <a href="{{ url_for('user')}}">{{ session.username }}</a>.
+        <img src="{{url_for('static',filename='copyleft.jpg')}}" alt="copyleft" style="float:left;width:15px;margin-right:4px"/> Em domínio público e apoiado por <a href="{{ url_for('user')}}">{{ session.username }}</a>.
 {% else %}
 <div>Você não está logad@ (<a href="{{ url_for('login') }}">fazer login)</a>.</div>
 
-        <img src="/static/copyleft.jpeg" alt="copyleft" style="float:left"/> Em domínio público e apoiado por <a href="{{ url_for('users')}}">você</a>.
+        <img src="{{url_for('static',filename='copyleft.jpg')}}" alt="copyleft" style="float:left;width:15px;margin-right:4px"/> Em domínio público e apoiado por <a href="{{ url_for('users')}}">você</a>.
 {% endif %}</p>
 <div style="font-size:7px; text-align:center">_o_o_ oOo _o_o_</div>
         {% endblock %}
