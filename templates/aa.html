@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div><h3>{{nn[0]}} usuários neste canal:</h3>
+<ul>
+São:
+{%for nnn in nn %}
+<li><a href="{{url_for('aajsonify',table=nnn[0])}}">
+<b>{{ nnn[1] }}</b></a>, {{nnn[0]}}
+{% endfor %}
+</ul>
+<div style="width:720px">de AA, com o propósito de registrar horas dedicadas e compartilhar
+andamentos/processos. Começou como um "twitter" que funcionava
+no terminal linux e no IRC, e está se integrando a estes canais sociais já instituídos,
+por meio de tags, dada a qualidade das APIs que estas redes oferecem.
+Ao carregar esta página, haviam no banco <b>{{nn[1][1]}}</b> mensagens.
+Isso vale {{nn[1][1]*15 }} minutos, {{ (nn[1][1]*15)/60 }} horas. 
+São {{ ((nn[1][1]*15)/60)/24 }} dias e {{ (((nn[1][1]*15)/60)/24)/364 }}
+anos de trabalho, sem dormir, ou
+{{ ((nn[1][1]*15)/60)/5 }} dias e {{ (((nn[1][1]*15)/60)/5)/364 }} anos
+de dedicação em um ritmo razoável de 5h diárias.
+Considerados 2/7 de dias de descanso, são {{ (((((nn[1][1]*15)/60)/5)/364)*(1+2/7)) }} anos
+ .</div>
+
+<ul>
+{%for au in na %}
+<li><a href="{{url_for('aauser',nick=au[0])}}">
+<b>{{ au[0] }}</b>: {{au[1]}}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
+

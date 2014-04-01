@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     {% block head %}
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
     <title>{% block title %}{% endblock %} - My Webpage</title>
     {% endblock %}
 </head>
@@ -23,8 +23,9 @@
 {% else %}
 <div>Você não está logado (<a href="{{ url_for('login') }}">fazer login)</a>.</div>
 
-        &copy; Em domínio público e apoiado por <a href="{{ url_for('users')}}">você</a>.
+        <img src="/static/copyleft.jpeg" alt="copyleft" style="float:left"/> Em domínio público e apoiado por <a href="{{ url_for('users')}}">você</a>.
 {% endif %}</p>
+<div style="font-size:7px; text-align:center">_o_o_ oOo _o_o_</div>
         {% endblock %}
     </div>
 </body>
