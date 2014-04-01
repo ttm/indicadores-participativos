@@ -89,11 +89,11 @@ def dahJsonG():
 #    for (N1,N2) in g.edges():
 #        GG["links"].append({"source":INN.index(N1),"target":INN.index(N2),"value":1})
     for name in tnames[:-N/5]: # perifericos
-        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":2,"clo":"%.2f"%(closeness[name],),"clu":clustering[name],"gra":degree[name]})
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":2,"clo":"%.2f"%(closeness[name],),"clu":"%.2f"%(clustering[name],),"gra":degree[name]})
     for name in tnames[-N/5:-N/20]: #intermediarios
-        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":1,"clo":"%.2f"%(closeness[name],),"clu":clustering[name],"gra":degree[name]})
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":1,"clo":"%.2f"%(closeness[name],),"clu":"%.2f"%(clustering[name],),"gra":degree[name]})
     for name in tnames[-N/20:]: #hubs
-        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":0,"clo":closeness[name],"clu":"%.2f"%(clustering[name],),"gra":degree[name]})
+        GG["nodes"].append({"id":tnames.index(name),"name":name,"group":0,"clo":"%.2f"%(closeness[name],),"clu":"%.2f"%(clustering[name],),"gra":degree[name]})
     GG["links"]=[]
     for (N1,N2) in g.edges():
         GG["links"].append({"source":tnames.index(N1),"target":tnames.index(N2),"value":1})
