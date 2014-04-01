@@ -176,7 +176,7 @@ Esta é uma página dedicada a facilitar a compreensão, e salientar a importân
 <h3>Interfaces manipuláveis</h3>
 <h4>1. Grafos</h4>
 <div id="viz"></div>
-<h5 id="graus" style="background:#FFCFFF;text-align:center">1.1. veja os 5 mais conectatos (deixe o mouse aqui encima). No Firefox pode-se também observar medidas de cada vértice do grafo.</h5>
+<h5 id="graus" style="background:#FFCFFF;text-align:center">1.1. veja os 5 mais conectatos (deixe o mouse aqui encima). No Firefox pode-se também observar medidas de cada vértice do grafo. Na figura acima, em vermelho estão os hubs (~5% mais conectados), em verde os intermediários(15% entre hubs e periféricos), em azul os periféricos (~80% menos conectados).</h5> 
 
 <h4>2. Tabelas ordenáveis</h4>
 <table>
@@ -237,7 +237,9 @@ function ttname(d) { return d.name+",grau="+d.gra+",closeness="+d.clo+",clusteri
 function group(d) { return d.group; }
 
 var color = d3.scale.category10();
-function colorByGroup(d) { return color(group(d)); }
+//function colorByGroup(d) { return color(group(d)); }
+//function colorByGroup(d) { alert(color(group(d)) return  color(group(d)) == 0 ? "#00FF00" : (color(group(d)) == 1 ? "#FF0000" : "#0000FF"); }
+function colorByGroup(d) { foobar=group(d); return  foobar == 0 ? "#FF0000" : (foobar == 1 ? "#00FF00" : "#0000FF"); }
 
 var width = 960,
     height = 400;
