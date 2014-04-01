@@ -332,7 +332,7 @@ def twitter(hashtag=None):
     if hashtag:
         if hashtag.lower()=="arenanetmundial":
             return render_template('crossf/rosto.html')
-    return "em construção. Sua tag: \#%s"%(hashtag,)
+    return u"em construção. Sua tag: #%s"%(hashtag,)
 
 #@app.route('/rosto/')
 #def rosto():
