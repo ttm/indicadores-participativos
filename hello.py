@@ -40,8 +40,8 @@ ami=client2.sna.amizades.find()
 #amis=[aa for aa in ami]
 g=x.Graph()
 #for aa in ami:
-for ii in xrange(3):
-#for ii in xrange(15):
+#for ii in xrange(3):
+for ii in xrange(15):
     cha=ami[ii].keys()
     cha.pop(cha.index("_id"))
     id_orig=int(cha[0])
