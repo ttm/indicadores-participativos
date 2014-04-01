@@ -21,6 +21,7 @@ de dedicação em um ritmo razoável de 5h diárias.
 Considerados 2/7 de dias de descanso, são {{ (((((nn[1][1]*15)/60)/5)/364)*(1+2/7)) }} anos
 .</div>
 
+Os principais usuários do aa são, junto a número de tweets:
 <ul>
 {% for au in na %}
 <li><a href="{{url_for('aauser',nick=au[0])}}">
@@ -30,6 +31,7 @@ Considerados 2/7 de dias de descanso, são {{ (((((nn[1][1]*15)/60)/5)/364)*(1+2
 <script>
 //    cur.execute("SELECT user_id, session_id,task_id,message,created,valid from messages ORDER BY created DESC limit 20;")
 </script>
+As últimas mensagens de AA são:
 <ul>
 {%for msg in msgs %}
 <li><a href="{{url_for('aauser',nick=nicks[msg[0]])}}">
