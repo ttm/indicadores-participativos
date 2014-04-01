@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div><h3>{{n_usuarios}} usuários neste canal:</h3>
+<ul>
+{%for usuario in usuarios %}
+<li><a href="{{url_for('user',username=usuario.username)}}"><b>{{ usuario.username }}</b></a>, {{usuario.visitas}} visita(s).</li>
+{% endfor %}
+</ul>
+{% endblock %}
+

@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="style.css" />
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+    {% endblock %}
+</head>
+<body>
+<div id="header">{% block header %}
+<a href="{{ url_for('index') }}">início</a>
+{% endblock%}</div>
+    <div id="content">{% block content %}
+{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+<p>
+{%if session.logged %}
+<div>Você está logado há {{session.ttime}}. (<a href="{{ url_for('logout') }}">logout</a>).</div>
+
+        Em domínio público e apoiado por <a href="{{ url_for('user')}}">{{ session.username }}</a>.
+{% else %}
+<div>Você não está logado (<a href="{{ url_for('login') }}">fazer login)</a>.</div>
+
+        &copy; Em domínio público e apoiado por <a href="{{ url_for('users')}}">você</a>.
+{% endif %}</p>
+        {% endblock %}
+    </div>
+</body>
+
