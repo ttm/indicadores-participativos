@@ -17,11 +17,11 @@
         {% block footer %}
 <p>
 {%if session.logged %}
-<div>Você está logado há {{session.ttime}}. (<a href="{{ url_for('logout') }}">logout</a>).</div>
+<div>Você está logad@ há {{session.ttime}}. (<a href="{{ url_for('logout') }}">logout</a>).</div>
 
         Em domínio público e apoiado por <a href="{{ url_for('user')}}">{{ session.username }}</a>.
 {% else %}
-<div>Você não está logado (<a href="{{ url_for('login') }}">fazer login)</a>.</div>
+<div>Você não está logad@ (<a href="{{ url_for('login') }}">fazer login)</a>.</div>
 
         <img src="/static/copyleft.jpeg" alt="copyleft" style="float:left"/> Em domínio público e apoiado por <a href="{{ url_for('users')}}">você</a>.
 {% endif %}</p>
