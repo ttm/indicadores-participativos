@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Indicadores e transparência na participação social{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>Indicadores e transparência na participação social</h1>
+    <p class="important">
+<ul>
+    <li><a href="{{url_for('twitter',hashtag='arenaNETmundial')}}">twitter  #ArenaNetMundial</li>
+    <li><a href="{{url_for('twitter',hashtag='Participabr'    )}}">twitter  #Participabr    </li>
+    <li><a href="{{url_for('face',hashtag='arenaNETmundial')}}">facebook #ArenaNetMundial</li>
+    <li><a href="{{url_for('face',hashtag='Participabr'    )}}">facebook #Participabr    </li>
+    <li><a href="{{url_for('aa')}}">AA</li>
+    <li><a href="{{url_for('opa')}}">Endpoint SparQL para a OPA</li>
+    <li><a href="{{url_for('sobre')}}">sobre e agradecimentos   </li>
+</ul>
+    </p>
+{% endblock %}
+
+
