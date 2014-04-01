@@ -330,7 +330,7 @@ def hello(name=None):
 @app.route('/twitter/<hashtag>/')
 def twitter(hashtag=None):
     if hashtag:
-        if hashtah.lower()=="arenanetmundial":
+        if hashtag.lower()=="arenanetmundial":
             return render_template('crossf/rosto.html')
     return "em construção. Sua tag: \#%s"%(hashtag,)
 
