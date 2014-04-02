@@ -21,22 +21,33 @@ uso de multiplos bds para usar mais de 500mb e para analises conjuntas.
 
 
 
-
-
-
-
-
 == Databases ==
 - Há várias bases com os tweets. Para a plataforma, uma base de dado é usada, na qual as seguintes coleções são criadas:
 --> users (todos os dados sobre os usuários individualmente)
---> ??
+--> (para os tweets)
 Exemplo:
 
-client2=pymongo.MongoClient("mongodb://sna:Jockey67@oceanic.mongohq.com:10021/sna")
+from maccess impor mdc # maccess.py arquivo com acesso ao BD mongo
+client2=pymongo.MongoClient(mdc.ui)
 idUser=client2.sna.users.insert({"username":username,"url":url,"visitas":1})
 
 chaves: id do mongo, username
 
+Os endereços e chaves de acesso ficam fora dos scripts publicados,
+por padrão no arquivo maccess.py. Para que o programa rode no heroku,
+é conveniente criar um branch com este arquivo, o qual é enviado para
+o heroku.
+
+$ git checkout -b deploy
+$ git add maccess.py
+$ git commit -m 'adicionado arquivo com os acessos aos bancos'
+$ git push heroku HEAD:master
+
+E manterá uma versão em sync com o repo de desenvolvimento,
+já com o arquivo do BD, para mandar para a nuvem.
+
+para atualizar, git pull master HEAD ou git pull origin HEAD.
+aa ..
 
 
 == TODO ==
