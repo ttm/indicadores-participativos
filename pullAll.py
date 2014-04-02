@@ -7,7 +7,8 @@ from twython import Twython
 #tweets=[ff for ff in foo if "arenaNETmundial" in ff.keys()][0]["arenaNETmundial"]
 #
 print 0
-client=pymongo.MongoClient("mongodb://sna:Jockey67@ds041327.mongolab.com:41327/sna")
+from mongodbconfig import mdc
+client=pymongo.MongoClient(mdc.u1)
 print 10
 db = client['sna']
 print 20

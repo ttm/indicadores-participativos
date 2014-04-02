@@ -7,7 +7,8 @@ from twython import Twython
 #tweets=[ff for ff in foo if "arenaNETmundial" in ff.keys()][0]["arenaNETmundial"]
 #
 print 0
-client=pymongo.MongoClient("mongodb://sna:Jockey67@ds041327.mongolab.com:41327/sna")
+from maccess import mdc
+client=pymongo.MongoClient(mdc.u1)
 print 10
 db = client['sna']
 print 20
@@ -43,7 +44,7 @@ t = Twython(app_key=TWITTER_API_KEY,
             oauth_token=TWITTER_ACCESS_TOKEN, 
             oauth_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
 
-client2=pymongo.MongoClient("mongodb://sna:Jockey67@oceanic.mongohq.com:10021/sna")
+client2=pymongo.MongoClient(mdc.u2)
    
 i=0
 for nn in N:

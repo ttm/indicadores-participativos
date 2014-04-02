@@ -1,10 +1,10 @@
 import pymongo, time as T
 from twython import Twython
-
-TWITTER_API_KEY = 'AI2A7Ts772TesPoK38njA' #supply the appropriate value
-TWITTER_API_KEY_SECRET = 'dmrMuSkX78WyKrvp2s9VUTWKcRbnGa46uREcWjfzad4' 
-TWITTER_ACCESS_TOKEN = '18882547-ylXgGFI1FfqR4XpsA3HASBnMLDEbUKxUM1IXb7sD2'
-TWITTER_ACCESS_TOKEN_SECRET = 'gZYe00t5UCTFukHTgtchZECiFN8W5Easho5u4dB5EoPEm'
+from maccess import tw # importando os acessos (só pegar no api.twitter)
+TWITTER_API_KEY             = tw.tak
+TWITTER_API_KEY_SECRET      = tw.taks
+TWITTER_ACCESS_TOKEN        = tw.tat
+TWITTER_ACCESS_TOKEN_SECRET = tw.tats
 
 t = Twython(app_key=TWITTER_API_KEY, 
             app_secret=TWITTER_API_KEY_SECRET, 
