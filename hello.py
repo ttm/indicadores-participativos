@@ -1,8 +1,8 @@
 #-*- coding: utf8 -*-
-from flask import Flask, render_template, make_response, session, redirect, url_for, escape, request,jsonify
+from flask import Flask, render_template, make_response, session, redirect, url_for, escape, request,jsonify,Response   
 import pymongo, __builtin__, datetime
 from dateutil import parser
-import time as T, networkx as x
+import time as T, networkx as x, json # json.dumps
 import MySQLdb
 #msg=cur.execute("SELECT * FROM messages;")
 #users=cur.execute("SELECT * FROM users;")
@@ -16,7 +16,7 @@ atime=T.time()
 #C = db['twitter'] #collection
 #
 print 0
-from macess import mdc
+from maccess import mdc
 client=pymongo.MongoClient(mdc.u1)
 CLIENT=client # para o bd do app em si, usuários, etc
 ################ CUT
@@ -109,7 +109,6 @@ CLIENT=client # para o bd do app em si, usuários, etc
 #
 #
 ##        print {"source":IDS_[snames.index(N1)],"target":IDS_[snames.index(N2)],"value":"1"}
-#    __builtin__.GG=GG
 #    return jsonify(GG)
 #
 #@app.route('/_dahJsonA')
@@ -348,6 +347,87 @@ def face(hashtag=None):
     return "in construction"
 
 from maccess import dbc
+
+import nltk as k
+from maccess import dbc
+import string
+
+@app.route("/aatexto/")
+def aatexto(users=0,nmsg1=1,nmsg2=100):
+    """Análise textual das mensagens do AA.
+
+    - dos usuários users (0 é todos
+    - da mensagem do AA nmsg1 (ordem de ocorrência desde a primeira)
+    - até a mensagem nmsg2"""
+    db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
+                         user=dbc.u,    # your username
+                          passwd=dbc.p, # your password
+                          db=dbc.d)     # name of the data base
+    cur = db.cursor()
+
+    cur.execute("SELECT message from messages limit 200, 100;")
+    msgs=cur.fetchall()
+    msgs=[i[0] for i in msgs]
+    MM=string.join(msgs)
+    MM_=list(set(MM))
+    CC_=[MM.count(i) for i in MM_]
+    HH_=zip(MM_,CC_)
+    # fazer contagem de tokens e ver qual o limiat p marcadores:
+    MM2=string.join(msgs).split()
+    MM2_=list(set(MM2))
+    CC2_=[MM2.count(i) for i in MM2_]
+    HH2_=zip(MM2_,CC2_)
+
+
+    aa=make_response(render_template('aatext.html', hw=HH2_,hc=HH_))
+    return aa
+    # shout notify alert start stop
+    #return jsonify(msgs=msgs,histogram_chars=HH_,histogram_words=HH2_)
+   
+@app.route('/d3testsB/')
+def d3testsB():
+    aa=make_response(render_template('d3testsB.html'))
+    return aa
+    
+@app.route('/d3tests/')
+def d3tests():
+    aa=make_response(render_template('d3tests.html'))
+    return aa
+    
+import json
+@app.route('/jsonAAtext/')
+def jsonAAtext():
+    avar= request.args.get('avar')
+    print avar
+    db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
+                         user=dbc.u,    # your username
+                          passwd=dbc.p, # your password
+                          db=dbc.d)     # name of the data base
+    cur = db.cursor()
+
+    cur.execute("SELECT message from messages limit 200, 100;")
+    msgs=cur.fetchall()
+    msgs=[i[0] for i in msgs]
+    if avar=="char":
+        MM=string.join(msgs)
+        MM_=list(set(MM))
+        CC_=[MM.count(i) for i in MM_]
+        HH_=zip(MM_,CC_)
+        HH__=[{"letter":i[0],"frequency":i[1]} for i in HH_]
+        return jsonify(data=HH__)
+    # fazer contagem de tokens e ver qual o limiat p marcadores:
+    MM2=string.join(msgs).split()
+    MM2_=list(set(MM2))
+    CC2_=[MM2.count(i) for i in MM2_]
+    HH2_=zip(MM2_,CC2_)
+    HH2__=[{"letter":i[0],"frequency":i[1]} for i in HH2_]
+    #return jsonify(data=HH2__)
+    return json.dumps(HH2__)
+    #return jsonify({"hw_":HH2__,"hc_":HH__,"hc":HH_})
+
+
+
+
 @app.route('/aajsonify/<table>/')
 def aajsonify(table=None):
     if not table:
@@ -439,6 +519,24 @@ def aa(nusers=None,nmsgs1=None,nmsgs2=None):
     return aa
     #return "in construction %su %sm %ss"%(str(tids),str(acts),str(nicks_))
     #return "in construction %du %dm %ds"%(n_users,n_messages,n_sessions)
+
+@app.route('/jsonAAover/')
+def jsonAAover():
+    db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
+                         user=dbc.u,    # your username
+                          passwd=dbc.p, # your password
+                          db=dbc.d)     # name of the data base
+    cur = db.cursor()
+
+    cur.execute("SELECT COUNT(*) FROM users;")
+    n_users=cur.fetchall()[0][0]
+    cur.execute("SELECT COUNT(*) FROM messages;")
+    n_messages=cur.fetchall()[0][0]
+    cur.execute("SELECT COUNT(*) FROM sessions;")
+    n_sessions=cur.fetchall()[0][0]
+    #js=["users":n_users,"messages":n_messages,"sessions":n_sessions]
+    js=(("users",n_users),("messages",n_messages),("sessions",n_sessions))
+    return Response(json.dumps(js),  mimetype='application/json')
 
 @app.route('/opa/')
 def opa():

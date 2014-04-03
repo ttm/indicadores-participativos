@@ -4,6 +4,11 @@
 <head>
     {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+<script type=text/javascript>
+  var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+
     <title>{% block title %}{% endblock %} - My Webpage</title>
     {% endblock %}
 </head>
@@ -31,4 +36,6 @@
 
 <a href="https://github.com/ttm/indicadores-participativos"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 </body>
+{% block posbody %}
+{% endblock %}
 

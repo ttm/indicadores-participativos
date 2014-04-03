@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+{% block header %}
+{{ super() }}
+<script src="{{url_for('static',filename='d3.v3.js')}}"></script>
+{% endblock %}
 {% block content %}
 <div><h3>AA é Autorregulação Algorítmica</h3>
-Acesse a <a href="url_for('texto')">análise preliminar de texto</a>.
+Acesse a <a href="{{url_for('aatexto')}}">análise preliminar de texto</a>.
 <ul>
 São:
 {%for nnn in nn %}
@@ -9,6 +13,20 @@ São:
 <b>{{ nnn[1] }}</b></a>, {{nnn[0]}}
 {% endfor %}
 </ul>
+<div id="jstest"></div>
+<script>
+d3.json("{{url_for('jsonAAover')}}", function(error, json) {
+  if (error) return console.warn(error);
+d3.select("#jstest").selectAll("p")
+    .data(json)
+    .enter()
+    .append("p")
+    //.text(function(d){return "<a href='/aajsonify/'"+d[0]+"/'>"+d[0]+"</a>:"+d[1];})
+    .text(function(d){return d;})
+    .style("color","red");
+});
+</script>
+
 <div style="width:720px">de AA, com o propósito de registrar horas dedicadas e compartilhar
 andamentos/processos. Começou como um "twitter" que funcionava
 no terminal linux e no IRC, e está se integrando a estes canais sociais já instituídos,
