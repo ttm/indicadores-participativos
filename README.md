@@ -63,7 +63,7 @@ de composições e disponibilização das músicas/mídia.
 - iniciar o app em meteor, d3 e cofeescript.
 - colocar espaços para os usuários doarem seus dados (quais quiser, com dicas).
 - iniciar etiquetação semântica da plataforma.
-- explicitar estrutura: servidor json, apresentador meteor e node+express, mineradores python, servidores heroku, bases de dado mongolab ou mongohq. Participabr. Especificar limites por usuário e outras +.
+- explicitar estrutura: servidor json, apresentador meteor e node+express, mineradores python, servidores heroku, bases de dado mongolab ou mongohq. Participabr. Especificar limites por usuário e outras +. Não esquecer do bot local p fazer backup dos dados, já que eh muito reativa e aberta para modificações e rasuras.
 - abrir espaço para criações de gambis com os dados.
 - abrir espaço para produção de mídia (sons, música, imagens, animações)
 - renderizar com o d3 um svg interessante para o fundo do body, talvez já liberar controle do fundo com widgets apropriadas.
@@ -71,3 +71,5 @@ de composições e disponibilização das músicas/mídia.
 - visitar libs de álgebra linear, estatística, cálculo diferencial, geometria e álgebra (grupos, aneis, etc).
 - priorizar coleta e publicização de sugestões e pedidos (com espaço no header e listagens especiais).
 - lido todo o tutorial de d3js do Scott Murray. É necessário ler os tutoriais da wiki: https://github.com/mbostock/d3/wiki/Tutorials
+- manter um campo aberto no minimongo, para a pessoa inscrever o que quiser no BD (qualquer estrutura representável como variável JS/json). 
+- estudar integração com carnaval, vivace, leet, meemoo e noflo.

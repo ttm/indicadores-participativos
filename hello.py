@@ -352,6 +352,30 @@ import nltk as k
 from maccess import dbc
 import string
 
+
+@app.route("/aajson/")
+def aajson():
+    db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
+                         user=dbc.u,    # your username
+                          passwd=dbc.p, # your password
+                          db=dbc.d)     # name of the data base
+    cur = db.cursor()
+    cur.execute("SELECT message from messages limit 200, 100;")
+    msgs=cur.fetchall()
+    msgs=[i[0] for i in msgs]
+    MM=string.join(msgs)
+    MM_=list(set(MM))
+    CC_=[MM.count(i) for i in MM_]
+    HH_=zip(MM_,CC_)
+    # fazer contagem de tokens e ver qual o limiat p marcadores:
+    MM2=string.join(msgs).split()
+    MM2_=list(set(MM2))
+    CC2_=[MM2.count(i) for i in MM2_]
+    HH2_=zip(MM2_,CC2_)
+    #return json.dumps({"data":{"messages":msgs,"hc":HH_,"ht":HH2_}})
+    return jsonify(data={"messages":msgs,"hc":HH_,"ht":HH2_})
+
+
 @app.route("/aatexto/")
 def aatexto(users=0,nmsg1=1,nmsg2=100):
     """Análise textual das mensagens do AA.
