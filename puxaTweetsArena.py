@@ -47,21 +47,21 @@ if not foo.count(): # collection n existe
     # include_entities para true
     search = t.search(q=HTAG,count=100,result_type="recent")
     while search["statuses"]:
+        print len(search["statuses"])
         print "batelada de status"
         ss+=search["statuses"]
-        if len(len(search["statuses"]))>99:
-            T.sleep(70)
-        search = t.search(q=HTAG,count=150,max_id=ss[-1]['id']-1,result_type="recent",since="2010-12-27")
+        T.sleep(70)
+        search = t.search(q=HTAG,count=150,max_id=ss[-1]['id']-1,result_type="recent")
     ss=ss[::-1]
 # collection já existe, adicionar tweets mais reecntes
 # inverter se realmente precisar
 
     search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
     while search["statuses"]:
+        print len(search["statuses"])
         print "batelada de status mais recente"
         ss+=search["statuses"][::-1]
-        if len(search["statuses"])>99:
-            T.sleep(70)
+        T.sleep(70)
         search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
 
     C.insert(ss)
@@ -74,28 +74,38 @@ else:
     ultima= foo[quantos-1]["id"]
     dultima=foo[0]["created_at"]
     
-    search = t.search(q=HTAG,count=100,max_id=primeira-1,result_type="recent",since="2010-12-27")
+    search = t.search(q=HTAG,count=100,max_id=primeira-1,result_type="recent")
     ss=[]
-    while search["statuses"]:
+    asd=[]
+    ANTES=0
+    while len(search["statuses"]):
+        ANTES=1
+        print len(search["statuses"])
+        asd.append(search["statuses"])
         print "batelada de status"
         ss+=search["statuses"]
-        if len(search["statuses"])>99:
-            T.sleep(70)
-        search = t.search(q=HTAG,count=150,max_id=ss[-1]['id']-1,result_type="recent",until=ss[-1]["created_at"])
+        T.sleep(70)
+        search = t.search(q=HTAG,count=100,max_id=ss[-1]['id']-1,result_type="recent")
+    asd.append(search["statuses"])
     ss=ss[::-1]
-    if ss:
-        oid=ss[-1]["id"]
-    else:
-        oid=foo[quantos-1]["id"]
+    antes=[i for i in C.find()]
+    agora=ss+antes
+    ss=agora
+    oid=agora[-1]["id"]
     search = t.search(q=HTAG,count=150,since_id=oid,result_type="recent")
     while search["statuses"]:
+        print len(search["statuses"])
+        asd.append(search["statuses"])
         print "batelada de status mais recente"
         ss+=search["statuses"][::-1]
-        if len(search["statuses"])>99:
-            T.sleep(70)
+        T.sleep(70)
         search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
+    asd.append(search["statuses"])
     if ss:
-        C.insert(ss)
+        if ANTES:
+            C.remove()
+        else:
+            C.insert(ss)
 
 # ativar interface de streaming
 class MyStreamer(TwythonStreamer):
