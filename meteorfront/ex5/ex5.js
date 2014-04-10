@@ -1,8 +1,15 @@
 AA=new Meteor.Collection("HHaao0");
 arenaNETmundial=new Meteor.Collection("HHarenaNETmundial");
 Participabr=new Meteor.Collection("HHParticipabr");
-var BDS={"AA":AA,"arenaNETmundial":arenaNETmundial,"Participabr":Participabr};
+BDS={"AA":AA,"arenaNETmundial":arenaNETmundial,"Participabr":Participabr};
 
+genInt=function(N,R,O){
+    var mar=[];
+    for(var i=0;i<N;i++){
+        mar.push(O+Math.floor(Math.random()*R));
+    }
+    return mar;
+};
 
 if (Meteor.isClient) {
 Session.set("theTopic","AA");
@@ -19,7 +26,7 @@ Session.set("theTopic","AA");
   });
 
   //Template.toptopics.topics=["#arenaNETmundial","#Participabr","AA","megarrede","escritos","sobre"]
-  Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{"topic":"megarrede"},{"topic":"doação de dados"},{"topic":"escritos"},{"topic":"sobre"}];
+  Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"escritos"},{"topic":"sobre"}];
     for(var i=0;i<Template.toptopics.topics.length;i++){
         Template.toptopics.topics[i].tid=Template.toptopics.topics[i].topic.replace(/#/g,"");
 }
@@ -38,6 +45,10 @@ evt.target.id;
 //bb=aa.fetch();
 //Session.set("bb",bb.slice(bb.length-10,bb.length));
 Session.set("theTopic",evt.target.id);
+d3.select("body").transition()
+                .duration(2000)
+    //.style("background-color", "hsl(" + Math.random() * 360 + ",100%,50%)");
+//    .style("background-color", "rgb(" + Math.random() * 128+ ","+Math.random() * 128+","+Math.random()*128+")");
 
 //d3.select("body").selectAll("p")
 //    .data([4, 8, 15, 16, 23, 42])
@@ -58,10 +69,29 @@ Session.set("theTopic",evt.target.id);
 Template.messages.messages=function(){
     //return Session.get("bb");
     return BDS[Session.get("theTopic")]
-              .find({},{"text":1,"created_at":1,"user.name":1},{"limit":10})
+              //.find({},{"text":1,"created_at":1,"user.name":1},{$sort:{id:-1}})
+              .find({},{fields:{text:1,created_at:1},sort:{id:-1}})
+              //.find({}).sort({id:-1})
               .fetch();
-
 };
+
+  Meteor.startup(function () {
+//d3.select("body").style("background-color", "#DFD");
+//d3.select("body").style("background-color", "#DFD");
+//d3.select("body").style("background-color", "#000");
+//d3.select("body").style("color", "#FFF");
+d3.selectAll("li").style("color", function() {
+  return "hsl(" + Math.random() * 360 + ",100%,50%)";
+});
+d3.selectAll("li").style("background", function(d, i) {
+  return i % 2 ? "#fff" : "#eee";
+});
+d3.selectAll("li")
+    .data(genInt(Template.toptopics.topics.length,16,10))
+    .style("font-size", function(d) { return d + "px"; });
+
+
+});
 
 }
 
