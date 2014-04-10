@@ -3,9 +3,10 @@
 </head>
 
 <body>
+<div style="float:right"><center>
   <svg xmlns="http://www.w3.org/2000/svg"
        width="100" height="100"
-       viewBox="-110 -110 220 220" id="clock" style="float:right">
+       viewBox="-110 -110 220 220" id="clock">
 
     <!-- bounding circle -->
     <circle style="stroke: black; fill: #eee;"
@@ -30,17 +31,54 @@
             style="stroke-width: 3px;
                    stroke: black;" />
     {{/each}}
-  </svg>
-
-{{> loginButtons}}
+  </svg></center>
+<div style="margin:10px 20px">
 {{> mmissa}}
+</div>
+</div>
+{{> loginButtons}}
 
   {{> hello}}
 
-    {{> toptopics}}
+{{>tblock}}
 
-    {{> messages}}
+    {{> honneyPot}}
+    {{> tfooter}}
 </body>
+
+<template name="honneyPot">
+    <div><center>
+       você achou um vale, número {{ticket}}345277. Apresente para receber os benefícios. 
+    </center></div>
+</template>
+
+
+
+<template name="tfooter">
+    <div><center>
+        <p style="font-size:8px">_o_o_ oOo _o_o_</p>
+    </center></div>
+</template>
+
+
+
+<template name="tblock">
+<div style="height:10680px">
+{{>mblock}}
+</div>
+</template>
+
+
+<template name="mblock" >
+<center>
+<div style="width:580px">
+    {{>toptopics}}
+    {{> messages}}
+</div>
+</center>
+</template>
+
+
 
 <template name="mmissa">
 <div id="mmissa"></div>
