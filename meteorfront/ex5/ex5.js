@@ -14,7 +14,7 @@ genInt=function(N,R,O){
 if (Meteor.isClient) {
 Session.set("theTopic","AA");
   Template.hello.greeting = function () {
-    return "Welcome to ex5.";
+    return "seja bem vindo.";
   };
 
   Template.hello.events({
@@ -32,65 +32,33 @@ Session.set("theTopic","AA");
 }
 
   Template.toptopics.events=({
-    'click #AA': function(evt, tmpl){
-evt.target.id;
-        console.log("clicou AA");
-},
+
     'click': function(evt, tmpl){
         console.log("clicou "+evt.target.id);
-        console.log("originou-se de "+evt.target);
-//aa=AA.find({},{"text":1,"created_at":1,"user.name":1}).limit(10);
-//aa=BDS[evt.target.id].find({},{"text":1,"created_at":1,"user.name":1}).limit(10);
-//aa=BDS[evt.target.id].find({},{"text":1,"created_at":1,"user.name":1},{"limit":10});
-//bb=aa.fetch();
-//Session.set("bb",bb.slice(bb.length-10,bb.length));
-Session.set("theTopic",evt.target.id);
-d3.select("body").transition()
-                .duration(2000)
-    //.style("background-color", "hsl(" + Math.random() * 360 + ",100%,50%)");
-//    .style("background-color", "rgb(" + Math.random() * 128+ ","+Math.random() * 128+","+Math.random()*128+")");
-
-//d3.select("body").selectAll("p")
-//    .data([4, 8, 15, 16, 23, 42])
-//  .enter().append("p")
-//    .text(function(d) { return "I’m number " + d + "!"; });
+        yesme=evt; yesme2=tmpl;
+        
+        Session.set("theTopic",evt.target.id);
 
 },
-    'keydown': function(e){ // does not work
+    'keydown': function(e){ // DOES NOT WORK TTM
         console.log("apertou ");
 },
-    'mouseenter ul': function(evt, tmpl){
+    'mouseenter svg': function(evt, tmpl){
         console.log("entrou");
 },
-    'mouseleave ul': function(evt, tmpl){
+    'mouseleave svg': function(evt, tmpl){
         console.log("saiu");
 },
 });
 Template.messages.messages=function(){
     //return Session.get("bb");
     return BDS[Session.get("theTopic")]
-              //.find({},{"text":1,"created_at":1,"user.name":1},{$sort:{id:-1}})
+            // FIND SELETIVO NAO FUNCIONA TTM
               .find({},{fields:{text:1,created_at:1},sort:{id:-1}})
-              //.find({}).sort({id:-1})
               .fetch();
 };
 
   Meteor.startup(function () {
-//d3.select("body").style("background-color", "#DFD");
-//d3.select("body").style("background-color", "#DFD");
-//d3.select("body").style("background-color", "#000");
-//d3.select("body").style("color", "#FFF");
-d3.selectAll("li").style("color", function() {
-  return "hsl(" + Math.random() * 360 + ",100%,50%)";
-});
-d3.selectAll("li").style("background", function(d, i) {
-  return i % 2 ? "#fff" : "#eee";
-});
-d3.selectAll("li")
-    .data(genInt(Template.toptopics.topics.length,16,10))
-    .style("font-size", function(d) { return d + "px"; });
-
-
 });
 
 }
