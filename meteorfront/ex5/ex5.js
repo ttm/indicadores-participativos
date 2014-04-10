@@ -137,7 +137,7 @@ Template.honneyPot.ticket=function(){
     function randInt(N,A,O){
          N = typeof N !== 'undefined' ? N : 3 ;
     A = typeof A !== 'undefined' ? A : 128;
-    O = typeof O !== 'undefined' ? a : 0;
+    O = typeof O !== 'undefined' ? O : 0;
         var rands=[];
         for(var i=0;i<N;i++){
             rands[i]=Math.floor(Math.random()*A+O);
@@ -169,9 +169,9 @@ Template.honneyPot.ticket=function(){
        .text(function (d){return d.palavra})
       .attr("font-size", MMISSA.estado.size+"px")
        .attr("x", function(d,i) { return i*50 })
-      .attr("y", function(d,i)  { return i*50})
-      .attr("fill", "black")
-      .attr("color", "black");
+      .attr("y", function(d,i)  { return i*50});
+      //.attr("fill", "black")
+      //.attr("color", "black");
 //            .selectAll("text.labels")
 //            .data(function(d){return d.expansoes})
 //            .enter().append("text")
@@ -185,15 +185,59 @@ Template.honneyPot.ticket=function(){
 
             //   .text(function (d){return d});
             //
-            TC_=randInt();
-            TC="rgb("+TC_[0]+","+TC_[1]+","+TC_[2]+")";
-            TC_=randInt();
-            BC="rgb("+TC_[0]+","+TC_[1]+","+TC_[2]+")";
+            //TC_=randInt();
+            //TC="rgb("+TC_[0]+","+TC_[1]+","+TC_[2]+")";
+            //TC_=randInt(3,20,105);
+            if(typeof BC !=="undefined"){
+                DX=7;
+            console.log(BC);
+                BC1+=Math.floor((Math.random()*2-1)*DX);
+                BC1= (BC1<200) ? 200 : BC1;
+                BC2+=Math.floor((Math.random()*2-1)*DX);
+                BC2= (BC2<200) ? 200 : BC2;
+                BC3+=Math.floor((Math.random()*2-1)*DX);
+                BC3= (BC3<200) ? 200 : BC3;
+             BC="rgb("+BC1+","
+                      +BC2+","
+                      +BC3+")";
+        
+            } else {
+            BC1=Math.floor(Math.random()*10+200);
+            BC2=Math.floor(Math.random()*10+200);
+            BC3=Math.floor(Math.random()*10+200);
+            BC="rgb("+BC1+","
+                     +BC2+","
+                     +BC3+")";
+            }
+
+            if(typeof TC !=="undefined"){
+                DXt=15*2;
+            console.log(TC);
+                TC1+=Math.floor((Math.random()*2-1)*DXt);
+                TC1= (TC1>80 ) ? 80 : TC1;
+                TC2+=Math.floor((Math.random()*2-1)*DXt*2);
+                TC2= (TC2<0 ) ? 20 : TC2;
+                TC2= (TC2>240 ) ? 220 : TC2;
+                TC3+=Math.floor((Math.random()*2-1)*DXt);
+                TC3= (TC3>80) ? 80 : TC3;
+             TC="rgb("+TC1+","
+                      +TC2+","
+                      +TC3+")";
+        
+            } else {
+            TC1=Math.floor(Math.random()*40);
+            TC2=Math.floor(Math.random()*40);
+            TC3=Math.floor(Math.random()*40);
+            TC="rgb("+TC1+","
+                     +TC2+","
+                     +TC3+")";
+            }
+
             d3.select("body")
-            //    .style("background","rgb("+Math.floor(Math.random()*128)+",0,0 )")
-                //.transition()
-                .style("background",BC)
+                .transition().duration(750)
+                .style("background-color",BC)
                 .style("color",TC);
+            //    .style("background","rgb("+Math.floor(Math.random()*128)+",0,0 )")
                //.attr("x", function(d,i) { return i});
 
               // .attr("x", function(d,i) { return i*w/mmissafoo.length +2})
