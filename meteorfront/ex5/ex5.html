@@ -36,15 +36,34 @@
 {{> mmissa}}
 </div>
 </div>
-{{> loginButtons}}
-
-  {{> hello}}
+<div style="float:left;position:absolute">
+<center>
+    {{> loginButtons}}<br/>
+    {{> hello}}
+    {{> leftbar}}
+</center>
+</div>
 
 {{>tblock}}
 
     {{> honneyPot}}
     {{> tfooter}}
 </body>
+
+
+<template name="leftbar">
+    <div style="float:left;position:absolute" id="leftbar">
+        <p style="font-size:8px">_o_o_ oOo _o_o_</p>
+    </div>
+</template>
+
+<template name="rightbar">
+    <div style="float:right;margin:50px 0 0 0" id="rightbar">
+        <p style="font-size:8px">o0o0o</p>
+    </div>
+</template>
+
+
 
 <template name="honneyPot">
     <div><center>
@@ -81,14 +100,16 @@
 
 
 <template name="mmissa">
-<div id="mmissa"></div>
+<div style="float:right">
+    <div id="mmissa"></div>
+    {{> rightbar}}
+</div>
 </template>
 
 
 <template name="hello">
-  {{greeting}}
-  <input type="button" value="voltar do começo" />
-  <h1>MMISSA</h1>
+  {{greeting}}<br/>
+  <input type="button" value="tenta eu" />
 <div id="tituloMissa"></div>
 </template>
 

@@ -28,7 +28,7 @@ if (Meteor.isClient) {
                    pos:{x:(estado.w1*(1-estado.alpha)/2)+  i*(estado.w1*estado.alpha)/palavra.length,
                         y:estado.h1*0.6 },
                    pos2:{x:(i+0.5)*(estado.w2*estado.alpha)/(palavra.length),
-                        y:estado.h2/2 },
+                        y:estado.h2/2.6 },
                    A:{ax:0.1*W,
                       ay:0.1*W},
                   };
@@ -84,7 +84,7 @@ if (Meteor.isClient) {
 
     Session.set("theTopic","AA");
       Template.hello.greeting = function () {
-        return "seja bem vindo.";
+        return "Arte em Ação";
       };
 
 
@@ -96,6 +96,7 @@ if (Meteor.isClient) {
           // template data, if any, is available in 'this'
           if (typeof console !== 'undefined')
             console.log("You pressed the button");
+prompt("O que você quer?");
         }
       });
 
@@ -162,7 +163,7 @@ Template.honneyPot.ticket=function(){
         } else {
             ttexts.transition().duration(200).delay(300)
                .attr("x", function(d,i) { return d.pos2.x+Math.random()*d.A.ax})
-              .attr("y", function(d,i)  { return d.pos2.y+Math.random()*d.A.ay});
+              .attr("y", function(d,i)  { return d.pos2.y+Math.random()*d.A.ay*5});
             ttexts.selectAll("text")
                 .data(function(d){console.log(d.expansoes); return d.expansoes})
                 .enter().append("text")
@@ -217,7 +218,7 @@ Template.honneyPot.ticket=function(){
                 TC1= (TC1>80 ) ? 80 : TC1;
                 TC2+=Math.floor((Math.random()*2-1)*DXt*2);
                 TC2= (TC2<0 ) ? 20 : TC2;
-                TC2= (TC2>240 ) ? 220 : TC2;
+                TC2= (TC2>120 ) ? 110 : TC2;
                 TC3+=Math.floor((Math.random()*2-1)*DXt);
                 TC3= (TC3>80) ? 80 : TC3;
              TC="rgb("+TC1+","
@@ -252,6 +253,9 @@ Template.honneyPot.ticket=function(){
     }
 
     Template.mmissa.rendered=function() {
+    var svg=svg=d3.select("#leftbar").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
+
+
     var svg=svg=d3.select("#mmissa").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
        .on('click', function(d){ 
             if(MMISSA.estado.atual==="inicial"){
@@ -261,8 +265,8 @@ Template.honneyPot.ticket=function(){
                                    .attr("width",MMISSA.estado.w2)
             
                 d3.selectAll(".mmissaText").transition()
-                                        .attr("y",function(d,i){ return d.pos2.y })
-                                        .attr("x",function(d,i){ return d.pos2.x });
+                                        .attr("y",function(d,i){ return d.pos2.y +Math.random()*d.A.ax})
+                                        .attr("x",function(d,i){ return d.pos2.x +Math.random()*d.A.ay*5});
             } else {
                 MMISSA.estado.atual="inicial";
                 var nodeSelection = d3.select(this).transition()
@@ -331,6 +335,7 @@ Template.honneyPot.ticket=function(){
         .attr("class", "mmissaText")
        .text(function (d){return d.letra})
       .attr("font-size", MMISSA.estado.size+"px")
+      .attr("font-family", "cursive")
        .attr("x", function(d,i) { return d.pos.x })
       .attr("y", function(d,i)  { return d.pos.y});
 //       .on('mouseover', function(d){ 
