@@ -53,7 +53,6 @@
 
 <template name="leftbar">
     <div style="float:left;position:absolute" id="leftbar">
-        <p style="font-size:8px">_o_o_ oOo _o_o_</p>
     </div>
 </template>
 
@@ -91,8 +90,12 @@
 <template name="mblock" >
 <center>
 <div style="width:580px">
-    {{>toptopics}}
-    {{> messages}}
+    <div id="topics">
+        {{>toptopics}}
+    </div>
+    <div id="mmessages">
+        {{> messages}}
+    </div>
 </div>
 </center>
 </template>
@@ -100,7 +103,7 @@
 
 
 <template name="mmissa">
-<div style="float:right">
+<div style="float:right;width:300px">
     <div id="mmissa"></div>
     {{> rightbar}}
 </div>
@@ -108,7 +111,7 @@
 
 
 <template name="hello">
-  {{greeting}}<br/>
+  {{greeting2}}<br/>
   <input type="button" value="tenta eu" />
 <div id="tituloMissa"></div>
 </template>

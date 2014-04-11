@@ -13,7 +13,7 @@ genInt=function(N,R,O){
 rRGB=function(){
     var foo=genInt(3,128,0);
     var bar="rgb("+foo[0]+","+foo[1]+","+foo[2]+")";
-    console.log(bar);
+    //console.log(bar);
     return bar;
 };
 var W=150;
@@ -57,10 +57,10 @@ if (Meteor.isClient) {
         },
         handData: function () {
     //Template.mmissa.rendered()
-    console.log(4);
+    //console.log(4);
     if(MMISSA.move){
         moveMmissa();
-    console.log(5);
+    //console.log(5);
     }
             var time = Session.get('time') || new Date;
             return { hourDegrees: time.getHours() * 30,
@@ -87,6 +87,10 @@ if (Meteor.isClient) {
         return "Arte em Ação";
       };
 
+      Template.hello.greeting2 = function () {
+        return "Autorregulação Algorítmica";
+      };
+
 
     Template.hello.mmissa=function(){
     }
@@ -95,13 +99,13 @@ if (Meteor.isClient) {
         'click input': function () {
           // template data, if any, is available in 'this'
           if (typeof console !== 'undefined')
-            console.log("You pressed the button");
+            //console.log("You pressed the button");
 prompt("O que você quer?");
         }
       });
 
       //Template.toptopics.topics=["#arenaNETmundial","#Participabr","AA","megarrede","escritos","sobre"]
-      Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"escritos"},{"topic":"sobre"}];
+      Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{topic:"Endpoint Sparql"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"escritos"},{"topic":"sobre"}];
         for(var i=0;i<Template.toptopics.topics.length;i++){
             Template.toptopics.topics[i].tid=Template.toptopics.topics[i].topic.replace(/#/g,"");
     }
@@ -111,28 +115,29 @@ Template.honneyPot.ticket=function(){
       Template.toptopics.events=({
 
         'click': function(evt, tmpl){
-            console.log("clicou "+evt.target.id);
+            //console.log("clicou "+evt.target.id);
             yesme=evt; yesme2=tmpl;
             
             Session.set("theTopic",evt.target.id);
 
     },
         'keydown': function(e){ // DOES NOT WORK TTM
-            console.log("apertou ");
+            //console.log("apertou ");
     },
         'mouseenter svg': function(evt, tmpl){
-            console.log("entrou");
+            //console.log("entrou");
     },
         'mouseleave svg': function(evt, tmpl){
-            console.log("saiu");
+            //console.log("saiu");
     },
     });
     Template.messages.messages=function(){
+foo="bar";
         //return Session.get("bb");
-        return BDS[Session.get("theTopic")]
-                // FIND SELETIVO NAO FUNCIONA TTM
-                  .find({},{fields:{text:1,created_at:1},sort:{id:-1}})
-                  .fetch();
+//        return BDS[Session.get("theTopic")]
+//                // FIND SELETIVO NAO FUNCIONA TTM
+//                  .find({},{fields:{text:1,created_at:1},sort:{id:-1}})
+//                  .fetch();
     };
 
     function randInt(N,A,O){
@@ -149,7 +154,7 @@ Template.honneyPot.ticket=function(){
     }
 
     function moveMmissa(){
-        console.log(Math.random());
+        //console.log(Math.random());
         var svg=d3.select("#mmissa").select("svg");
         tsvg=svg[0];
         var ttexts= d3.selectAll(".mmissaText")
@@ -165,7 +170,7 @@ Template.honneyPot.ticket=function(){
                .attr("x", function(d,i) { return d.pos2.x+Math.random()*d.A.ax})
               .attr("y", function(d,i)  { return d.pos2.y+Math.random()*d.A.ay*5});
             ttexts.selectAll("text")
-                .data(function(d){console.log(d.expansoes); return d.expansoes})
+                .data(function(d){ return d.expansoes})
                 .enter().append("text")
        .text(function (d){return d.palavra})
       .attr("font-size", MMISSA.estado.size+"px")
@@ -191,7 +196,7 @@ Template.honneyPot.ticket=function(){
             //TC_=randInt(3,20,105);
             if(typeof BC !=="undefined"){
                 DX=7;
-            console.log(BC);
+            //console.log(BC);
                 BC1+=Math.floor((Math.random()*2-1)*DX);
                 BC1= (BC1<200) ? 200 : BC1;
                 BC2+=Math.floor((Math.random()*2-1)*DX);
@@ -213,12 +218,12 @@ Template.honneyPot.ticket=function(){
 
             if(typeof TC !=="undefined"){
                 DXt=15*2;
-            console.log(TC);
+            //console.log(TC);
                 TC1+=Math.floor((Math.random()*2-1)*DXt);
                 TC1= (TC1>80 ) ? 80 : TC1;
                 TC2+=Math.floor((Math.random()*2-1)*DXt*2);
                 TC2= (TC2<0 ) ? 20 : TC2;
-                TC2= (TC2>120 ) ? 110 : TC2;
+                TC2= (TC2>80 ) ? 70 : TC2;
                 TC3+=Math.floor((Math.random()*2-1)*DXt);
                 TC3= (TC3>80) ? 80 : TC3;
              TC="rgb("+TC1+","
@@ -253,7 +258,7 @@ Template.honneyPot.ticket=function(){
     }
 
     Template.mmissa.rendered=function() {
-    var svg=svg=d3.select("#leftbar").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
+    //var svg=svg=d3.select("#leftbar").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
 
 
     var svg=svg=d3.select("#mmissa").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
@@ -343,8 +348,110 @@ Template.honneyPot.ticket=function(){
 //        });
 
     MMISSA.move=1;
+//AA.=
+//d3.select("#leftbar").append("svg").selectAll("rect")
+//                                   .data(
+lsvg=d3.select("#leftbar").append("svg").attr("width",220)   
+                                         .attr("height",70);
+lrect=lsvg.append("rect").attr("width",200)
+                    .attr("height",50)
+                    .attr("fill","green")
+                    .attr("x","5")
+                    .attr("y","15")
+                    .attr("rx","50")
+                    .attr("ry","50")
+                    .attr("stroke-width","5")
+                    .attr("stroke",rRGB());
 
+ltext=lsvg.append("text").text("AA é Arte em Ação").attr("pointer-events", "none")
+      .attr("font-size", 20)
+       .attr("x", function(d,i) { return 15 })
+      .attr("y", function(d,i)  { return 30+15});
+lrect.attr("width",ltext[0][0].getComputedTextLength()+20);
+
+AAon=0;
+lrect.on("click",function(d){
+    AAon=sTweets("#leftbar",BDS.AA,AAon);
+});
+
+
+rsvg=d3.select("#rightbar").append("svg").attr("width",220)   
+                                        .attr("height",70);
+rrect=rsvg.append("rect").attr("width",200)
+                    .attr("height",50)
+                    .attr("fill","blue")
+                    .attr("x","5")
+                    .attr("y","15")
+                    .attr("rx","50")
+                    .attr("ry","50")
+                    .attr("stroke-width","5")
+                    .attr("stroke",rRGB());
+
+rtext=rsvg.append("text").text("Participa.br")
+      .attr("font-size", 20)
+       .attr("x", function(d,i) { return 15 })
+      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
+rrect.attr("width",rtext[0][0].getComputedTextLength()+20);
+
+Participaon=0;
+rrect.on("click",function(d){
+    Participaon=sTweets("#rightbar",BDS.Participabr,Participaon);
+});
+
+
+
+
+msvg=d3.select("#mmessages").append("svg").attr("width",240)   
+                                        .attr("height",70);
+mrect=msvg.append("rect").attr("width",200)
+                    .attr("height",50)
+                    .attr("fill","red")
+                    .attr("x","5")
+                    .attr("y","15")
+                    .attr("rx","50")
+                    .attr("ry","50")
+                    .attr("stroke-width","5")
+                    .attr("stroke",rRGB());
+
+mtext=msvg.append("text").text("#arenaNETmundial")
+      .attr("font-size", 20)
+       .attr("x", function(d,i) { return 15 })
+      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
+
+mrect.attr("width",mtext[0][0].getComputedTextLength()+20);
+
+Arenaon=0;
+mrect.on("click",function(d){
+    Arenaon=sTweets("#mmessages",BDS.arenaNETmundial,Arenaon);
+});
+
+
+
+}
+
+function sTweets(oid,acoll,avar){
+    console.log(oid,acoll,avar);
+    if (avar){
+        avar=0;
+       d3.select(oid).selectAll("p").remove();
+    } else {
+        avar=1;
+       d3.select(oid).selectAll("p")
+            .data(acoll.find().fetch())
+            .enter()
+            .append("p")
+            .append("a")
+            .attr("href",function(d){return "http://twitter.com/"+d.user.screen_name})
+            .attr("target","_blank")
+            .append("text")
+            //.text("o texto")
+            .text(function(d){return d.user.screen_name+": "+d.text+". "+d.created_at;})
+       .attr("x", function(d,i) { return 15 })
+      .attr("y", function(d,i)  { return 60+15*i});
     }
+    return avar;
+
+};
 
 
       Meteor.startup(function () {    }); //
