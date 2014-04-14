@@ -89,9 +89,8 @@
 <template name="mblock" >
 <center>
 <div style="width:580px">
-    <div id="topics">
         {{>toptopics}}
-    </div>
+        {{>topicsSub}}
     <div id="mmessages">
         {{> messages}}
     </div>
@@ -116,13 +115,13 @@
 </template>
 
 
+<template name="topicsSub">
+    <div id="topicsSub"></div>
+</template>
+
+
 <template name="toptopics">
 <div id="toptopics"></div>
-<ul style="background:yellow">
-{{#each topics}}
-    <li id="{{tid}}">{{topic}}</li>
-{{/each}}
-</ul>
 </template>
 
 <template name="messages">

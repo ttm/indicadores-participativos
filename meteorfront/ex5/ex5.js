@@ -115,7 +115,7 @@ Template.honneyPot.ticket=function(){
       Template.toptopics.events=({
 
         'click': function(evt, tmpl){
-            //console.log("clicou "+evt.target.id);
+            console.log("clicou "+evt.target.id);
             yesme=evt; yesme2=tmpl;
             
             Session.set("theTopic",evt.target.id);
@@ -291,6 +291,7 @@ topicItens=svgt.selectAll("g .topicMenuGroup")
 
 topicItens.append("rect")
     .attr("class","topicMenuRect")
+    .attr("id",function(d){return d.tid})
     .attr("fill","green")
     .attr("x",function(d,i){return 10+janela*xi[i]}     )
     .attr("y",function(d,i){return 10+altura*yi[i]}     )
@@ -305,10 +306,25 @@ console.log(d.topic);
 
 d3.selectAll(".topicMenuRect").attr("stroke-width","0").attr("stroke","black");
 
-d3.select(this).style("fill", rRGB())
-        .attr("stroke-width","5")
+d3.select(this).attr("stroke-width","5")
         .attr("stroke","white")
-;});
+            .style("fill", rRGB())
+        .transition()
+            //.delay(750)
+            //.duration(250)
+            .delay(1000)
+            .duration(0)
+            .style("fill", rRGB())
+        .transition()
+            .delay(2000)
+            .duration(0)
+            .style("fill", rRGB())
+        .transition()
+            .delay(3000)
+            .duration(1000)
+            .style("fill", rRGB())
+            .attr("rx",20)
+            .attr("ry",20);});
     
 topicItens.append("text")
     .attr("class","topicText")
