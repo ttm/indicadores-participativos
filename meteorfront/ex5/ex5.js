@@ -134,10 +134,14 @@ Template.honneyPot.ticket=function(){
     Template.messages.messages=function(){
 foo="bar";
         //return Session.get("bb");
-//        return BDS[Session.get("theTopic")]
+        tdata=BDS[Session.get("theTopic")]
+                 //.find({},{fields:{text:1,created_at:1, "user.name":1,id:1}, sort:{id:-1}})
+                 .find({}, {sort:{id:1}})
+                  .fetch();
+        tdata.fooMessages=0;
+        return tdata;
 //                // FIND SELETIVO NAO FUNCIONA TTM
-//                  .find({},{fields:{text:1,created_at:1},sort:{id:-1}})
-//                  .fetch();
+                  
     };
 
     function randInt(N,A,O){
@@ -257,6 +261,17 @@ foo="bar";
 
     }
 
+
+Handlebars.registerHelper('list3', function() {
+mmsgs=[];
+var mm=Template.messages.messages();
+  for(var i=0; i<3;i++) {
+    mmsgs.push(mm[i]);
+  }
+return mmsgs;
+
+});
+
 var mw=580;
 var mh=200;
     Template.mmissa.rendered=function() {
@@ -298,8 +313,10 @@ topicItens.append("rect")
     //.attr("y",10     )
     .attr("width",janela*(1-alpha_margemx))
     .attr("height",altura*(1-alpha_margemy))
-    .attr("stroke-width",function(d){return d.topic==="#arenaNETmundial" ? "5" : "0"})
-    .attr("stroke",function(d){return d.topic==="#arenaNETmundial" ? "white" : "black"})
+    //.attr("stroke-width",function(d){return d.topic==="#arenaNETmundial" ? "5" : "0"})
+    //.attr("stroke",function(d){return d.topic==="#arenaNETmundial" ? "white" : "black"})
+    .attr("stroke-width",function(d){return d.topic==="AA" ? "5" : "0"})
+    .attr("stroke",      function(d){return d.topic==="AA" ? "white" : "black"})
     .on("click",function(d){
 
 console.log(d.topic); 
@@ -310,8 +327,6 @@ d3.select(this).attr("stroke-width","5")
         .attr("stroke","white")
             .style("fill", rRGB())
         .transition()
-            //.delay(750)
-            //.duration(250)
             .delay(1000)
             .duration(0)
             .style("fill", rRGB())

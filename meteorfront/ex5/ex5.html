@@ -92,6 +92,7 @@
         {{>toptopics}}
         {{>topicsSub}}
     <div id="mmessages">
+    <div id=""></div>
         {{> messages}}
     </div>
 </div>
@@ -125,9 +126,20 @@
 </template>
 
 <template name="messages">
+<div id="divInfo">
+    {{messages.length}}
 <ul style="background:blue">
-{{#each messages}}
-    <li>{{user.name}}: {{text}}, {{created_at}}</li>
-{{/each}}
+    {{#each list3}}
+        <li>{{user.name}}: {{text}}, {{created_at}}</li>
+    {{/each}}
 </ul>
+
+</div>
+{{#if messages.fooMessages}}
+<ul style="background:blue">
+    {{#each messages}}
+        <li>{{user.name}}: {{text}}, {{created_at}}</li>
+    {{/each}}
+</ul>
+{{/if}}
 </template>
