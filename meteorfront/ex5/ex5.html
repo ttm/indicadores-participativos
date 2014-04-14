@@ -92,11 +92,20 @@
         {{>toptopics}}
         {{>topicsSub}}
     <div id="mmessages">
-    <div id=""></div>
+        {{> theHash}}
         {{> messages}}
     </div>
 </div>
 </center>
+</template>
+
+
+<template name="theHash">
+    <svg id="graph1" width="100%" height="200px">
+    </svg>
+    <p>{{texto1}}</p>
+    <svg id="wordcloud1"  width=200 height=200></svg>
+    <p>{{texto2}}</p>
 </template>
 
 

@@ -353,6 +353,11 @@ from maccess import dbc
 import string
 
 
+@app.route("/jsonTest/")
+def jsonTest():
+    return jsonify(thedata=[{"data":"footeste"},{"data":"barteste"}])
+
+
 @app.route("/aajson/")
 def aajson():
     db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost

@@ -2,6 +2,31 @@ AA=new Meteor.Collection("HHaao0");
 arenaNETmundial=new Meteor.Collection("HHarenaNETmundial");
 Participabr=new Meteor.Collection("HHParticipabr");
 BDS={"AA":AA,"arenaNETmundial":arenaNETmundial,"Participabr":Participabr};
+function setContext(){
+        if(Session.get("theTopic")==="emails"){
+            console.log("emails topic");
+            Session.set("texto1","Rede de interação de emails");
+            Session.set("texto2","Wordcloud de textos de emails");
+    }
+        if(Session.get("theTopic")==="AA"){
+            Session.set("texto1","Rede de interação do AA");
+            Session.set("texto2","Wordcloud do AA");
+ Meteor.call("checkTwitter", function(error,results) {
+//        console.log(results.thedata); //results.data should be a JSON object
+    thevar=results;
+    });
+    }
+        if(Session.get("theTopic")==="arenaNETmundial"){
+            Session.set("texto1","Rede de interação da arena ");
+            Session.set("texto2","Wordcloud do AA");
+    }
+        if(Session.get("theTopic")==="Participabr"){
+            Session.set("texto1","Rede de interação do Participabr");
+            Session.set("texto2","Wordcloud do Participabr");
+    }
+
+};
+
 
 genInt=function(N,R,O){
     var mar=[];
@@ -46,6 +71,7 @@ if (Meteor.isClient) {
     MMISSA.move=0; // colocar 1 assim que estiver tudo criado para mexer o svg todo
 
 
+
     Meteor.setInterval(function () {
       Session.set('time', new Date);
       }, 1000);
@@ -83,6 +109,7 @@ if (Meteor.isClient) {
     });
 
     Session.set("theTopic","AA");
+    setContext();
       Template.hello.greeting = function () {
         return "Arte em Ação";
       };
@@ -119,6 +146,7 @@ Template.honneyPot.ticket=function(){
             yesme=evt; yesme2=tmpl;
             
             Session.set("theTopic",evt.target.id);
+            setContext();
 
     },
         'keydown': function(e){ // DOES NOT WORK TTM
@@ -260,6 +288,18 @@ foo="bar";
             //  .attr("y", function(d,i)  { return (1+Math.random()*0.3)*(.9*h )});
 
     }
+
+
+Handlebars.registerHelper('texto1', function() {
+return Session.get("texto1");
+});
+Handlebars.registerHelper('texto2', function() {
+return Session.get("texto2");
+});
+
+
+
+
 
 
 Handlebars.registerHelper('list3', function() {
@@ -552,6 +592,12 @@ function sTweets(oid,acoll,avar){
 }
 
 if (Meteor.isServer) {
+ Meteor.methods({
+       checkTwitter: function () {
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/jsonTest/");
+        }
+    });
+
   Meteor.startup(function () {
     // code to run on server at startup
   });
