@@ -374,6 +374,9 @@ def aaRedeBipartida():
 
     cur.execute("SELECT id,nick from users;")
     users=cur.fetchall()
+    cur.execute("select count(*) from messages where messages.message not like '%TIMESLOT%';")
+    ccount=cur.fetchall()[0][0]
+
     db.close()
 
     users_={}
@@ -391,7 +394,7 @@ def aaRedeBipartida():
     finder=k.collocations.BigramCollocationFinder.from_words(tokens)
     finder.apply_freq_filter(3)
     col10=finder.nbest(bigram_measures.pmi,50)
-    return jsonify(collocations=col10,msgs=msgs,freq=freq,users=users_)
+    return jsonify(nmsgs=ccount,collocations=col10,msgs=msgs,freq=freq,users=users_)
 
 
 @app.route("/aajson/")

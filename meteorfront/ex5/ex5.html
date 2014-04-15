@@ -103,11 +103,16 @@
 
 
 <template name="theHash">
+{{context.theTopic}}
+{{#if context.isAA}}
+    {{context.nmsgs}}
+{{else}}
     <svg id="graph1" width="100%" height="200px">
     </svg>
     <p>{{texto1}}</p>
     <svg id="wordcloud1"  width=200 height=200></svg>
     <p>{{texto2}}</p>
+{{/if}}
 </template>
 
 

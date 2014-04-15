@@ -20,7 +20,7 @@ function setContext(){
     });
 
  Meteor.call("aaRedeBipartida", function(error,results) {
-    thevar3=results;
+    thevar3=results;Session.set("tdata",thevar3)
     col=results.data.collocations;
     thebar=d3.select("#leftbar").style("background","blue").style("padding","10px");
     thebar.append("h3").text("termos associados");
@@ -178,6 +178,10 @@ Template.honneyPot.ticket=function(){
             //console.log("saiu");
     },
     });
+    Template.theHash.context=function(){
+        var tdata=Session.get('tdata')
+        return {theTopic : Session.get("theTopic"), isAA : 1,nmsgs:tdata.data.nmsgs};
+};
     Template.messages.messages=function(){
 foo="bar";
         //return Session.get("bb");
