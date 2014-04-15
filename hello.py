@@ -357,6 +357,42 @@ import string
 def jsonTest():
     return jsonify(thedata=[{"data":"footeste"},{"data":"barteste"}])
 
+@app.route("/aaRedeBipartida/")
+def aaRedeBipartida():
+    db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
+                         user=dbc.u,    # your username
+                          passwd=dbc.p, # your password
+                          db=dbc.d)     # name of the data base
+    cur = db.cursor()
+    #msg_inicial=100
+    #msg_final=300
+    #cur.execute("SELECT user_id,message from messages limit %i OFFSET %i;"%(msg_final-msg_inicial,msg_inicial))
+    quantas=1000
+    cur.execute("select user_id,message,created from messages order by `id` desc limit %i;"%(quantas,))
+
+    msgs=cur.fetchall()
+
+    cur.execute("SELECT id,nick from users;")
+    users=cur.fetchall()
+    db.close()
+
+    users_={}
+    for uu in users:
+        users_[uu[0]]=uu[1]
+    # ordenar as palavras decrescente pela ocorrencia
+    msgs=[i for i in msgs if "TIMESLOT" not in i[1]]
+    print msgs[0]
+    tokens=string.join([i[1] for i in msgs]," ").split()
+    kk=k.Text(tokens)
+
+    # selecionar as X palavras mais ocorrentes (ou fazer o corte e luhn)
+    freq=kk.vocab()
+    bigram_measures = k.collocations.BigramAssocMeasures()
+    finder=k.collocations.BigramCollocationFinder.from_words(tokens)
+    finder.apply_freq_filter(3)
+    col10=finder.nbest(bigram_measures.pmi,50)
+    return jsonify(collocations=col10,msgs=msgs,freq=freq,users=users_)
+
 
 @app.route("/aajson/")
 def aajson():

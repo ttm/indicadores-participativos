@@ -12,8 +12,27 @@ function setContext(){
             Session.set("texto1","Rede de interação do AA");
             Session.set("texto2","Wordcloud do AA");
  Meteor.call("checkTwitter", function(error,results) {
-//        console.log(results.thedata); //results.data should be a JSON object
     thevar=results;
+    });
+
+ Meteor.call("aaJson", function(error,results) {
+    thevar2=results;
+    });
+
+ Meteor.call("aaRedeBipartida", function(error,results) {
+    thevar3=results;
+    col=results.data.collocations;
+    thebar=d3.select("#leftbar").style("background","blue").style("padding","10px");
+    thebar.append("h3").text("termos associados");
+      thebar.selectAll("p").data(col).enter().append("p")
+       .text(function(d){return d[0]+" "+d[1]});
+
+    thebar=d3.select("#rightbar").style("background","blue").style("padding","10px");
+    thebar.append("h3").text("mensagens mais recentes");
+      thebar.selectAll("p").data(results.data.msgs).enter().append("p")
+       .text(function(d){return results.data.users[d[0]]+": "+d[1]+", "+d[2]});
+
+
     });
     }
         if(Session.get("theTopic")==="arenaNETmundial"){
@@ -482,52 +501,52 @@ topicItens.append("text")
 //AA.=
 //d3.select("#leftbar").append("svg").selectAll("rect")
 //                                   .data(
-lsvg=d3.select("#leftbar").append("svg").attr("width",220)   
-                                         .attr("height",70);
-lrect=lsvg.append("rect").attr("width",200)
-                    .attr("height",50)
-                    .attr("fill","green")
-                    .attr("x","5")
-                    .attr("y","15")
-                    .attr("rx","50")
-                    .attr("ry","50")
-                    .attr("stroke-width","5")
-                    .attr("stroke",rRGB());
+//lsvg=d3.select("#leftbar").append("svg").attr("width",220)   
+//                                         .attr("height",70);
+//lrect=lsvg.append("rect").attr("width",200)
+//                    .attr("height",50)
+//                    .attr("fill","green")
+//                    .attr("x","5")
+//                    .attr("y","15")
+//                    .attr("rx","50")
+//                    .attr("ry","50")
+//                    .attr("stroke-width","5")
+//                    .attr("stroke",rRGB());
+//
+//ltext=lsvg.append("text").text("AA é Arte em Ação").attr("pointer-events", "none")
+//      .attr("font-size", 20)
+//       .attr("x", function(d,i) { return 15 })
+//      .attr("y", function(d,i)  { return 30+15});
+//lrect.attr("width",ltext[0][0].getComputedTextLength()+20);
+//
+//AAon=0;
+//lrect.on("click",function(d){
+//    AAon=sTweets("#leftbar",BDS.AA,AAon);
+//});
+//
 
-ltext=lsvg.append("text").text("AA é Arte em Ação").attr("pointer-events", "none")
-      .attr("font-size", 20)
-       .attr("x", function(d,i) { return 15 })
-      .attr("y", function(d,i)  { return 30+15});
-lrect.attr("width",ltext[0][0].getComputedTextLength()+20);
-
-AAon=0;
-lrect.on("click",function(d){
-    AAon=sTweets("#leftbar",BDS.AA,AAon);
-});
-
-
-rsvg=d3.select("#rightbar").append("svg").attr("width",220)   
-                                        .attr("height",70);
-rrect=rsvg.append("rect").attr("width",200)
-                    .attr("height",50)
-                    .attr("fill","blue")
-                    .attr("x","5")
-                    .attr("y","15")
-                    .attr("rx","50")
-                    .attr("ry","50")
-                    .attr("stroke-width","5")
-                    .attr("stroke",rRGB());
-
-rtext=rsvg.append("text").text("Participa.br")
-      .attr("font-size", 20)
-       .attr("x", function(d,i) { return 15 })
-      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
-rrect.attr("width",rtext[0][0].getComputedTextLength()+20);
-
-Participaon=0;
-rrect.on("click",function(d){
-    Participaon=sTweets("#rightbar",BDS.Participabr,Participaon);
-});
+//rsvg=d3.select("#rightbar").append("svg").attr("width",220)   
+//                                        .attr("height",70);
+//rrect=rsvg.append("rect").attr("width",200)
+//                    .attr("height",50)
+//                    .attr("fill","blue")
+//                    .attr("x","5")
+//                    .attr("y","15")
+//                    .attr("rx","50")
+//                    .attr("ry","50")
+//                    .attr("stroke-width","5")
+//                    .attr("stroke",rRGB());
+//
+//rtext=rsvg.append("text").text("Participa.br")
+//      .attr("font-size", 20)
+//       .attr("x", function(d,i) { return 15 })
+//      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
+//rrect.attr("width",rtext[0][0].getComputedTextLength()+20);
+//
+//Participaon=0;
+//rrect.on("click",function(d){
+//    Participaon=sTweets("#rightbar",BDS.Participabr,Participaon);
+//});
 
 
 
@@ -592,10 +611,13 @@ function sTweets(oid,acoll,avar){
 }
 
 if (Meteor.isServer) {
- Meteor.methods({
+    Meteor.methods({
        checkTwitter: function () {
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/jsonTest/");
-        }
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/jsonTest/"); },
+       aaJson: function () {
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/aajson/");  },
+       aaRedeBipartida: function () {
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/aaRedeBipartida/");  }
     });
 
   Meteor.startup(function () {
