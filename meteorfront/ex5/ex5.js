@@ -33,6 +33,8 @@ function setContext(){
        .text(function(d){return results.data.users[d[0]]+": "+d[1]+", "+d[2]});
 
 
+        renderGraph();
+        renderBubble();
     });
     }
         if(Session.get("theTopic")==="arenaNETmundial"){
@@ -178,14 +180,135 @@ Template.honneyPot.ticket=function(){
             //console.log("saiu");
     },
     });
-    Template.theHash.context=function(){
-        var tdata=Session.get('tdata')
-        return {theTopic : Session.get("theTopic"), isAA : 1,nmsgs:tdata.data.nmsgs};
+
+
+    function renderBubble(){
+        TTTdata=Session.get('tdata');
+    var histograma=TTdata.data.hist;
+var r = 580,
+    format = d3.format(",d"),
+    fill = d3.scale.category20c();
+
+bubble = d3.layout.pack()
+    .sort(null)
+    .size([r, r])
+    .value(function(d) { return 1+Math.log(d.count)*2; })
+    .padding(1);
+
+var vis = d3.select("#wordcloud1")
+    .attr("width", r)
+    .attr("height", r)
+    .attr("class", "bubble");
+aa=[{value:0.3,className:"palavra1",pacote:"tlm"},{value:0.7,className:"palavra2",pacote:"ttm"}];
+bb=[{size:0.3,value:0.3,className:"palavra1",pacote:"tlm"},{size:0.7,value:0.7,className:"palavra2",pacote:"ttm"}];
+
+  var node = vis.selectAll("g.node")
+      //.data(bubble.nodes(classes(json))
+      //.data(bb2, function(d){return bubble.nodes(d)})
+      .data(bubble.nodes({children:histograma}).slice(1))
+        //.filter(function(d) { return !d.children; })
+    .enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+  node.append("svg:title")
+      .text(function(d) { return d.name + ": " + format(d.value); });
+
+  node.append("svg:circle")
+      .attr("r", function(d) { return d.r; })
+      .style("fill", function(d) { return fill(d.name); });
+
+  node.append("svg:text")
+      .attr("text-anchor", "middle")
+      .attr("dy", ".3em")
+      .text(function(d) { return d.name.substring(0, d.r / 3); })
+        .attr("font-family", "sans-serif")
+    .attr("stroke","black")
+    .attr("stroke-width",0.1)
+      .attr("font-size", function(d){return 4+3*Math.log(5+2*d.count)});
+
+  node.append("svg:text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "1.6em")
+    .attr("stroke-width",0.1)
+    .attr("fill","black")
+      .text(function(d) { return d.count; })
+      .attr("font-size", function(d){return 4+2*Math.log(5+2*d.count)});
+
+
+
+
 };
+    //Template.theHash.rendered=function(){
+    function renderGraph(){
+        console.log("rendered");
+var width =  580,
+    height = 300;
+
+var color = d3.scale.category20();
+
+var force = d3.layout.force()
+    .charge(-120)
+    .linkDistance(30)
+    .size([width, height]);
+
+        console.log("rendered2");
+var svg = d3.select("#graph1")
+    .attr("width", width)
+    .attr("height", height);
+        TTdata=Session.get('tdata');
+    var graph=TTdata.data.graph;
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+        console.log("rendered3");
+  var link = svg.selectAll(".link")
+      .data(graph.links)
+    .enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+  var node = svg.selectAll(".node")
+      .data(graph.nodes)
+    .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 5)
+      .style("fill", function(d) { return color(d.group); })
+      .call(force.drag);
+
+  node.append("title")
+      .text(function(d) { return d.nome; });
+
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+  });
+};
+
+
+    Template.theHash.context=function(){
+        var tdata=Session.get('tdata');
+        if (tdata){
+            var nmsgs=tdata.data.nmsgs;
+            var nusers=tdata.data.nusers;
+        } else {
+            var nmsgs=0;
+            var nusers=0;
+        }
+        return {theTopic : Session.get("theTopic"), isAA : 1,nmsgs:nmsgs,nusers:nusers};
+};
+
     Template.messages.messages=function(){
 foo="bar";
         //return Session.get("bb");
-        tdata=BDS[Session.get("theTopic")]
+        var tdata=BDS[Session.get("theTopic")]
                  //.find({},{fields:{text:1,created_at:1, "user.name":1,id:1}, sort:{id:-1}})
                  .find({}, {sort:{id:1}})
                   .fetch();
@@ -554,30 +677,30 @@ topicItens.append("text")
 
 
 
-
-msvg=d3.select("#mmessages").append("svg").attr("width",240)   
-                                        .attr("height",70);
-mrect=msvg.append("rect").attr("width",200)
-                    .attr("height",50)
-                    .attr("fill","red")
-                    .attr("x","5")
-                    .attr("y","15")
-                    .attr("rx","50")
-                    .attr("ry","50")
-                    .attr("stroke-width","5")
-                    .attr("stroke",rRGB());
-
-mtext=msvg.append("text").text("#arenaNETmundial")
-      .attr("font-size", 20)
-       .attr("x", function(d,i) { return 15 })
-      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
-
-mrect.attr("width",mtext[0][0].getComputedTextLength()+20);
-
-Arenaon=0;
-mrect.on("click",function(d){
-    Arenaon=sTweets("#mmessages",BDS.arenaNETmundial,Arenaon);
-});
+//
+//msvg=d3.select("#mmessages").append("svg").attr("width",240)   
+//                                        .attr("height",70);
+//mrect=msvg.append("rect").attr("width",200)
+//                    .attr("height",50)
+//                    .attr("fill","red")
+//                    .attr("x","5")
+//                    .attr("y","15")
+//                    .attr("rx","50")
+//                    .attr("ry","50")
+//                    .attr("stroke-width","5")
+//                    .attr("stroke",rRGB());
+//
+//mtext=msvg.append("text").text("#arenaNETmundial")
+//      .attr("font-size", 20)
+//       .attr("x", function(d,i) { return 15 })
+//      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
+//
+//mrect.attr("width",mtext[0][0].getComputedTextLength()+20);
+//
+//Arenaon=0;
+//mrect.on("click",function(d){
+//    Arenaon=sTweets("#mmessages",BDS.arenaNETmundial,Arenaon);
+//});
 
 
 

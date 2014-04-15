@@ -356,7 +356,7 @@ import string
 @app.route("/jsonTest/")
 def jsonTest():
     return jsonify(thedata=[{"data":"footeste"},{"data":"barteste"}])
-
+sw = k.corpus.stopwords.words('portuguese')
 @app.route("/aaRedeBipartida/")
 def aaRedeBipartida():
     db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
@@ -382,19 +382,63 @@ def aaRedeBipartida():
     users_={}
     for uu in users:
         users_[uu[0]]=uu[1]
+    nusers=len(users)
     # ordenar as palavras decrescente pela ocorrencia
     msgs=[i for i in msgs if "TIMESLOT" not in i[1]]
     print msgs[0]
-    tokens=string.join([i[1] for i in msgs]," ").split()
+    tokensFOO=string.join([i[1] for i in msgs]," ")
+    exclude = set(string.punctuation)
+    tokensFOO = ''.join(ch for ch in tokensFOO if ch not in exclude)
+    tokens=tokensFOO.split()
+    tokens=[tt for tt in tokens if tt not in sw]
     kk=k.Text(tokens)
 
+    #.replace(",","").replace(".","").replace(";","")
     # selecionar as X palavras mais ocorrentes (ou fazer o corte e luhn)
-    freq=kk.vocab()
     bigram_measures = k.collocations.BigramAssocMeasures()
     finder=k.collocations.BigramCollocationFinder.from_words(tokens)
     finder.apply_freq_filter(3)
     col10=finder.nbest(bigram_measures.pmi,50)
-    return jsonify(nmsgs=ccount,collocations=col10,msgs=msgs,freq=freq,users=users_)
+
+
+    freq=kk.vocab()
+    npal=freq.B()
+    hist=freq.items()
+    hist_=[]
+    for hh in hist[int(npal*0.05):int(npal*0.2)]:
+        d={"name":hh[0],"count":hh[1]}
+        hist_+=[d]
+    print len(hist), len(hist_)
+    palavras=freq.samples()[int(npal*0.05):int(npal*0.2)]
+    nodes=[]
+    links=[]
+    cp={}
+    cu={}
+    i=0
+    for palavra in palavras:
+        nodes.append({"nome":palavra,"group":1,"count":i})
+        cp[palavra]=i
+        i+=1
+    users__=set([mm[0] for mm in msgs])
+    for user in users__:
+        onome=users_[user]
+        if not onome:
+            onome="foobar"
+        # faz o amálgama de todos os textos dele
+        mmsgs=string.join([mmm[1] for mmm in msgs if mmm[0]==user])
+        for palavra in palavras:
+            peso=mmsgs.count(palavra)
+            if peso > 0:
+                if user not in cu.keys():
+                    nodes.append({"nome":onome,"group":2, "count":i})
+                    cu[user]=i; i+=1
+                countpal=cp[palavra]
+                countus=cu[user]
+                links.append({"source":countpal,"target":countus,"value":peso})
+    graph={"nodes":nodes,"links":links}
+
+    #return jsonify(nmsgs=ccount,nusers=nusers,collocations=col10,msgs=msgs,freq=freq,users=users_,graph=graph,hist=hist_)
+    return jsonify(collocations=col10,nmsgs=ccount,nusers=nusers,msgs=msgs,freq=freq,users=users_,graph=graph,hist=hist_)
 
 
 @app.route("/aajson/")
