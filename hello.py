@@ -3,7 +3,7 @@ from flask import Flask, render_template, make_response, session, redirect, url_
 import pymongo, __builtin__, datetime
 from dateutil import parser
 import time as T, networkx as x, json # json.dumps
-import MySQLdb
+import MySQLdb, cPickle
 #msg=cur.execute("SELECT * FROM messages;")
 #users=cur.execute("SELECT * FROM users;")
 #sessions=cur.execute("SELECT * FROM sessions;")
