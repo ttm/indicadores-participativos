@@ -356,7 +356,9 @@ import string
 @app.route("/jsonTest/")
 def jsonTest():
     return jsonify(thedata=[{"data":"footeste"},{"data":"barteste"}])
-sw = k.corpus.stopwords.words('portuguese')
+foo=open("pickledir/stopwords.cpickle","rb")
+sw=cPickle.load(foo)
+#sw = k.corpus.stopwords.words('portuguese')
 @app.route("/aaRedeBipartida/")
 def aaRedeBipartida():
     db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
