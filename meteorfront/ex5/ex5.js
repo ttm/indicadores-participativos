@@ -4,25 +4,12 @@ Participabr=new Meteor.Collection("HHParticipabr");
 BDS={"AA":AA,"arenaNETmundial":arenaNETmundial,"Participabr":Participabr};
 function setContext(){
         if(Session.get("theTopic")==="emails"){
-            console.log("emails topic");
-            Session.set("texto1","Rede de interação de emails");
-            Session.set("texto2","Wordcloud de textos de emails");
     }
         if(Session.get("theTopic")==="AA"){
-            Session.set("texto1","Rede de interação do AA");
-            Session.set("texto2","Wordcloud do AA");
- Meteor.call("checkTwitter", function(error,results) {
-    thevar=results;
-    });
-
- Meteor.call("aaJson", function(error,results) {
-    thevar2=results;
-    });
-
  Meteor.call("aaRedeBipartida", function(error,results) {
-    thevar3=results;Session.set("tdata",thevar3)
-    col=results.data.collocations;
-    thebar=d3.select("#leftbar").style("background","blue").style("padding","10px");
+    var thevar3=results;Session.set("tdata",thevar3)
+    var col=results.data.collocations;
+    var thebar=d3.select("#leftbar").style("background","blue").style("padding","10px");
     thebar.append("h3").text("termos associados");
       thebar.selectAll("p").data(col).enter().append("p")
        .text(function(d){return d[0]+" "+d[1]});
@@ -31,7 +18,6 @@ function setContext(){
     thebar.append("h3").text("mensagens mais recentes");
       thebar.selectAll("p").data(results.data.msgs).enter().append("p")
        .text(function(d){return results.data.users[d[0]]+": "+d[1]+", "+d[2]});
-
 
         renderGraph();
         renderBubble();
@@ -103,11 +89,8 @@ if (Meteor.isClient) {
             return 30 * this;
         },
         handData: function () {
-    //Template.mmissa.rendered()
-    //console.log(4);
     if(MMISSA.move){
         moveMmissa();
-    //console.log(5);
     }
             var time = Session.get('time') || new Date;
             return { hourDegrees: time.getHours() * 30,
@@ -129,12 +112,6 @@ if (Meteor.isClient) {
         }
     });
 
-    Session.set("theTopic","AA");
-    setContext();
-      Template.hello.greeting = function () {
-        return "Arte em Ação";
-      };
-
       Template.hello.greeting2 = function () {
         return "Autorregulação Algorítmica";
       };
@@ -147,12 +124,10 @@ if (Meteor.isClient) {
         'click input': function () {
           // template data, if any, is available in 'this'
           if (typeof console !== 'undefined')
-            //console.log("You pressed the button");
-prompt("O que você quer?");
+console.log(prompt("O que você quer?"));
         }
       });
 
-      //Template.toptopics.topics=["#arenaNETmundial","#Participabr","AA","megarrede","escritos","sobre"]
       Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{topic:"Endpoint Sparql"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"escritos"},{"topic":"sobre"}];
         for(var i=0;i<Template.toptopics.topics.length;i++){
             Template.toptopics.topics[i].tid=Template.toptopics.topics[i].topic.replace(/#/g,"");
@@ -161,14 +136,10 @@ Template.honneyPot.ticket=function(){
     return Math.random()*100000;
 };
       Template.toptopics.events=({
-
         'click': function(evt, tmpl){
-            console.log("clicou "+evt.target.id);
-            yesme=evt; yesme2=tmpl;
-            
+            console.log("clicou "+evt.target.id); yesme=evt; yesme2=tmpl;
             Session.set("theTopic",evt.target.id);
             setContext();
-
     },
         'keydown': function(e){ // DOES NOT WORK TTM
             //console.log("apertou ");
@@ -308,12 +279,12 @@ var svg = d3.select("#graph1")
     Template.messages.messages=function(){
 foo="bar";
         //return Session.get("bb");
-        var tdata=BDS[Session.get("theTopic")]
+        //var tdata=BDS[Session.get("theTopic")]
                  //.find({},{fields:{text:1,created_at:1, "user.name":1,id:1}, sort:{id:-1}})
-                 .find({}, {sort:{id:1}})
-                  .fetch();
-        tdata.fooMessages=0;
-        return tdata;
+//                 .find({}, {sort:{id:1}})
+//                  .fetch();
+        //tdata.fooMessages=0;
+        //return tdata;
 //                // FIND SELETIVO NAO FUNCIONA TTM
                   
     };
@@ -460,6 +431,7 @@ return mmsgs;
 
 var mw=580;
 var mh=200;
+
     Template.mmissa.rendered=function() {
 svgt=d3.select("#toptopics").append("svg")
                .attr("width",mw)
@@ -499,34 +471,30 @@ topicItens.append("rect")
     //.attr("y",10     )
     .attr("width",janela*(1-alpha_margemx))
     .attr("height",altura*(1-alpha_margemy))
-    //.attr("stroke-width",function(d){return d.topic==="#arenaNETmundial" ? "5" : "0"})
-    //.attr("stroke",function(d){return d.topic==="#arenaNETmundial" ? "white" : "black"})
     .attr("stroke-width",function(d){return d.topic==="AA" ? "5" : "0"})
     .attr("stroke",      function(d){return d.topic==="AA" ? "white" : "black"})
     .on("click",function(d){
+        console.log(d.topic); 
+        d3.selectAll(".topicMenuRect").attr("stroke-width","0").attr("stroke","black");
+        d3.select(this).attr("stroke-width","5")
+                .attr("stroke","white")
+                    .style("fill", rRGB())
+                .transition()
+                    .delay(1000)
+                    .duration(0)
+                    .style("fill", rRGB())
+                .transition()
+                    .delay(2000)
+                    .duration(0)
+                    .style("fill", rRGB())
+                .transition()
+                    .delay(3000)
+                    .duration(1000)
+                    .style("fill", rRGB())
+                    .attr("rx",20)
+                    .attr("ry",20);
+     });
 
-console.log(d.topic); 
-
-d3.selectAll(".topicMenuRect").attr("stroke-width","0").attr("stroke","black");
-
-d3.select(this).attr("stroke-width","5")
-        .attr("stroke","white")
-            .style("fill", rRGB())
-        .transition()
-            .delay(1000)
-            .duration(0)
-            .style("fill", rRGB())
-        .transition()
-            .delay(2000)
-            .duration(0)
-            .style("fill", rRGB())
-        .transition()
-            .delay(3000)
-            .duration(1000)
-            .style("fill", rRGB())
-            .attr("rx",20)
-            .attr("ry",20);});
-    
 topicItens.append("text")
     .attr("class","topicText")
     .attr("x",function(d,i){return 10+janela*(xi[i]+0.05)}     )
@@ -534,21 +502,18 @@ topicItens.append("text")
     .attr("pointer-events","none")
    .text(function (d){return d.topic});
 
-
-    //var svg=svg=d3.select("#leftbar").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
-
-
-    var svg=svg=d3.select("#mmissa").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
+// MMISSA retangulo geral
+var svg=svg=d3.select("#mmissa").append("svg").attr("width",MMISSA.estado.w1).attr("height", MMISSA.estado.h1)
        .on('click', function(d){ 
             if(MMISSA.estado.atual==="inicial"){
                 MMISSA.estado.atual="expandido";
-             var nodeSelection = d3.select(this).transition()
-                                   .attr("height",MMISSA.estado.h2)
-                                   .attr("width",MMISSA.estado.w2)
+var nodeSelection = d3.select(this).transition()
+                   .attr("height",MMISSA.estado.h2)
+                   .attr("width",MMISSA.estado.w2);
             
-                d3.selectAll(".mmissaText").transition()
-                                        .attr("y",function(d,i){ return d.pos2.y +Math.random()*d.A.ax})
-                                        .attr("x",function(d,i){ return d.pos2.x +Math.random()*d.A.ay*5});
+d3.selectAll(".mmissaText").transition()
+                .attr("y",function(d,i){ return d.pos2.y +Math.random()*d.A.ax})
+                .attr("x",function(d,i){ return d.pos2.x +Math.random()*d.A.ay*5});
             } else {
                 MMISSA.estado.atual="inicial";
                 var nodeSelection = d3.select(this).transition()
@@ -566,20 +531,6 @@ topicItens.append("text")
        .on('mouseout', function(d){ 
             d3.select(".mmissaRect").attr("stroke","white");
 });
-//       .on('mouseout', function(d){ 
-//                var nodeSelection = d3.select(this).transition()
-//                                     .attr("height",MMISSA.estado.h1)
-//                                     .attr("width",MMISSA.estado.w1);
-//                d3.selectAll(".mmissaText").transition()
-//                                        .attr("y",function(d,i){ return d.pos.y })
-//                                        .attr("x",function(d,i){ return d.pos.x });
-//        })
-//       .on('click', function(d){ 
-//                var nodeSelection = d3.select(this).transition().attr("fill",rRGB());
-//                d3.select(".mmissaRect").transition().attr("fill",rRGB());
-//    console.log("fora missa");
-//        });
-
 
     svg.append("rect")
        .attr("class", "mmissaRect")
@@ -590,19 +541,6 @@ topicItens.append("text")
         .attr("stroke","white")
         .attr("rx","20")
         .attr("ry","20")
-//       .on('mouseover', function(d){ 
-//                var nodeSelection = d3.select(this)
-//                                      .transition()
-//                                      .attr("height",MMISSA.estado.h2)
-//                                      .attr("width",MMISSA.estado.w2);
-//
-//        })
-//       .on('mouseout', function(d){ 
-//            var nodeSelection = d3.select(this)
-//                                  .transition()
-//                                  .attr("height",MMISSA.estado.h1)
-//                                  .attr("width",MMISSA.estado.w1);
-//        })
        .on('click', function(d){ 
             var nodeSelection = d3.select(this)
                                   .transition()
@@ -620,89 +558,11 @@ topicItens.append("text")
       .attr("font-family", "cursive")
        .attr("x", function(d,i) { return d.pos.x })
       .attr("y", function(d,i)  { return d.pos.y});
-//       .on('mouseover', function(d){ 
-//            var nodeSelection = d3.select(this).transition().attr("y",MMISSA.estado.h2/2);
-//        });
 
     MMISSA.move=1;
-//AA.=
-//d3.select("#leftbar").append("svg").selectAll("rect")
-//                                   .data(
-//lsvg=d3.select("#leftbar").append("svg").attr("width",220)   
-//                                         .attr("height",70);
-//lrect=lsvg.append("rect").attr("width",200)
-//                    .attr("height",50)
-//                    .attr("fill","green")
-//                    .attr("x","5")
-//                    .attr("y","15")
-//                    .attr("rx","50")
-//                    .attr("ry","50")
-//                    .attr("stroke-width","5")
-//                    .attr("stroke",rRGB());
-//
-//ltext=lsvg.append("text").text("AA é Arte em Ação").attr("pointer-events", "none")
-//      .attr("font-size", 20)
-//       .attr("x", function(d,i) { return 15 })
-//      .attr("y", function(d,i)  { return 30+15});
-//lrect.attr("width",ltext[0][0].getComputedTextLength()+20);
-//
-//AAon=0;
-//lrect.on("click",function(d){
-//    AAon=sTweets("#leftbar",BDS.AA,AAon);
-//});
-//
 
-//rsvg=d3.select("#rightbar").append("svg").attr("width",220)   
-//                                        .attr("height",70);
-//rrect=rsvg.append("rect").attr("width",200)
-//                    .attr("height",50)
-//                    .attr("fill","blue")
-//                    .attr("x","5")
-//                    .attr("y","15")
-//                    .attr("rx","50")
-//                    .attr("ry","50")
-//                    .attr("stroke-width","5")
-//                    .attr("stroke",rRGB());
-//
-//rtext=rsvg.append("text").text("Participa.br")
-//      .attr("font-size", 20)
-//       .attr("x", function(d,i) { return 15 })
-//      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
-//rrect.attr("width",rtext[0][0].getComputedTextLength()+20);
-//
-//Participaon=0;
-//rrect.on("click",function(d){
-//    Participaon=sTweets("#rightbar",BDS.Participabr,Participaon);
-//});
-
-
-
-//
-//msvg=d3.select("#mmessages").append("svg").attr("width",240)   
-//                                        .attr("height",70);
-//mrect=msvg.append("rect").attr("width",200)
-//                    .attr("height",50)
-//                    .attr("fill","red")
-//                    .attr("x","5")
-//                    .attr("y","15")
-//                    .attr("rx","50")
-//                    .attr("ry","50")
-//                    .attr("stroke-width","5")
-//                    .attr("stroke",rRGB());
-//
-//mtext=msvg.append("text").text("#arenaNETmundial")
-//      .attr("font-size", 20)
-//       .attr("x", function(d,i) { return 15 })
-//      .attr("y", function(d,i)  { return 30+15}).attr("pointer-events", "none");
-//
-//mrect.attr("width",mtext[0][0].getComputedTextLength()+20);
-//
-//Arenaon=0;
-//mrect.on("click",function(d){
-//    Arenaon=sTweets("#mmessages",BDS.arenaNETmundial,Arenaon);
-//});
-
-
+    Session.set("theTopic","AA");
+    setContext();
 
 }
 
