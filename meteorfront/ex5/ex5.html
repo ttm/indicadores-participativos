@@ -11,7 +11,6 @@
     <!-- bounding circle -->
     <circle style="stroke: black; fill: #eee;"
             cx="0" cy="0" r="100"/>
-
     <!-- hour, minute and second hands -->
     {{#with handData}}
       <line {{radial hourDegrees 0 .55}}
@@ -24,7 +23,6 @@
             style="stroke-width: 2px;
                    stroke: red;" />
     {{/with}}
-
     <!-- tick marks -->
     {{#each hours}}
       <line {{radial degrees 0.9 1}}
@@ -32,87 +30,22 @@
                    stroke: black;" />
     {{/each}}
   </svg></center>
-<div style="margin:10px 20px">
-{{> mmissa}}
-</div>
+  <div style="margin:10px 20px">
+      {{> mmissa}}
+  </div>
 </div>
 <div style="float:left;position:absolute">
-<center>
-    {{> loginButtons}}<br/>
-    {{> hello}}
-    {{> leftbar}}
-</center>
+  <center>
+      {{> loginButtons}}<br/>
+      {{> hello}}
+      {{> leftbar}}
+  </center>
 </div>
 
-{{>tblock}}
+  {{>tblock}}
 
-    {{> honneyPot}}
-    {{> tfooter}}
+  {{> tfooter}}
 </body>
-
-
-<template name="leftbar">
-    <div style="float:left;position:absolute" id="leftbar">
-    </div>
-    <div style="float:left;position:absolute" id="leftbarInfo">
-    </div>
-</template>
-
-<template name="rightbar">
-    <div style="float:right;margin:50px 0 0 0" id="rightbar">
-    </div>
-</template>
-
-
-
-<template name="honneyPot">
-    <div><center>
-       você achou um vale, número {{ticket}}345277. Apresente para receber os benefícios. 
-    </center></div>
-</template>
-
-
-
-<template name="tfooter">
-    <div><center>
-        <p style="font-size:8px">_o_o_ oOo _o_o_</p>
-    </center></div>
-</template>
-
-
-
-<template name="tblock">
-<div style="height:10680px">
-{{>mblock}}
-</div>
-</template>
-
-
-<template name="mblock" >
-<center>
-<div style="width:580px">
-        {{>toptopics}}
-        {{>topicsSub}}
-    <div id="mmessages">
-        {{> theHash}}
-        {{> messages}}
-    </div>
-</div>
-</center>
-</template>
-
-
-<template name="theHash">
-    Total de {{context.nmsgs}} escritas por {{context.nusers}} usuários. 
-    <svg id="graph1" width="200px" height="200px">
-        <rect width="100%" height="100%" style="stroke:black;stroke-width:2;fill-opacity:0.1"></rect>
-</svg><br/>
-Grafo bipartido de participantes e palavras. Foram removidas 5% das palavras mais ocorrentes e 80% das menos ocorrentes.
-    <svg id="wordcloud1"  width=200 height=200></svg>
-Seleção de palavras com frequências intermediárias (corte de Luhn) aumentam a informatividade das palavras consideradas.
-</template>
-
-
 
 <template name="mmissa">
 <div style="float:right;width:300px">
@@ -121,22 +54,51 @@ Seleção de palavras com frequências intermediárias (corte de Luhn) aumentam 
 </div>
 </template>
 
+<template name="rightbar">
+    <div style="float:right;margin:50px 0 0 0" id="rightbar">
+    </div>
+</template>
 
+<template name="leftbar">
+    <div style="float:left;position:absolute" id="leftbar"></div>
+    <div style="float:left;position:absolute" id="leftbarInfo"></div>
+</template>
+<template name="tblock">
+    <div style="height:10680px">
+        {{>mblock}}
+    </div>
+</template>
+<template name="mblock" >
+    <center>
+        <div style="width:580px">
+                {{>toptopics}}
+            <div id="theHashDiv">
+                {{> theHash}}
+            </div>
+        </div>
+    </center>
+</template>
+<template name="theHash">
+    Total de {{context.nmsgs}} escritas por {{context.nusers}} usuários. 
+    <svg id="graph1" width="200px" height="200px">
+        <rect width="100%" height="100%" style="stroke:black;stroke-width:2;fill-opacity:0.1"></rect>
+    </svg><br/>
+    <p>Grafo bipartido de participantes e palavras. Foram removidas 5% das palavras mais ocorrentes e 80% das menos ocorrentes.</p>
+    <svg id="wordcloud1"  width=200 height=200></svg>
+    <p>Seleção de palavras com frequências intermediárias (corte de Luhn) aumentam a informatividade das palavras consideradas.</p>
+</template>
 <template name="hello">
   {{greeting2}}<br/>
   <input type="button" value="tenta eu" />
-<div id="tituloMissa"></div>
 </template>
-
-
-<template name="topicsSub">
-    <div id="topicsSub"></div>
-</template>
-
-
 <template name="toptopics">
-<div id="toptopics"></div>
+    <div id="toptopics"></div>
+</template>
+<template name="tfooter">
+    <div><center>
+       <p>você achou um vale, número {{ticket}}345277. Apresente para receber os benefícios. </p>
+        <p style="font-size:8px">_o_o_ oOo _o_o_</p>
+    </center></div>
 </template>
 
-<template name="messages">
-</template>
+
