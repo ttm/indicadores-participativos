@@ -1,29 +1,44 @@
+COUNTER=0;
 function setContext(){
  if(Session.get("theTopic")==="emails"){
  }
  if(Session.get("theTopic")==="AA"){
      Meteor.call("aaRedeBipartida", function(error,results) {
-     var thevar3=results;Session.set("tdata",thevar3)
-     var col=results.data.collocations;
-     var thebar=d3.select("#leftbar").style("background","blue").style("padding","10px");
-     thebar.append("h3").text("termos associados");
-     thebar.selectAll("p").data(col).enter().append("p")
-           .text(function(d){return d[0]+" "+d[1]});
-
-     thebar=d3.select("#rightbar").style("background","blue").style("padding","10px");
-     thebar.append("h3").text("mensagens mais recentes");
-     thebar.selectAll("p").data(results.data.msgs).enter().append("p")
-           .text(function(d){return results.data.users[d[0]]+": "+d[1]+", "+d[2]});
-
-        renderGraph();
-        renderBubble();
+         Session.set("tdata",results);
+         atualizaLaterais(results);
+         renderGraph();
+         renderBubble();
     });
   }
   if(Session.get("theTopic")==="arenaNETmundial"){
   }
   if(Session.get("theTopic")==="Participabr"){
+    Meteor.call("participaBase", function(error,results) {
+         Session.set("tdata",results);
+         tdata=results;
+         atualizaLaterais(results);
+    });
   }
 };
+function atualizaLaterais(results){
+     var col=results.data.collocations;
+     var thebar=d3.select("#leftbar");
+     parags=thebar.selectAll("p").data(col);
+     parags.enter().append("p");
+     parags.text(function(d){return d[0]+" "+d[1]});
+     parags.exit().remove();
+     var thebar=d3.select("#rightbar");
+     parags=thebar.selectAll("p").data(results.data.msgs);
+     parags.enter().append("p");
+    if (Session.get("theTopic")==="Participabr"){
+         parags.text(function(d){return d.user.screen_name+": "+d.text+", "+d.created_at});
+    }
+    if (Session.get("theTopic")==="AA"){
+         parags.text(function(d){return results.data.users[d[0]]+": "+d[1]+", "+d[2]});
+    }
+         parags.exit().remove();
+
+}
 
 function randInt(N,A,O){
     N = typeof N !== 'undefined' ? N : 3 ;
@@ -50,6 +65,14 @@ rRGB=function(){
 };
 
 if (Meteor.isClient) {
+    Template.rightbar.rendered = function(){
+         var thebar=d3.select("#rightbar").style("background","blue").style("padding","10px");
+         thebar.append("h3").text("mensagens mais recentes");
+};
+    Template.leftbar.rendered = function(){
+         var thebar=d3.select("#leftbar").style("background","blue").style("padding","10px");
+         thebar.append("h3").text("termos associados");
+};
     Template.hello.greeting2 = function () {
         return "Autorregulação Algorítmica";
     };
@@ -84,15 +107,27 @@ if (Meteor.isClient) {
     });
     Template.theHash.context=function(){
         var tdata=Session.get('tdata');
-        if (tdata){
-            var nmsgs=tdata.data.nmsgs;
-            var nusers=tdata.data.nusers;
-        } else {
-            var nmsgs=0;
-            var nusers=0;
-        }
+
         if (Session.get("theTopic")==="AA"){
+            if (tdata){
+                var nmsgs=tdata.data.nmsgs;
+                var nusers=tdata.data.nusers;
+            } else {
+                var nmsgs=0;
+                var nusers=0;
+            }
             return {theTopic : Session.get("theTopic"), isAA : 1,nmsgs:nmsgs,nusers:nusers};
+        }
+        if (Session.get("theTopic")==="Participabr"){
+            if (typeof tdata.data.avar !== "undefined"){
+                var nt=tdata.data.avar[0];
+                var mr=tdata.data.avar[1];
+            } else {
+                var vt=0;
+                var mr=0;
+            }
+            return {theTopic : Session.get("theTopic"), isParticipabr: 1,ntweets:nt,mrand:mr};
+            //return {theTopic : Session.get("theTopic"), isParticipabr: 1,ntweets:19,mrand:7.34};
         }
 };
 
@@ -274,6 +309,14 @@ Template.mmissa.rendered=function() {
                     moveMmissa();
                 }
             }
+            if ((COUNTER%10)===0){
+                if(Session.get("theTopic")==="Participabr"){
+                    Meteor.call("participaBase", function(error,results) {
+                        Session.set("tdata",results);
+                    });
+                }
+            }
+            COUNTER++;
             var time = Session.get('time') || new Date;
             return { hourDegrees: time.getHours() * 30,
             minuteDegrees: time.getMinutes() * 6,
@@ -456,7 +499,9 @@ if (Meteor.isServer) {
        aaJson: function () {
             return Meteor.http.call("GET", "http://0.0.0.0:5000/aajson/");  },
        aaRedeBipartida: function () {
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/aaRedeBipartida/");  }
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/aaRedeBipartida/");  },
+       participaBase: function () {
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/participaBase/");  }
     });
 
   Meteor.startup(function () {

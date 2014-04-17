@@ -358,7 +358,37 @@ def jsonTest():
     return jsonify(thedata=[{"data":"footeste"},{"data":"barteste"}])
 foo=open("pickledir/stopwords.cpickle","rb")
 sw=cPickle.load(foo)
-#sw = k.corpus.stopwords.words('portuguese')
+
+import numpy as n
+@app.route("/participaBase/")
+def partcipaBase():
+    avar=(CLIENT.sna.HHParticipabr.count(),n.random.randint(1000))
+    aa=client.sna.HHParticipabr.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING)
+    msgs=[a for a in aa]
+    text=string.join([i["text"] for i in msgs]," ")
+    exclude = set(string.punctuation)
+    text= ''.join(ch for ch in text if ch not in exclude)
+    text=text.encode('utf-8').split()
+    text=[tt for tt in text if tt not in sw]
+    print text
+    kk=k.Text(text)
+
+    bigram_measures = k.collocations.BigramAssocMeasures()
+    finder=k.collocations.BigramCollocationFinder.from_words(text)
+    finder.apply_freq_filter(3)
+    col10=finder.nbest(bigram_measures.pmi,50)
+
+    freq=kk.vocab()
+    npal=freq.B()
+    hist=freq.items()
+    hist_=[]
+    for hh in hist[int(npal*0.05):int(npal*0.2)]:
+        d={"name":hh[0],"count":hh[1]}
+        hist_+=[d]
+
+
+    return jsonify(avar=avar,hist=hist,collocations=col10,msgs=msgs)
+
 @app.route("/aaRedeBipartida/")
 def aaRedeBipartida():
     db = MySQLdb.connect(host=dbc.h,    # your host, usually localhost
