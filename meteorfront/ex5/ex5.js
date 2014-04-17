@@ -91,7 +91,9 @@ if (Meteor.isClient) {
             var nmsgs=0;
             var nusers=0;
         }
-        return {theTopic : Session.get("theTopic"), isAA : 1,nmsgs:nmsgs,nusers:nusers};
+        if (Session.get("theTopic")==="AA"){
+            return {theTopic : Session.get("theTopic"), isAA : 1,nmsgs:nmsgs,nusers:nusers};
+        }
 };
 
     Handlebars.registerHelper('texto1', function() {
@@ -293,13 +295,13 @@ Template.mmissa.rendered=function() {
     });
 
     function renderBubble(){
-        TTTdata=Session.get('tdata');
-        var histograma=TTdata.data.hist;
+        var TTTdata=Session.get('tdata');
+        var histograma=TTTdata.data.hist;
         var r = 580,
         format = d3.format(",d"),
         fill = d3.scale.category20c();
 
-        bubble = d3.layout.pack()
+        var bubble = d3.layout.pack()
             .sort(null)
             .size([r, r])
             .value(function(d) { return 1+Math.log(d.count)*2; })
@@ -345,7 +347,7 @@ Template.mmissa.rendered=function() {
         var svg = d3.select("#graph1")
             .attr("width", width)
             .attr("height", height);
-        TTdata=Session.get('tdata');
+        var TTdata=Session.get('tdata');
         var graph=TTdata.data.graph;
         force
               .nodes(graph.nodes)

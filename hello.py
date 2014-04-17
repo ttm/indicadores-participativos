@@ -395,13 +395,11 @@ def aaRedeBipartida():
     tokens=[tt for tt in tokens if tt not in sw]
     kk=k.Text(tokens)
 
-    #.replace(",","").replace(".","").replace(";","")
     # selecionar as X palavras mais ocorrentes (ou fazer o corte e luhn)
     bigram_measures = k.collocations.BigramAssocMeasures()
     finder=k.collocations.BigramCollocationFinder.from_words(tokens)
     finder.apply_freq_filter(3)
     col10=finder.nbest(bigram_measures.pmi,50)
-
 
     freq=kk.vocab()
     npal=freq.B()
@@ -439,8 +437,7 @@ def aaRedeBipartida():
                 links.append({"source":countpal,"target":countus,"value":peso})
     graph={"nodes":nodes,"links":links}
 
-    #return jsonify(nmsgs=ccount,nusers=nusers,collocations=col10,msgs=msgs,freq=freq,users=users_,graph=graph,hist=hist_)
-    return jsonify(collocations=col10,nmsgs=ccount,nusers=nusers,msgs=msgs,freq=freq,users=users_,graph=graph,hist=hist_)
+    return jsonify(collocations=col10,nmsgs=ccount,nusers=nusers,msgs=msgs,users=users_,graph=graph,hist=hist_)
 
 
 @app.route("/aajson/")
