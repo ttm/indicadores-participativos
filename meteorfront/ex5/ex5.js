@@ -11,11 +11,17 @@ function setContext(){
     });
   }
   if(Session.get("theTopic")==="arenaNETmundial"){
+    Meteor.call("arenaBase", function(error,results) {
+         Session.set("tdata",results);
+         atualizaLaterais(results);
+         renderGraph("graph1a");
+         renderBubble("wordcloud1a");
+    });
+
   }
   if(Session.get("theTopic")==="Participabr"){
     Meteor.call("participaBase", function(error,results) {
          Session.set("tdata",results);
-         tdata=results;
          atualizaLaterais(results);
          renderGraph("graph1p");
          renderBubble("wordcloud1p");
@@ -129,7 +135,16 @@ if (Meteor.isClient) {
                 var mr=0;
             }
             return {theTopic : Session.get("theTopic"), isParticipabr: 1,ntweets:nt,mrand:mr};
-            //return {theTopic : Session.get("theTopic"), isParticipabr: 1,ntweets:19,mrand:7.34};
+        }
+        if (Session.get("theTopic")==="arenaNETmundial"){
+            if (typeof tdata.data.avar !== "undefined"){
+                var nt=tdata.data.avar[0];
+                var mr=tdata.data.avar[1];
+            } else {
+                var vt=0;
+                var mr=0;
+            }
+            return {theTopic : Session.get("theTopic"), isArena: 1,ntweets:nt,mrand:mr};
         }
 };
 
@@ -506,7 +521,9 @@ if (Meteor.isServer) {
        aaRedeBipartida: function () {
             return Meteor.http.call("GET", "http://0.0.0.0:5000/aaRedeBipartida/");  },
        participaBase: function () {
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/participaBase/");  }
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/participaBase/");  },
+       arenaBase: function () {
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaBase/");  }
     });
 
   Meteor.startup(function () {
