@@ -370,7 +370,7 @@ def partcipaBase():
     text= ''.join(ch for ch in text if ch not in exclude)
     text=text.encode('utf-8').split()
     text=[tt for tt in text if tt not in sw]
-    print text
+    #print text
     kk=k.Text(text)
 
     bigram_measures = k.collocations.BigramAssocMeasures()
@@ -385,9 +385,37 @@ def partcipaBase():
     for hh in hist[int(npal*0.05):int(npal*0.2)]:
         d={"name":hh[0],"count":hh[1]}
         hist_+=[d]
+    ####
+    palavras=freq.samples()[int(npal*0.05):int(npal*0.1)]
+    nodes=[]
+    links=[]
+    cp={}
+    cu={}
+    i=0
+    for palavra in palavras:
+        nodes.append({"nome":palavra,"group":1,"count":i})
+        cp[palavra]=i
+        i+=1
+    users__=set([mm["user"]["screen_name"] for mm in msgs])
+    print users__
+    for user in users__:
+        if not user:
+            onome="foobar"
+        # faz o amálgama de todos os textos dele
+        mmsgs=string.join([mmm["text"].encode('utf-8') for mmm in msgs if mmm["user"]["screen_name"]==user])
+        for palavra in palavras:
+            peso=mmsgs.count(palavra)
+            if peso > 0:
+                if user not in cu.keys():
+                    nodes.append({"nome":user,"group":2, "count":i})
+                    cu[user]=i; i+=1
+                countpal=cp[palavra]
+                countus=cu[user]
+                links.append({"source":countpal,"target":countus,"value":peso})
+    graph={"nodes":nodes,"links":links}
 
 
-    return jsonify(avar=avar,hist=hist,collocations=col10,msgs=msgs)
+    return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph)
 
 @app.route("/aaRedeBipartida/")
 def aaRedeBipartida():

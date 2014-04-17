@@ -6,8 +6,8 @@ function setContext(){
      Meteor.call("aaRedeBipartida", function(error,results) {
          Session.set("tdata",results);
          atualizaLaterais(results);
-         renderGraph();
-         renderBubble();
+         renderGraph("graph1");
+         renderBubble("wordcloud1");
     });
   }
   if(Session.get("theTopic")==="arenaNETmundial"){
@@ -17,6 +17,8 @@ function setContext(){
          Session.set("tdata",results);
          tdata=results;
          atualizaLaterais(results);
+         renderGraph("graph1p");
+         renderBubble("wordcloud1p");
     });
   }
 };
@@ -313,6 +315,7 @@ Template.mmissa.rendered=function() {
                 if(Session.get("theTopic")==="Participabr"){
                     Meteor.call("participaBase", function(error,results) {
                         Session.set("tdata",results);
+                         atualizaLaterais(results);
                     });
                 }
             }
@@ -337,7 +340,7 @@ Template.mmissa.rendered=function() {
         }
     });
 
-    function renderBubble(){
+    function renderBubble(svgid){
         var TTTdata=Session.get('tdata');
         var histograma=TTTdata.data.hist;
         var r = 580,
@@ -349,7 +352,8 @@ Template.mmissa.rendered=function() {
             .size([r, r])
             .value(function(d) { return 1+Math.log(d.count)*2; })
             .padding(1);
-        var vis = d3.select("#wordcloud1")
+        //var vis = d3.select("#wordcloud1")
+        var vis = d3.select("#"+svgid)
             .attr("width", r)
             .attr("height", r)
             .attr("class", "bubble");
@@ -379,7 +383,7 @@ Template.mmissa.rendered=function() {
           .text(function(d) { return d.count; })
           .attr("font-size", function(d){return 4+2*Math.log(5+2*d.count)});
     };
-    function renderGraph(){
+    function renderGraph(gid){
         var width =  580,
             height = 300;
         var color = d3.scale.category20();
@@ -387,7 +391,8 @@ Template.mmissa.rendered=function() {
             .charge(-120)
             .linkDistance(30)
             .size([width, height]);
-        var svg = d3.select("#graph1")
+        var svg = d3.select("#"+gid)
+        //var svg = d3.select("#graph1")
             .attr("width", width)
             .attr("height", height);
         var TTdata=Session.get('tdata');
