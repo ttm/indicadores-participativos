@@ -95,18 +95,18 @@
         <svg id="graph1p" width="200px" height="200px">
             <rect width="100%" height="100%" style="stroke:black;stroke-width:2;fill-opacity:0.1"></rect>
         </svg><br/>
-        <p>Grafo bipartido de participantes e palavras. Foram removidas 5% das palavras mais ocorrentes e 80% das menos ocorrentes.</p>
+        <p>Grafo bipartido de participantes e palavras. Consideradas as 100 mensagens mais recentes, foram removidas 5% das palavras mais ocorrentes e 80% das menos ocorrentes.</p>
         <svg id="wordcloud1p"  width=200 height=200></svg>
-        <p>Seleção de palavras com frequências intermediárias (corte de Luhn) aumentam a informatividade das palavras consideradas.</p>
+        <p>Seleção de palavras com frequências intermediárias (corte de Luhn) aumentam a informatividade das palavras consideradas. Também as 100 mensagens mais recentes.</p>
     {{/if}}
     {{#if context.isArena}}
         São {{context.ntweets}} mensagens com a hashtag #arenaNETmundial.
         <svg id="graph1a" width="200px" height="200px">
             <rect width="100%" height="100%" style="stroke:black;stroke-width:2;fill-opacity:0.1"></rect>
         </svg><br/>
-        <p>Grafo bipartido de participantes e palavras. Foram removidas 5% das palavras mais ocorrentes e 80% das menos ocorrentes.</p>
+        <p>Grafo bipartido de participantes e palavras. Foram removidas 5% das palavras mais ocorrentes e 80% das menos ocorrentes. Consideradas as 100 mensagens mais recentes</p>
         <svg id="wordcloud1a"  width=200 height=200></svg>
-        <p>Seleção de palavras com frequências intermediárias (corte de Luhn) aumentam a informatividade das palavras consideradas.</p>
+        <p>Seleção de palavras com frequências intermediárias (corte de Luhn) aumentam a informatividade das palavras consideradas. Também as 100 mensagens mais recentes.</p>
     {{/if}}
 
 {{context.mrand}}
