@@ -1,4 +1,3 @@
-COUNTER=0;
 function setContext(){
  if(Session.get("theTopic")==="emails"){
  }
@@ -77,6 +76,27 @@ rRGB=function(){
 };
 
 if (Meteor.isClient) {
+COUNTER=0;
+    Template.tcheia.foo=function(){
+    d3.select("#text2").text(Session.get("CCOUNTER"));
+};
+    Template.tcheia.rendered=function(){
+    rbsvg=d3.select("#rbdiv").append("svg").attr("width","100%").attr("height","100%");
+    //rbsvg=d3.select("#rbdiv").append("svg").style("width","100%").style("height","100%").attr("viewBox", "0 0 100% 100%");
+    rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
+    rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x",10).attr("y",50);
+};
+    Template.tcheia.ssetup=function(){
+ // setup do sistema complexo
+ // número de mensagens, etc
+        return {nmsgs:100};
+};
+    Template.tcheia.tsetup=function(){
+ // setup da visualização
+ // tamanho da tela, etc
+        return {w:420,h:200};
+};
+
     Template.rightbar.rendered = function(){
          var thebar=d3.select("#rightbar").style("background","blue").style("padding","10px");
          thebar.append("h3").text("mensagens mais recentes");
@@ -309,22 +329,31 @@ Template.mmissa.rendered=function() {
 }
 
   Meteor.startup(function () { 
-      Session.set("theTopic","AA");
-      setContext();
-
     Meteor.setInterval(function () {
       Session.set('time', new Date);
       }, 1000);
+      Session.set("theTopic","AA");
+      Session.set("tela",1);
+      setContext();
+
 
   });
 
 
     UI.body.helpers({
-        cheia: 0,
+        cheia: 1,
+        cheiaa: 0,
         hours: _.range(0, 12),
         degrees: function () {
             return 30 * this;
         },
+        countMe: function(){
+            var time = Session.get("time");
+            COUNTER++;
+            console.log(COUNTER);
+            Session.set("CCOUNTER",COUNTER);
+            return 2;
+},
         handData: function () {
             if (typeof MMISSA !== 'undefined'){
                 if(MMISSA.move){
@@ -346,7 +375,6 @@ Template.mmissa.rendered=function() {
                 }
 
             }
-            COUNTER++;
             var time = Session.get('time') || new Date;
             return { hourDegrees: time.getHours() * 30,
             minuteDegrees: time.getMinutes() * 6,
@@ -523,6 +551,20 @@ Template.mmissa.rendered=function() {
             colorAll(0)
         }
     };
+
+Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
+    lvalue = parseFloat(lvalue);
+    rvalue = parseFloat(rvalue);
+        
+    return {
+        "+": lvalue + rvalue,
+        "-": lvalue - rvalue,
+        "*": lvalue * rvalue,
+        "/": lvalue / rvalue,
+        "%": lvalue % rvalue
+    }[operator];
+});
+
 }
 if (Meteor.isServer) {
     Meteor.methods({

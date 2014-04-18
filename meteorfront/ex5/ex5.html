@@ -4,7 +4,9 @@
 
 <body>
 {{#if cheia}}
-aqui, certinho.
+    {{#with countMe}}
+{{>tcheia}}
+    {{/with}}
 {{else}}
 <div style="float:right"><center>
   <svg xmlns="http://www.w3.org/2000/svg"
@@ -50,6 +52,18 @@ aqui, certinho.
   {{> tfooter}}
 {{/if}}
 </body>
+
+<template name="tcheia">
+{{foo}}
+    {{#with tsetup}}
+    <div style="width:{{w}}px;height:{{h}}px">
+        <div style="width:50%;height:50%;background:black;margin:0;float:left" id="ltdiv"></div>
+        <div style="width:50%;height:50%;background:black;margin:0;float:left" id="rtdiv"></div>
+        <div style="width:50%;height:50%;background:black;margin:0;float:left" id="lbdiv"></div>
+        <div style="width:50%;height:50%;background:black;margin:0;float:left" id="rbdiv"></div>
+    </div>
+    {{/with}}
+</template>
 
 <template name="mmissa">
 <div style="float:right;width:300px">
