@@ -70,9 +70,12 @@ class AcompanhaTweet(t.Thread):
 
     def syncExisting(self):
         quantos=self.mongo_collection.count()
-        self.query=query=self.mongo_collection.find()
+        #self.query=query=self.mongo_collection.find()
+        self.query=query=self.mongo_collection.find({},{"id":1,"_id":0}).sort("id",pymongo.ASCENDING).limit(1)
         primeira= query[0]["id"] # mais antiga
-        ultima=   query[quantos-1]["id"]
+        self.query=query=self.mongo_collection.find({},{"id":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(1)
+        ultima=   query[0]["id"]
+        #ultima=   query[quantos-1]["id"]
         print "sync no bd existente ", self.hashtag
         self.theSync(primeira,ultima)
 

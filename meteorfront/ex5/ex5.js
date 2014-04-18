@@ -38,6 +38,10 @@ function atualizaLaterais(results){
      var thebar=d3.select("#rightbar");
      parags=thebar.selectAll("p").data(results.data.msgs);
      parags.enter().append("p");
+    if (Session.get("theTopic")==="arenaNETmundial"){
+         parags.text(function(d){return d.user.screen_name+": "+d.text+", "+d.created_at});
+    }
+
     if (Session.get("theTopic")==="Participabr"){
          parags.text(function(d){return d.user.screen_name+": "+d.text+", "+d.created_at});
     }
@@ -316,6 +320,7 @@ Template.mmissa.rendered=function() {
 
 
     UI.body.helpers({
+        cheia: 0,
         hours: _.range(0, 12),
         degrees: function () {
             return 30 * this;
@@ -333,6 +338,13 @@ Template.mmissa.rendered=function() {
                          atualizaLaterais(results);
                     });
                 }
+                if(Session.get("theTopic")==="arenaNETmundial"){
+                    Meteor.call("arenaBase", function(error,results) {
+                        Session.set("tdata",results);
+                         atualizaLaterais(results);
+                    });
+                }
+
             }
             COUNTER++;
             var time = Session.get('time') || new Date;
