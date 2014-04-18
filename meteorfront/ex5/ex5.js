@@ -71,7 +71,6 @@ genInt=function(N,R,O){
 rRGB=function(){
     var foo=genInt(3,256,0);
     var bar="rgb("+foo[0]+","+foo[1]+","+foo[2]+")";
-    //console.log(bar);
     return bar;
 };
 
@@ -79,22 +78,43 @@ if (Meteor.isClient) {
 COUNTER=0;
     Template.tcheia.foo=function(){
     d3.select("#text2").text(Session.get("CCOUNTER"));
-};
-    Template.tcheia.rendered=function(){
-    rbsvg=d3.select("#rbdiv").append("svg").attr("width","100%").attr("height","100%");
-    //rbsvg=d3.select("#rbdiv").append("svg").style("width","100%").style("height","100%").attr("viewBox", "0 0 100% 100%");
-    rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
-    rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x",10).attr("y",50);
-};
-    Template.tcheia.ssetup=function(){
- // setup do sistema complexo
- // número de mensagens, etc
-        return {nmsgs:100};
+    d3.select("#textlt").text(Session.get("CCOUNTER")+50);
 };
     Template.tcheia.tsetup=function(){
  // setup da visualização
  // tamanho da tela, etc
         return {w:420,h:200};
+};
+
+montaLT=function(tgraph){
+    ltsvg=d3.select("#ltdiv").append("svg").attr("id","ltsvg").attr("width","100%").attr("height","100%");
+    rtGraph(tgraph,"ltsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+
+};
+montaRT=function(){
+};
+montaRB=function(){
+    rbsvg=d3.select("#rbdiv").append("svg").attr("width","100%").attr("height","100%");
+    rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
+    rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x",10).attr("y",50);
+};
+montaLB=function(tgraph){
+    lbsvg=d3.select("#lbdiv").append("svg").attr("id","lbsvg").attr("width","100%").attr("height","100%");
+    Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+};
+    Template.tcheia.rendered=function(){
+        Meteor.call("arenaCheias", function(error,results) {
+            ttdata=results.data;
+            montaLT(ttdata.graph);
+            montaRT();
+            montaRB();
+            montaLB(ttdata.graph);
+        });
+    };
+    Template.tcheia.ssetup=function(){
+ // setup do sistema complexo
+ // número de mensagens, etc
+        return {nmsgs:100};
 };
 
     Template.rightbar.rendered = function(){
@@ -350,7 +370,6 @@ Template.mmissa.rendered=function() {
         countMe: function(){
             var time = Session.get("time");
             COUNTER++;
-            console.log(COUNTER);
             Session.set("CCOUNTER",COUNTER);
             return 2;
 },
@@ -438,6 +457,96 @@ Template.mmissa.rendered=function() {
           .text(function(d) { return d.count; })
           .attr("font-size", function(d){return 4+2*Math.log(5+2*d.count)});
     };
+
+
+    function rtGraph(tgraph,gid,width,height){ // para tela cheia 1
+        console.log(gid,width,height);
+        //var width =  580,
+        //    height = 300;
+        var color2 = d3.scale.category20();
+        var force2 = d3.layout.force()
+            .charge(-120)
+            .linkDistance(30)
+            .size([width, height]);
+        var svg2 = d3.select("#"+gid)
+        //var svg = d3.select("#graph1")
+            .attr("width", width)
+            .attr("height", height);
+        //var TTdata=Session.get('tdata');
+        //var graph=TTdata.data.graph;
+        force2
+              .nodes(tgraph.nodes)
+              .links(tgraph.links)
+              .start();
+        var link2 = svg2.selectAll(".link")
+              .data(tgraph.links)
+              .enter().append("line")
+              .attr("class", "link")
+              .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+        var node2 = svg2.selectAll(".node")
+              .data(tgraph.nodes)
+              .enter().append("circle")
+              .attr("class", "node")
+              .attr("r", 5)
+              .style("fill", function(d) { return color2(d.group); })
+              .call(force2.drag);
+        node2.append("title")
+              .text(function(d) { return d.nome; });
+        force2.on("tick", function() {
+            link2.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+            node2.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        });
+    };
+
+
+    function Bipartite(graph,gid,width,height){ // para tela cheia 1
+        console.log(gid,width,height);
+        //var width =  580,
+        //    height = 300;
+        var color = d3.scale.category20();
+        var force = d3.layout.force()
+            .charge(-120)
+            .linkDistance(30)
+            .size([width, height]);
+        var svg = d3.select("#"+gid)
+        //var svg = d3.select("#graph1")
+            .attr("width", width)
+            .attr("height", height);
+        //var TTdata=Session.get('tdata');
+        //var graph=TTdata.data.graph;
+        force
+              .nodes(graph.nodes)
+              .links(graph.links)
+              .start();
+        var link = svg.selectAll(".link")
+              .data(graph.links)
+              .enter().append("line")
+              .attr("class", "link")
+              .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+        var node = svg.selectAll(".node")
+              .data(graph.nodes)
+              .enter().append("circle")
+              .attr("class", "node")
+              .attr("r", 5)
+              .style("fill", function(d) { return color(d.group); })
+              .call(force.drag);
+        node.append("title")
+              .text(function(d) { return d.nome; });
+        force.on("tick", function() {
+            link.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+            node.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        });
+    };
+
+
     function renderGraph(gid){
         var width =  580,
             height = 300;
@@ -577,7 +686,9 @@ if (Meteor.isServer) {
        participaBase: function () {
             return Meteor.http.call("GET", "http://0.0.0.0:5000/participaBase/");  },
        arenaBase: function () {
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaBase/");  }
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaBase/");  },
+       arenaCheias: function () {
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaCheias/");  }
     });
 
   Meteor.startup(function () {
