@@ -441,7 +441,6 @@ def arenaCheias():
     i=0
     for node in nodes:
         nodes_.append({"nome":node,
-                          #"group":[1,[2,3][i>int(0.95*nn)]][i>int(nn*0.8)],
                           "group":[1,[2,3][i>int(0.95*nn)]][i>int(nn*0.8)],
                            "count":i})
         cu[node]=i
