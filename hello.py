@@ -429,8 +429,20 @@ def arenaCheias():
         g.add_node(sn1)
         g.add_node(sn2)
         g.add_edge(*edge)
-
-    return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2={"nodes":g.nodes(),"links":g.edges()})
+    nodes=g.nodes()
+    nodes_=[]
+    cu={}
+    i=0
+    for node in nodes:
+        nodes_.append({"nome":node,"group":1,"count":i})
+        cu[node]=i
+        i+=1
+    edges=g.edges()
+    links=[]
+    for edge in edges:
+        links.append({"source":cu[edge[0]],"target":cu[edge[1]],"value":1})
+    graph2={"nodes":nodes_,"links":links}
+    return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2)
 
 
 

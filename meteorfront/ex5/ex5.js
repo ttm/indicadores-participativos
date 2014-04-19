@@ -83,12 +83,12 @@ COUNTER=0;
     Template.tcheia.tsetup=function(){
  // setup da visualização
  // tamanho da tela, etc
-        return {w:420,h:200};
+        return {w:820,h:400};
 };
 
 montaLT=function(tgraph){
     ltsvg=d3.select("#ltdiv").append("svg").attr("id","ltsvg").attr("width","100%").attr("height","100%");
-    rtGraph(tgraph,"ltsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+    var foobarbaz2=new rtGraph(tgraph,"ltsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 
 };
 montaRT=function(){
@@ -100,12 +100,12 @@ montaRB=function(){
 };
 montaLB=function(tgraph){
     lbsvg=d3.select("#lbdiv").append("svg").attr("id","lbsvg").attr("width","100%").attr("height","100%");
-    Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+    var foobarbaz3=new Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 };
     Template.tcheia.rendered=function(){
         Meteor.call("arenaCheias", function(error,results) {
             ttdata=results.data;
-            montaLT(ttdata.graph);
+            montaLT(ttdata.graph2);
             montaRT();
             montaRB();
             montaLB(ttdata.graph);
@@ -502,7 +502,28 @@ Template.mmissa.rendered=function() {
         });
     };
 
+//    function minGraph(graph,gid,width,height){
+    function layout2(inputNodes, inputLinks) {
+       var force = d3.layout.force();
+       var nodes = force.nodes();
+       var links = force.links();
 
+       var update = function() {
+          //append nodes and links from data
+
+          force.on("tick",function(e){
+             //tick movement
+
+          });
+       };
+       for(var i=0; i<inputNodes.length; i++){
+          nodes.push(inputNodes[i]);
+       }
+       for(var i=0; i<inputLinks.length; i++){
+          links.push(inputLinks[i]);
+       }
+       update();
+    };
     function Bipartite(graph,gid,width,height){ // para tela cheia 1
         console.log(gid,width,height);
         //var width =  580,
