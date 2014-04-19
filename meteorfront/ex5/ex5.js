@@ -91,7 +91,10 @@ montaLT=function(tgraph){
     var foobarbaz2=new rtGraph(tgraph,"ltsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 
 };
-montaRT=function(){
+montaRT=function(tgraph){
+    rtsvg=d3.select("#rtdiv").append("svg").attr("id","rtsvg").attr("width","100%").attr("height","100%");
+    var foobarbaz4=new hashNet(tgraph,"rtsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+
 };
 montaRB=function(){
     rbsvg=d3.select("#rbdiv").append("svg").attr("width","100%").attr("height","100%");
@@ -106,7 +109,7 @@ montaLB=function(tgraph){
         Meteor.call("arenaCheias", function(error,results) {
             ttdata=results.data;
             montaLT(ttdata.graph2);
-            montaRT();
+            montaRT(ttdata.graph3);
             montaRB();
             montaLB(ttdata.graph);
         });
@@ -457,6 +460,58 @@ Template.mmissa.rendered=function() {
           .text(function(d) { return d.count; })
           .attr("font-size", function(d){return 4+2*Math.log(5+2*d.count)});
     };
+
+
+    function hashNet(tgraph,gid,width,height){ // para tela cheia 1
+        console.log(gid,width,height);
+        //var width =  580,
+        //    height = 300;
+        var color2 = d3.scale.category10();
+        color2("sd");
+        color2("sd2");
+        color2("sd3");
+        color2("sd4");
+        color2("sd5");
+        color2("sd6");
+        color2("sd7");
+        var force2 = d3.layout.force()
+            .charge(-12)
+            .linkDistance(30)
+            .size([width, height]);
+        var svg2 = d3.select("#"+gid)
+        //var svg = d3.select("#graph1")
+            .attr("width", width)
+            .attr("height", height);
+        //var TTdata=Session.get('tdata');
+        //var graph=TTdata.data.graph;
+        force2
+              .nodes(tgraph.nodes)
+              .links(tgraph.links)
+              .start();
+        var link2 = svg2.selectAll(".link")
+              .data(tgraph.links)
+              .enter().append("line")
+              .attr("class", "link")
+              .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+        var node2 = svg2.selectAll(".node")
+              .data(tgraph.nodes)
+              .enter().append("circle")
+              .attr("class", "node")
+              .attr("r", 5)
+              .style("fill", function(d) { return color2(d.group); })
+              .call(force2.drag);
+        node2.append("title")
+              .text(function(d) { return d.nome; });
+        force2.on("tick", function() {
+            link2.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+            node2.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        });
+    };
+
 
 
     function rtGraph(tgraph,gid,width,height){ // para tela cheia 1

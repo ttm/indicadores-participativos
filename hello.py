@@ -367,9 +367,12 @@ def arenaCheias():
     msgs=[a for a in aa]
     print msgs[0]
     text=string.join([i["text"] for i in msgs]," ")
-    exclude = set(string.punctuation)
+    #exclude = set(string.punctuation)
+    exclude = set(string.punctuation.replace("#",""))
     text= ''.join(ch for ch in text if ch not in exclude)
-    text=text.encode('utf-8').split()
+    text_=text.encode('utf-8').split()
+    text=[tt for tt in text_ if not tt.startswith("#")] #hashtags são tratadas separado
+
     text=[tt for tt in text if tt not in sw]
     #print text
     kk=k.Text(text)
@@ -450,7 +453,38 @@ def arenaCheias():
     for edge in edges:
         links.append({"source":cu[edge[0]],"target":cu[edge[1]],"value":1})
     graph2={"nodes":nodes_,"links":links}
-    return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2)
+
+    # graph3 de hashtags
+    tags=[i.lower() for i in text_ if i.startswith("#") and "\xe2\x80\xa6" not in i]
+    tags_=list(set(tags))
+    ctags=[tags.count(i) for i in tags_]
+    # achar os outros vértices: participantes que emitiram as tags
+    users=list(set([i["user"]["screen_name"] for i in msgs]))
+    print len(users),"==="
+    cu={}
+    nodes=[]
+    links=[]
+    i=0
+    for tag in tags_:
+        nodes.append({"nome":tag,"group":1,"count":i})
+        cu[tag]=i
+        i+=1
+    print len(tags_)
+    for user in users:
+        nodes.append({"nome":user,"group":2,"count":i})
+        cu[user]=i
+        i+=1
+        text=string.join([msg["text"] for msg in msgs if
+msg["user"]["screen_name"]==user]," ").encode('utf-8').lower()
+        for tag in tags_:
+            tcount=text.count(tag)
+            if tcount>0:
+                links.append({"source":cu[user],"target":cu[tag],"value":tcount})
+    graph3={"nodes":nodes,"links":links}
+
+    return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2,graph3=graph3)
+
+
 
 
 

@@ -32,7 +32,7 @@ for user in users:
     nodes.append({"nome":user,"group":2,"count":i})
     cu[user]=i
     i+=1
-    text=string.join([msg["text"] for msg in msgs]," ").encode('utf-8')
+    text=string.join([msg["text"] for msg in msgs if msg["user"]["screen_name"]==user]," ").encode('utf-8')
     for tag in tags_:
         tcount=text.count(tag)
         if tcount>0:
