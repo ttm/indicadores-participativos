@@ -2,7 +2,7 @@
 import pymongo, __builtin__, datetime
 from dateutil import parser
 import time as T, networkx as x, json # json.dumps
-import MySQLdb, cPickle,sys,string
+import MySQLdb, cPickle,sys,string,nltk as k
 
 from maccess import mdc
 client=pymongo.MongoClient(mdc.u1)
@@ -11,10 +11,41 @@ aa=client.sna.HHarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_
 msgs=[a for a in aa]
 texts=[i["text"] for i in msgs]
 pairs=[(i["user"]["screen_name"], i["text"]) for i in msgs]
-text=string.join([i["text"] for i in msgs]," ")
+text_=string.join([i["text"] for i in msgs]," ")
+#exclude = set(string.punctuation.replace("#",""))
+#text_= ''.join(ch for ch in text if ch not in exclude)
+#text_= ''.join(ch for ch in text if ch not in exclude)
+#remoção de pontuação:
 exclude = set(string.punctuation.replace("#",""))
-text= ''.join(ch for ch in text if ch not in exclude)
-text=text.encode('utf-8').split()
+text__= ''.join(ch for ch in text_ if ch not in exclude)
+# tokenização na unha
+text=text__.encode('utf-8').lower().split()
+#tx=k.Text(text)
+# separar os users:
+users=[i for i in text if i.startswith("@") and "\xe2\x80\xa6" not in i]
+text2_=[i for i in text if not i.startswith("@")]
+nusers=len(users)
+nusers_rotos=(len(text)-len(text2_))-nusers
+
+# separar tags:
+tags=[i for i in text2_ if i.startswith("#") and "\xe2\x80\xa6" not in i]
+text2=[i for i in text2_ if not i.startswith("#")]
+ntags=len(tags)
+ntags_rotas=(len(text)-len(text2))-ntags
+# separar stopwords
+foo=open("pickledir/stopwords.cpickle","rb")
+sw=cPickle.load(foo)
+foo.close()
+text3=[tt for tt in text2 if tt not in sw]
+sws=[tt for tt in text2 if tt in sw]
+nsws=len(sws)
+# radicalizar
+radicalizador=k.stem.RSLPStemmer()
+text4=[radicalizador.stem(i.decode("utf-8")) for i in text3]
+
+
+sys.exit()
+
 tags=[i.lower() for i in text if i.startswith("#") and "\xe2\x80\xa6" not in i]
 tags_=list(set(tags))
 ctags=[tags.count(i) for i in tags_]

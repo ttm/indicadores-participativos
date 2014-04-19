@@ -358,6 +358,7 @@ def jsonTest():
     return jsonify(thedata=[{"data":"footeste"},{"data":"barteste"}])
 foo=open("pickledir/stopwords.cpickle","rb")
 sw=cPickle.load(foo)
+foo.close()
 import numpy as n
 @app.route("/arenaCheias/")
 def arenaCheias():
@@ -370,7 +371,7 @@ def arenaCheias():
     #exclude = set(string.punctuation)
     exclude = set(string.punctuation.replace("#",""))
     text= ''.join(ch for ch in text if ch not in exclude)
-    text_=text.encode('utf-8').split()
+    text_=text.encode('utf-8').lower().split()
     text=[tt for tt in text_ if not tt.startswith("#")] #hashtags são tratadas separado
 
     text=[tt for tt in text if tt not in sw]
@@ -474,8 +475,7 @@ def arenaCheias():
         nodes.append({"nome":user,"group":2,"count":i})
         cu[user]=i
         i+=1
-        text=string.join([msg["text"] for msg in msgs if
-msg["user"]["screen_name"]==user]," ").encode('utf-8').lower()
+        text=string.join([msg["text"] for msg in msgs if msg["user"]["screen_name"]==user]," ").encode('utf-8').lower()
         for tag in tags_:
             tcount=text.count(tag)
             if tcount>0:
