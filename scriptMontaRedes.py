@@ -16,7 +16,7 @@ text_=string.join([i["text"] for i in msgs]," ")
 #text_= ''.join(ch for ch in text if ch not in exclude)
 #text_= ''.join(ch for ch in text if ch not in exclude)
 #remoção de pontuação:
-exclude = set(string.punctuation.replace("#",""))
+exclude = set(string.punctuation.replace("#","").replace("@",""))
 text__= ''.join(ch for ch in text_ if ch not in exclude)
 # tokenização na unha
 text=text__.encode('utf-8').lower().split()

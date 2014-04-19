@@ -369,15 +369,47 @@ def arenaCheias():
     print msgs[0]
     text=string.join([i["text"] for i in msgs]," ")
     #exclude = set(string.punctuation)
-    exclude = set(string.punctuation.replace("#",""))
-    text= ''.join(ch for ch in text if ch not in exclude)
-    text_=text.encode('utf-8').lower().split()
-    text=[tt for tt in text_ if not tt.startswith("#")] #hashtags são tratadas separado
+    simplest=0
+    if simplest:
+        exclude = set(string.punctuation.replace("#",""))
+        text= ''.join(ch for ch in text if ch not in exclude)
+        text_=text.encode('utf-8').lower().split()
+        text=[tt for tt in text_ if not tt.startswith("#")] #hashtags são tratadas separado
+        text=[tt for tt in text if tt not in sw]
+    else:
+        text_=text
+        exclude = set(string.punctuation.replace("#","").replace("@",""))
+        text__= ''.join(ch for ch in text_ if ch not in exclude)
+        # tokenização na unha
+        text=text__.encode('utf-8').lower().split()
+        #tx=k.Text(text)
+        # separar os users:
+        users=[i for i in text if i.startswith("@") and "\xe2\x80\xa6" not in i]
+        text2_=[i for i in text if not i.startswith("@")]
+        nusers=len(users)
+        nusers_rotos=(len(text)-len(text2_))-nusers
 
-    text=[tt for tt in text if tt not in sw]
-    #print text
-    kk=k.Text(text)
+        # separar tags:
+        tags=[i for i in text2_ if i.startswith("#") and "\xe2\x80\xa6" not in i]
+        text2=[i for i in text2_ if not i.startswith("#")]
+        ntags=len(tags)
+        ntags_rotas=(len(text)-len(text2))-ntags
+        # separar stopwords
+        foo=open("pickledir/stopwords.cpickle","rb")
+        sw=cPickle.load(foo)
+        foo.close()
+        text3=[tt for tt in text2 if tt not in sw]
+        sws=[tt for tt in text2 if tt in sw]
+        nsws=len(sws)
+        # radicalizar
+        radicalizador=k.stem.RSLPStemmer()
+        text4=[radicalizador.stem(i.decode("utf-8")).encode("utf-8") for i in text3]
+        text=text4
+    kk=k.Text(text) # aqui o text novo
 
+
+
+    # end not simples
     bigram_measures = k.collocations.BigramAssocMeasures()
     finder=k.collocations.BigramCollocationFinder.from_words(text)
     finder.apply_freq_filter(3)
@@ -456,7 +488,8 @@ def arenaCheias():
     graph2={"nodes":nodes_,"links":links}
 
     # graph3 de hashtags
-    tags=[i.lower() for i in text_ if i.startswith("#") and "\xe2\x80\xa6" not in i]
+    #tags=[i.lower() for i in text_ if i.startswith("#") and "\xe2\x80\xa6" not in i]
+    tags=tags
     tags_=list(set(tags))
     ctags=[tags.count(i) for i in tags_]
     # achar os outros vértices: participantes que emitiram as tags
