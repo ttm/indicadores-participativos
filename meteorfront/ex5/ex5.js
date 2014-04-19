@@ -463,9 +463,9 @@ Template.mmissa.rendered=function() {
         console.log(gid,width,height);
         //var width =  580,
         //    height = 300;
-        var color2 = d3.scale.category20();
+        var color2 = d3.scale.category10();
         var force2 = d3.layout.force()
-            .charge(-120)
+            .charge(-12)
             .linkDistance(30)
             .size([width, height]);
         var svg2 = d3.select("#"+gid)
@@ -528,7 +528,10 @@ Template.mmissa.rendered=function() {
         console.log(gid,width,height);
         //var width =  580,
         //    height = 300;
-        var color = d3.scale.category20();
+        color = d3.scale.category10();
+        color("sadoj");
+        color("sadosj");
+        color("sasadosj");
         var force = d3.layout.force()
             .charge(-120)
             .linkDistance(30)

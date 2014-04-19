@@ -429,12 +429,21 @@ def arenaCheias():
         g.add_node(sn1)
         g.add_node(sn2)
         g.add_edge(*edge)
-    nodes=g.nodes()
+    # pegar a listagem dos vertices por grau
+    graus=g.degree()
+    vertices=sorted(graus,key=graus.get)
+    print vertices
+    #nodes=g.nodes()
+    nodes=vertices
+    nn=len(vertices)
     nodes_=[]
     cu={}
     i=0
     for node in nodes:
-        nodes_.append({"nome":node,"group":1,"count":i})
+        nodes_.append({"nome":node,
+                          #"group":[1,[2,3][i>int(0.95*nn)]][i>int(nn*0.8)],
+                          "group":[1,[2,3][i>int(0.95*nn)]][i>int(nn*0.8)],
+                           "count":i})
         cu[node]=i
         i+=1
     edges=g.edges()
