@@ -402,9 +402,10 @@ def arenaCheias():
         sws=[tt for tt in text2 if tt in sw]
         nsws=len(sws)
         # radicalizar
-        radicalizador=k.stem.RSLPStemmer()
-        text4=[radicalizador.stem(i.decode("utf-8")).encode("utf-8") for i in text3]
-        text=text4
+        #radicalizador=k.stem.RSLPStemmer()
+        #text4=[radicalizador.stem(i.decode("utf-8")).encode("utf-8") for i in text3]
+        #text=text4
+        text=text3
     kk=k.Text(text) # aqui o text novo
 
 
