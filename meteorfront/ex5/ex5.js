@@ -1,6 +1,8 @@
 function setContext(){
  if(Session.get("theTopic")==="teloes"){
-    
+    Session.set("tcheia",1);
+ }
+ if(Session.get("theTopic")==="teloes"){
  }
  if(Session.get("theTopic")==="emails"){
  }
@@ -126,6 +128,12 @@ montaRB2=function(){
     var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
     rbsvg.append("text").attr("id","text3").text("flip me").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
     rbsvg.append("text").attr("id","text4").attr("x",2*col_sep).attr("y",line_sep);
+    rbsvg.append("text").attr("id","text5").text("condense").attr("x",col_sep).attr("y",2*line_sep).on("click",function(d){ 
+            Session.set("screen1",1);  
+            Session.set("theTopic","AA");  
+        Session.set("tcheia",0);
+          setContext();
+});
 
 };
 montaLB2=function(){
@@ -217,7 +225,7 @@ montaLB=function(tgraph){
     Template.tfooter.ticket=function(){
         return Math.random()*100000;
     };
-    Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{topic:"Endpoint Sparql"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"escritos"},{"topic":"sobre"}];
+    Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{topic:"Endpoint Sparql"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"teloes"},{"topic":"sobre"}];
     for(var i=0;i<Template.toptopics.topics.length;i++){
         Template.toptopics.topics[i].tid=Template.toptopics.topics[i].topic.replace(/#/g,"");
     }
@@ -238,7 +246,7 @@ montaLB=function(tgraph){
         var tdata=Session.get('tdata');
 
         if (Session.get("theTopic")==="AA"){
-            if (tdata){
+            if (tdata.data){
                 var nmsgs=tdata.data.nmsgs;
                 var nusers=tdata.data.nusers;
             } else {
@@ -431,15 +439,14 @@ Template.mmissa.rendered=function() {
       }, 1000);
       //Session.set("theTopic","AA"); // para a interface original TTM
       Session.set("theTopic","teloes"); // para a interface de teloes
-      Session.set("tela",1);
+      Session.set("tcheia",1); // para a interface de teloes
       setContext();
-
-
   });
 
+      Session.set("tcheia",1); // para a interface de teloes
 
     UI.body.helpers({
-        cheia: 1,
+        cheia: function(){return Session.get("tcheia")},
         cheiaa: 0,
         hours: _.range(0, 12),
         degrees: function () {
