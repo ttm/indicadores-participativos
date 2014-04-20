@@ -104,15 +104,16 @@ montaRT2=function(){
    var tsetup=Template.tcheia.tsetup();
     var w=tsetup.w,h=tsetup.h;
     console.log(w,h);
-    ncol=1;
-    nrow=5;
+    var ncol=1;
+    var nrow=8;
     var col_sep=(w/2)/ncol;
     var line_sep=(h/2)/nrow;
 
     var tdata=Session.get('tdata');
     var msgs=tdata.msgs.slice(0,ncol*nrow);
     rtsvg=d3.select("#rtdiv2").append("svg").attr("width","100%").attr("height","100%");
-    rttexts=rtsvg.selectAll("text").data(colloc).enter().append("text").text(function(d,i){return d.user+": "+d.text+", "+d.created_at }).attr("x",function(d,i){return (i%3)*col_sep}).attr("y",function(d,i){return (1+Math.floor(i/3))*line_sep}).attr("font-size",10);
+    rttexts=rtsvg.selectAll("text").data(msgs).enter().append("text").append("tspan").text(function(d,i){return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(0,90) }).attr("x",function(d,i){return 10}).attr("y",function(d,i){return 20+i*line_sep}).attr("font-size",10);
+    rttexts2=rtsvg.selectAll("text .subline").data(msgs).enter().append("text").append("tspan").text(function(d,i){return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(90) }).attr("x",function(d,i){return 10}).attr("y",function(d,i){return 15+20+i*line_sep}).attr("font-size",10);
 };
 
 montaRB2=function(){
@@ -123,7 +124,7 @@ montaRB2=function(){
     var line_sep=(h/2)/5;
     var rbsvg=d3.select("#rbdiv2").append("svg").attr("width","100%").attr("height","100%");
     var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
-    rbsvg.append("text").attr("id","text3").text("aqui sim").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
+    rbsvg.append("text").attr("id","text3").text("flip me").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
     rbsvg.append("text").attr("id","text4").attr("x",2*col_sep).attr("y",line_sep);
 
 };
