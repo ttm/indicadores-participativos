@@ -76,16 +76,44 @@ rRGB=function(){
 
 if (Meteor.isClient) {
 COUNTER=0;
-    Template.tcheia.foo=function(){
+Template.tcheia.foo=function(){
     d3.select("#text2").text(Session.get("CCOUNTER"));
-    d3.select("#textlt").text(Session.get("CCOUNTER")+50);
 };
-    Template.tcheia.tsetup=function(){
- // setup da visualização
- // tamanho da tela, etc
-        return {w:820,h:400};
+Template.tcheia.tsetup=function(){
+     // setup da visualização
+     // tamanho da tela, etc
+    if (Session.get("screen1")){
+        var t1="50%";
+        var t2="0%";
+    } else {
+        var t1="0%";
+        var t2="50%";
+    }
+    return {w:820,h:400,t1:t1,t2:t2};
 };
+montaLT2=function(){
+};
+montaRT2=function(){
+};
+montaRB2=function(){
+    console.log("aa00");
+   var tsetup=Template.tcheia.tsetup();
+    var w=tsetup.w,h=tsetup.h;
+    console.log(w,h);
+    var col_sep=(w/2)/3;
+    var line_sep=(h/2)/5;
 
+    console.log("aa");
+    var rbsvg=d3.select("#rbdiv2").append("svg").attr("width","100%").attr("height","100%");
+    var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
+    console.log("bb");
+    //rbsvg.append("text").attr("id","text3").text(Session.get("CCOUNTER")).attr("x",col_sep).attr("y",line_sep);
+    rbsvg.append("text").attr("id","text3").text("aqui sim").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
+    console.log("cc");
+
+};
+montaLB2=function(){
+};
 montaLT=function(tgraph){
     ltsvg=d3.select("#ltdiv").append("svg").attr("id","ltsvg").attr("width","100%").attr("height","100%");
     var foobarbaz2=new rtGraph(tgraph,"ltsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
@@ -97,15 +125,32 @@ montaRT=function(tgraph){
 
 };
 montaRB=function(){
-    rbsvg=d3.select("#rbdiv").append("svg").attr("width","100%").attr("height","100%");
-    rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
-    rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x",10).attr("y",50);
+    var tsetup=Template.tcheia.tsetup();
+    var w=tsetup.w,h=tsetup.h;
+    console.log(w,h);
+    var col_sep=(w/2)/3;
+    var line_sep=(h/2)/5;
+
+    
+    var rbsvg=d3.select("#rbdiv").append("svg").attr("width","100%").attr("height","100%");
+    var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
+    rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x",col_sep).attr("y",line_sep);
+    rbsvg.append("text").attr("id","textFlip").text("flip me").attr("x",col_sep).attr("y",3*line_sep).on("click",function(d){
+            Session.set("screen1",0);
+ 
+            ttdata=Session.get("tdata");
+            montaLT2();
+            montaRT2();
+            montaRB2();
+            montaLB2();
+});
 };
 montaLB=function(tgraph){
     lbsvg=d3.select("#lbdiv").append("svg").attr("id","lbsvg").attr("width","100%").attr("height","100%");
     var foobarbaz3=new Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 };
     Template.tcheia.rendered=function(){
+        Session.set("screen1",1);
         Meteor.call("arenaCheias", function(error,results) {
             ttdata=results.data;
             montaLT(ttdata.graph2);
