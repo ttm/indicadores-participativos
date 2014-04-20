@@ -95,8 +95,10 @@ Template.tcheia.tsetup=function(){
         var t1="0%";
         var t2="50%";
     }
+    var w=Session.get("w");
+    var h=Session.get("h");
     //return {w:820,h:400,t1:t1,t2:t2};
-    return {w:1366,h:768,t1:t1,t2:t2};
+    return {w:w,h:h,t1:t1,t2:t2};
 };
 montaLT2=function(){
     var ltsvg=d3.select("#ltdiv2").append("svg").attr("id","ltsvg2").attr("width","100%").attr("height","100%");
@@ -126,7 +128,7 @@ montaRB2=function(){
     var line_sep=(h/2)/5;
     var rbsvg=d3.select("#rbdiv2").append("svg").attr("width","100%").attr("height","100%");
     var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
-    rbsvg.append("text").attr("id","text3").text("flip me").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
+    rbsvg.append("text").attr("id","text3").text("flip me again").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
     rbsvg.append("text").attr("id","text4").attr("x",2*col_sep).attr("y",line_sep);
     rbsvg.append("text").attr("id","text5").text("condense").attr("x",col_sep).attr("y",2*line_sep).on("click",function(d){ 
             Session.set("screen1",1);  
@@ -173,7 +175,14 @@ montaRB=function(){
     rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x",col_sep).attr("y",line_sep);
     rbsvg.append("text").attr("id","textFlip").text("flip me").attr("x",col_sep).attr("y",3*line_sep).on("click",function(d){
             Session.set("screen1",0);
- 
+});
+    rbsvg.append("text").attr("id","configMe").text("config me").attr("x",2*col_sep).attr("y",line_sep).on("click",function(d){
+        var invars=prompt("O que você quer?");
+            console.log(invars);
+        foo=invars;
+        wh=invars.split(";")
+        Session.set("w",wh[0]);
+        Session.set("h",wh[1]);
 });
 };
 montaLB=function(tgraph){
@@ -183,6 +192,8 @@ montaLB=function(tgraph){
     Template.tcheia.rendered=function(){
         Session.set("screen1",1);
         Meteor.call("arenaCheias", function(error,results) {
+            Session.set("w",1024);
+            Session.set("h",768);
             var ttdata=results.data;
             Session.set("tdata",ttdata);
             montaLT(ttdata.graph2);
