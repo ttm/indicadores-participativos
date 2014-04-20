@@ -1,4 +1,7 @@
 function setContext(){
+ if(Session.get("theTopic")==="teloes"){
+    
+ }
  if(Session.get("theTopic")==="emails"){
  }
  if(Session.get("theTopic")==="AA"){
@@ -78,6 +81,7 @@ if (Meteor.isClient) {
 COUNTER=0;
 Template.tcheia.foo=function(){
     d3.select("#text2").text(Session.get("CCOUNTER"));
+    d3.select("#text4").text(Session.get("CCOUNTER"));
 };
 Template.tcheia.tsetup=function(){
      // setup da visualização
@@ -89,30 +93,53 @@ Template.tcheia.tsetup=function(){
         var t1="0%";
         var t2="50%";
     }
-    return {w:820,h:400,t1:t1,t2:t2};
+    //return {w:820,h:400,t1:t1,t2:t2};
+    return {w:1366,h:768,t1:t1,t2:t2};
 };
 montaLT2=function(){
+    var ltsvg=d3.select("#ltdiv2").append("svg").attr("id","ltsvg2").attr("width","100%").attr("height","100%");
+    renderBubbleTelao("ltsvg2");
 };
 montaRT2=function(){
+   var tsetup=Template.tcheia.tsetup();
+    var w=tsetup.w,h=tsetup.h;
+    console.log(w,h);
+    ncol=1;
+    nrow=5;
+    var col_sep=(w/2)/ncol;
+    var line_sep=(h/2)/nrow;
+
+    var tdata=Session.get('tdata');
+    var msgs=tdata.msgs.slice(0,ncol*nrow);
+    rtsvg=d3.select("#rtdiv2").append("svg").attr("width","100%").attr("height","100%");
+    rttexts=rtsvg.selectAll("text").data(colloc).enter().append("text").text(function(d,i){return d.user+": "+d.text+", "+d.created_at }).attr("x",function(d,i){return (i%3)*col_sep}).attr("y",function(d,i){return (1+Math.floor(i/3))*line_sep}).attr("font-size",10);
 };
+
 montaRB2=function(){
-    console.log("aa00");
    var tsetup=Template.tcheia.tsetup();
     var w=tsetup.w,h=tsetup.h;
     console.log(w,h);
     var col_sep=(w/2)/3;
     var line_sep=(h/2)/5;
-
-    console.log("aa");
     var rbsvg=d3.select("#rbdiv2").append("svg").attr("width","100%").attr("height","100%");
     var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
-    console.log("bb");
-    //rbsvg.append("text").attr("id","text3").text(Session.get("CCOUNTER")).attr("x",col_sep).attr("y",line_sep);
     rbsvg.append("text").attr("id","text3").text("aqui sim").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
-    console.log("cc");
+    rbsvg.append("text").attr("id","text4").attr("x",2*col_sep).attr("y",line_sep);
 
 };
 montaLB2=function(){
+   var tsetup=Template.tcheia.tsetup();
+    var w=tsetup.w,h=tsetup.h;
+    console.log(w,h);
+    ncol=3;
+    nrow=10;
+    var col_sep=(w/2)/ncol;
+    var line_sep=(h/2)/nrow;
+
+    var tdata=Session.get('tdata');
+    var colloc=tdata.collocations.slice(0,ncol*nrow);
+    lbsvg=d3.select("#lbdiv2").append("svg").attr("width","100%").attr("height","100%");
+    lbtexts=lbsvg.selectAll("text").data(colloc).enter().append("text").text(function(d,i){return "..."+d[0]+"..."+d[1]+"..." }).attr("x",function(d,i){return (i%3)*col_sep}).attr("y",function(d,i){return (1+Math.floor(i/3))*line_sep}).attr("font-size",10);
 };
 montaLT=function(tgraph){
     ltsvg=d3.select("#ltdiv").append("svg").attr("id","ltsvg").attr("width","100%").attr("height","100%");
@@ -138,11 +165,6 @@ montaRB=function(){
     rbsvg.append("text").attr("id","textFlip").text("flip me").attr("x",col_sep).attr("y",3*line_sep).on("click",function(d){
             Session.set("screen1",0);
  
-            ttdata=Session.get("tdata");
-            montaLT2();
-            montaRT2();
-            montaRB2();
-            montaLB2();
 });
 };
 montaLB=function(tgraph){
@@ -152,11 +174,17 @@ montaLB=function(tgraph){
     Template.tcheia.rendered=function(){
         Session.set("screen1",1);
         Meteor.call("arenaCheias", function(error,results) {
-            ttdata=results.data;
+            var ttdata=results.data;
+            Session.set("tdata",ttdata);
             montaLT(ttdata.graph2);
             montaRT(ttdata.graph3);
             montaRB();
             montaLB(ttdata.graph);
+
+            montaLT2();
+            montaRT2();
+            montaRB2();
+            montaLB2();
         });
     };
     Template.tcheia.ssetup=function(){
@@ -400,7 +428,8 @@ Template.mmissa.rendered=function() {
     Meteor.setInterval(function () {
       Session.set('time', new Date);
       }, 1000);
-      Session.set("theTopic","AA");
+      //Session.set("theTopic","AA"); // para a interface original TTM
+      Session.set("theTopic","teloes"); // para a interface de teloes
       Session.set("tela",1);
       setContext();
 
@@ -422,25 +451,27 @@ Template.mmissa.rendered=function() {
             return 2;
 },
         handData: function () {
-            if (typeof MMISSA !== 'undefined'){
-                if(MMISSA.move){
-                    moveMmissa();
+            if(Session.get("theTopic")!=="teloes"){
+                if (typeof MMISSA !== 'undefined'){
+                    if(MMISSA.move){
+                        moveMmissa();
+                    }
                 }
-            }
-            if ((COUNTER%10)===0){
-                if(Session.get("theTopic")==="Participabr"){
-                    Meteor.call("participaBase", function(error,results) {
-                        Session.set("tdata",results);
-                         atualizaLaterais(results);
-                    });
-                }
-                if(Session.get("theTopic")==="arenaNETmundial"){
-                    Meteor.call("arenaBase", function(error,results) {
-                        Session.set("tdata",results);
-                         atualizaLaterais(results);
-                    });
-                }
+                if ((COUNTER%10)===0){
+                    if(Session.get("theTopic")==="Participabr"){
+                        Meteor.call("participaBase", function(error,results) {
+                            Session.set("tdata",results);
+                             atualizaLaterais(results);
+                        });
+                    }
+                    if(Session.get("theTopic")==="arenaNETmundial"){
+                        Meteor.call("arenaBase", function(error,results) {
+                            Session.set("tdata",results);
+                             atualizaLaterais(results);
+                        });
+                    }
 
+                }
             }
             var time = Session.get('time') || new Date;
             return { hourDegrees: time.getHours() * 30,
@@ -462,22 +493,79 @@ Template.mmissa.rendered=function() {
         }
     });
 
+
+    function renderBubbleTelao(svgid){
+        var TTTdata=Session.get('tdata');
+        var histograma=TTTdata.hist;
+        var r = 580,
+        format = d3.format(",d"),
+        fill = d3.scale.category20c();
+   var tsetup=Template.tcheia.tsetup();
+    var w=tsetup.w/2,h=tsetup.h/2;
+
+        var bubble = d3.layout.pack()
+            .sort(null)
+            //.size([r, r])
+            .size([w, h])
+            .value(function(d) { return 1+Math.log(d.count)*2; })
+            .padding(1);
+        //var vis = d3.select("#wordcloud1")
+        var vis = d3.select("#"+svgid)
+            //.attr("width", r)
+            //.attr("height", r)
+            .attr("width", w)
+            .attr("height", h)
+            .attr("class", "bubble");
+        var node = vis.selectAll("g.node")
+          .data(bubble.nodes({children:histograma}).slice(1))
+          .enter().append("svg:g")
+          .attr("class", "node")
+          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        node.append("svg:title")
+          .text(function(d) { return d.name + ": " + format(d.value); });
+        node.append("svg:circle")
+          .attr("r", function(d) { return d.r; })
+          .style("fill", function(d) { return fill(d.name); });
+        node.append("svg:text")
+          .attr("text-anchor", "middle")
+          .attr("dy", ".3em")
+          .text(function(d) { return d.name.substring(0, d.r / 3); })
+          .attr("font-family", "sans-serif")
+          .attr("stroke","black")
+          .attr("stroke-width",0.1)
+          .attr("font-size", function(d){return 4+3*Math.log(5+2*d.count)});
+        node.append("svg:text")
+          .attr("text-anchor", "middle")
+          .attr("dy", "1.6em")
+          .attr("stroke-width",0.1)
+          .attr("fill","black")
+          .text(function(d) { return d.count; })
+          .attr("font-size", function(d){return 4+2*Math.log(5+2*d.count)});
+    };
+
+
+
     function renderBubble(svgid){
         var TTTdata=Session.get('tdata');
         var histograma=TTTdata.data.hist;
         var r = 580,
         format = d3.format(",d"),
         fill = d3.scale.category20c();
+   var tsetup=Template.tcheia.tsetup();
+    var w=tsetup.w/2,h=tsetup.h/2;
 
         var bubble = d3.layout.pack()
             .sort(null)
-            .size([r, r])
+            //.size([r, r])
+            .size([w, h])
             .value(function(d) { return 1+Math.log(d.count)*2; })
             .padding(1);
         //var vis = d3.select("#wordcloud1")
         var vis = d3.select("#"+svgid)
-            .attr("width", r)
-            .attr("height", r)
+            //.attr("width", r)
+            //.attr("height", r)
+            .attr("width", w)
+            .attr("height", h)
             .attr("class", "bubble");
         var node = vis.selectAll("g.node")
           .data(bubble.nodes({children:histograma}).slice(1))
@@ -802,16 +890,22 @@ Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
 if (Meteor.isServer) {
     Meteor.methods({
        checkTwitter: function () {
+console.log(6);
             return Meteor.http.call("GET", "http://0.0.0.0:5000/jsonTest/"); },
        aaJson: function () {
+console.log(5);
             return Meteor.http.call("GET", "http://0.0.0.0:5000/aajson/");  },
        aaRedeBipartida: function () {
+console.log(4);
             return Meteor.http.call("GET", "http://0.0.0.0:5000/aaRedeBipartida/");  },
        participaBase: function () {
+console.log(3);
             return Meteor.http.call("GET", "http://0.0.0.0:5000/participaBase/");  },
        arenaBase: function () {
+console.log(2);
             return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaBase/");  },
        arenaCheias: function () {
+console.log(1);
             return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaCheias/");  }
     });
 
