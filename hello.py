@@ -19,6 +19,8 @@ print 0
 from maccess import mdc
 client=pymongo.MongoClient(mdc.u1)
 CLIENT=client # para o bd do app em si, usuários, etc
+client2=pymongo.MongoClient(mdc.u2)
+CLIENT2=client2 # para o bd do app em si, usuários, etc
 ################ CUT
 #print 10
 #db = client['sna']
@@ -363,8 +365,10 @@ import numpy as n
 @app.route("/arenaCheias/")
 def arenaCheias():
     
-    avar=(CLIENT.sna.HHarenaNETmundial.count(),n.random.randint(1000))
-    aa=client.sna.HHarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
+    avar=(CLIENT2.sna.NEWarenaNETmundial.count(),n.random.randint(1000))
+    aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
+    #avar=(CLIENT.sna.HHarenaNETmundial.count(),n.random.randint(1000))
+    #aa=client.sna.HHarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
     msgs=[a for a in aa]
     print msgs[0]
     text=string.join([i["text"] for i in msgs]," ")

@@ -4,7 +4,7 @@ from twython import TwythonStreamer
 from twython import Twython
 #HTAG="#arenaNETmundial"
 HTAG="#arenaNETmundial"
-HTAG_=HTAG.replace("#","H")
+HTAG_=HTAG.replace("#","NEW")
 #client=pymongo.MongoClient()
 #db = client['mytest']
 #C = db['twitter'] #collection
@@ -32,10 +32,10 @@ print 1
 #search = t.search(q=HTAG,count=150,max_id=tweets[-1]['id']-1)
 search = t.search(q=HTAG,count=150)
 from maccess import mdc
-client=pymongo.MongoClient(mdc.u1)
+client=pymongo.MongoClient(mdc.u2)
 db = client['sna']
 C = db[HTAG_] #collection
-foo=C.find()#twitterArena
+foo=C.find({},{"id":1,"_id":0,"created_at":1}).sort("id",pymongo.ASCENDING) #twitterArena
 print 2
 ss=[]
 if not foo.count(): # collection n existe
@@ -50,7 +50,7 @@ if not foo.count(): # collection n existe
         print len(search["statuses"])
         print "batelada de status"
         ss+=search["statuses"]
-        T.sleep(70)
+        T.sleep(60)
         search = t.search(q=HTAG,count=150,max_id=ss[-1]['id']-1,result_type="recent")
     ss=ss[::-1]
 # collection já existe, adicionar tweets mais reecntes
@@ -61,10 +61,16 @@ if not foo.count(): # collection n existe
         print len(search["statuses"])
         print "batelada de status mais recente"
         ss+=search["statuses"][::-1]
-        T.sleep(70)
+        T.sleep(60)
         search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
 
-    C.insert(ss)
+    try:
+        C.insert(ss)            
+    except:
+        client=pymongo.MongoClient(mdc.u2)
+        db = client['sna']
+        C = db[HTAG_] #collection
+        C.insert(ss)
 # else: se já existe, pegar os limites inferiores e superiores do BD
 else:
     print "colecao jah existe"
@@ -72,7 +78,7 @@ else:
     primeira=foo[0]["id"]
     dprimeira=foo[0]["created_at"]
     ultima= foo[quantos-1]["id"]
-    dultima=foo[0]["created_at"]
+    dultima=foo[quantos-1]["created_at"]
     
     search = t.search(q=HTAG,count=100,max_id=primeira-1,result_type="recent")
     ss=[]
@@ -84,21 +90,21 @@ else:
         asd.append(search["statuses"])
         print "batelada de status"
         ss+=search["statuses"]
-        T.sleep(70)
+        T.sleep(60)
         search = t.search(q=HTAG,count=100,max_id=ss[-1]['id']-1,result_type="recent")
     asd.append(search["statuses"])
     ss=ss[::-1]
-    antes=[i for i in C.find()]
-    agora=ss+antes
-    ss=agora
-    oid=agora[-1]["id"]
-    search = t.search(q=HTAG,count=150,since_id=oid,result_type="recent")
+    #antes=[i for i in C.find()]
+    #agora=ss+antes
+    #ss=agora
+    #oid=agora[-1]["id"]
+    search = t.search(q=HTAG,count=150,since_id=ultima,result_type="recent")
     while search["statuses"]:
         print len(search["statuses"])
         asd.append(search["statuses"])
         print "batelada de status mais recente"
         ss+=search["statuses"][::-1]
-        T.sleep(70)
+        T.sleep(60)
         search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
     asd.append(search["statuses"])
     if ss:
@@ -111,8 +117,15 @@ else:
 class MyStreamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
-            C.insert(data)            
-            print data['text'].encode('utf-8')
+            try:
+                C.insert(data)            
+            except:
+                client=pymongo.MongoClient(mdc.u2)
+                db = client['sna']
+                C = db[HTAG_] #collection
+                C.insert(data)            
+            print data['user']["screen_name"].encode('utf-8'),data['text'].encode('utf-8'),data["created_at"]
+
 
     def on_error(self, status_code, data):
         print status_code

@@ -189,6 +189,16 @@ montaLB=function(tgraph){
     lbsvg=d3.select("#lbdiv").append("svg").attr("id","lbsvg").attr("width","100%").attr("height","100%");
     var foobarbaz3=new Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 };
+updateLT=function(tgraph){
+    updateRTGraph(tgraph,"ltsvg");
+};
+updateMe=function(){
+        Meteor.call("arenaCheias", function(error,results) {
+            var ttdata=results.data;
+            Session.set("tdata",ttdata);
+            updateLT(ttdata.graph2);
+        });
+};
     Template.tcheia.rendered=function(){
         Session.set("screen1",1);
         Meteor.call("arenaCheias", function(error,results) {
@@ -467,8 +477,12 @@ Template.mmissa.rendered=function() {
             var time = Session.get("time");
             COUNTER++;
             Session.set("CCOUNTER",COUNTER);
+            if ((COUNTER%10)===0){
+                console.log("updating");
+                updateMe();
+            }
             return 2;
-},
+        },
         handData: function () {
             if(Session.get("theTopic")!=="teloes"){
                 if (typeof MMISSA !== 'undefined'){
@@ -476,6 +490,7 @@ Template.mmissa.rendered=function() {
                         moveMmissa();
                     }
                 }
+                console.log("handdata");
                 if ((COUNTER%10)===0){
                     if(Session.get("theTopic")==="Participabr"){
                         Meteor.call("participaBase", function(error,results) {
@@ -671,7 +686,7 @@ Template.mmissa.rendered=function() {
         //var width =  580,
         //    height = 300;
         var color2 = d3.scale.category10();
-        var force2 = d3.layout.force()
+        force2 = d3.layout.force()
             .charge(-12)
             .linkDistance(30)
             .size([width, height]);
@@ -706,8 +721,77 @@ Template.mmissa.rendered=function() {
                 .attr("y2", function(d) { return d.target.y; });
             node2.attr("cx", function(d) { return d.x; })
                 .attr("cy", function(d) { return d.y; });
+        Session.set("force2",force2);
         });
     };
+
+updateRTGraph=function(tgraph,gid){ // para tela cheia 1
+        console.log("updating rtgraph");
+        var color2 = d3.scale.category10();
+        //var force2 = d3.layout.force()
+        //    .charge(-12)
+        //    .linkDistance(30)
+        //    .size([width, height]);
+        var svg2 = d3.select("#"+gid)
+        //var svg = d3.select("#graph1")
+            .attr("width",  Session.get("w")/2)
+            .attr("height", Session.get("h")/2);
+        //var TTdata=Session.get('tdata');
+        //var graph=TTdata.data.graph;
+        //var force2 = d3.layout.force()
+        //    .charge(-12)
+        //    .linkDistance(30)
+        //    .size([Session.get("w")/2,Session.get("h")/2]);
+        force2
+            .size([Session.get("w")/2,Session.get("h")/2])
+              .nodes(tgraph.nodes)
+              .links(tgraph.links)
+              .start();
+        //force2=Session.get('force2');
+        //force2
+        //      //.size([Session.get("w")/2,Session.get("h")/2])
+        //      .nodes(tgraph.nodes)
+        //      .links(tgraph.links);
+              //.start();
+        //svg2.selectAll(".node").remove();
+        var node2 = svg2.selectAll(".node")
+              .data(tgraph.nodes);
+            //  .attr("class", "node")
+            //  .attr("r", 5)
+            //    .attr("fill","black");
+            node2
+              .enter().append("circle")
+              .attr("class", "node")
+              .attr("r", 5)
+              .style("fill", function(d) { return color2(d.group); })
+              .call(force2.drag);
+        node2.exit().remove();
+        //svg2.selectAll(".link").remove();
+        var link2 = svg2.selectAll(".link")
+              .data(tgraph.links);
+          link2
+               .enter().append("line")
+              .attr("class", "link")
+              .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+        link2.exit().remove();
+
+            //node2. //update old elements as needed
+            // create new elements as needed
+
+        //node2.exit().transition().duration(750).style("fill","black").style("fill-opacity", 1e-6).remove();
+        node2.append("title")
+              .text(function(d) { return d.nome; });
+        force2.on("tick", function() {
+            link2.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+            node2.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        });
+    };
+
+
 
 //    function minGraph(graph,gid,width,height){
     function layout2(inputNodes, inputLinks) {
