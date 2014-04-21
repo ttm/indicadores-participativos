@@ -523,17 +523,22 @@ def arenaCheias():
         cu[tag]=i
         i+=1
     print len(tags_)
+    foousers=0
+    barusers=0
     for user in users:
         nodes.append({"nome":user,"group":2,"count":i})
         cu[user]=i
         i+=1
         text=string.join([msg["text"] for msg in msgs if msg["user"]["screen_name"]==user]," ").encode('utf-8').lower()
-        atv=len(text); nodes[-1]["atv"]=atv
+        atv=len(text); nodes[-1]["atv"]=atv/150.
         for tag in tags_:
             tcount=text.count(tag)
             if tcount>0:
+                foousers=1
                 links.append({"source":cu[user],"target":cu[tag],"value":tcount})
-    graph3={"nodes":nodes,"links":links}
+        if foousers:
+            barusers+=1
+    graph3={"nodes":nodes,"links":links,"ntags":len(tags_),"nusers":barusers}
 
     #graph2={"nodes":nodes_,"links":links,"grau_max":graus_[-1],"grau_medio":n.mean(graus_),"grau_desvio":n.std(graus_),"clust_media":n.mean(clust_),"nvertices":g.number_of_nodes(),"narestas":g.number_of_edges()}
     return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2,graph3=graph3)

@@ -160,7 +160,7 @@ montaLT=function(tgraph){
 montaRT=function(tgraph){
     rtsvg=d3.select("#rtdiv").append("svg").attr("id","rtsvg").attr("width","100%").attr("height","100%");
     //var foobarbaz4=new hashNet(tgraph,"rtsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
-    //var foobarbaz4=new hashGraph(tgraph,"rtsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+    var foobarbaz4=new hashGraph(tgraph,"rtsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 };
 montaRB=function(){
     var tsetup=Template.tcheia.tsetup();
@@ -214,7 +214,7 @@ updateMe=function(){
             var ttdata=results.data;
             Session.set("tdata",ttdata);
             montaLT(ttdata.graph2);
-            //montaRT(ttdata.graph3);
+            montaRT(ttdata.graph3);
             montaRB();
             montaLB(ttdata.graph);
 
@@ -688,44 +688,45 @@ Template.mmissa.rendered=function() {
 
 // hashGraph (RT svg)
     function hashGraph(tgraph,gid){ // para tela cheia 1
-        ttnodes = [],
-            ttlinks = [];
+        ttnodes2 = [],
+            ttlinks2 = [];
         var color2 = d3.scale.category10();
-        force2 = d3.layout.force()
-            .nodes(ttnodes)
-            .links(ttlinks)
+        color2("asd"),color2("assd");
+        force2Hash = d3.layout.force()
+            .nodes(ttnodes2)
+            .links(ttlinks2)
             .charge(-12)
             .linkDistance(30)
             .size([Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2])
              .on("tick", tick);
 
         var svg2 = d3.select("#"+gid);
-        svg2.append("text").attr("id","t0"+gid).attr("x",20).attr("y",29).style("fill","white").text("Estrutura de retweets");
+        svg2.append("text").attr("id","t0"+gid).attr("x",20).attr("y",29).style("fill","white").text("Relacionamento por hashtags");
         svg2.append("text").attr("id","t1"+gid).attr("x",20).attr("y",59).style("fill","white");
         svg2.append("text").attr("id","t2"+gid).attr("x",20).attr("y",89).style("fill","white");
         var node = svg2.selectAll(".node"),
             link = svg2.selectAll(".link");
-        ttstart=function() {
+        ttstartHash=function() {
             console.log("in ttstart");
             console.log("adding nodes in ttstart");
-          node = node.data(force2.nodes(), function(d) { return d.nome;});
+          node = node.data(force2Hash.nodes(), function(d) { return d.nome;});
           node.enter().append("circle")
-                      .style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", function(d){dado=d;console.log(dado.weight);return dado.grau+2;}).call(force2.drag)
+                      .style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", function(d){return d.atv+2;}).call(force2Hash.drag)
                       .transition().duration(2000).style("fill",function(d){return color2(d.group)});
 
  node.append("title")
-              .text(function(d) { return d.nome+",g="+d.grau+",cc="+d.clust.toFixed(2); });
+              .text(function(d) { return d.nome+",atv="+d.atv.toFixed(2); });
                         node.exit().transition().style("fill","red").remove();
 
 
-          link = link.data(force2.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
+          link = link.data(force2Hash.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
           link.enter().insert("line", ".node").attr("class", "link")
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
 
 
 
-          force2.start();
+          force2Hash.start();
         }
         function tick() {
           node.attr("cx", function(d) { return d.x; })
@@ -742,15 +743,14 @@ Template.mmissa.rendered=function() {
 
     updateHashInfo=function(tgraph,gid){
         var svg2 = d3.select("#"+gid)
-        svg2.select("#t1"+gid).text("nvertices "+tgraph.nvertices+", narestas "+tgraph.narestas+", grau max "+tgraph.grau_max+", grau medio "+tgraph.grau_medio.toFixed(2));
-        svg2.select("#t2"+gid).text("clusterizacao media "+tgraph.clust_media.toFixed(2)).attr("x",20);
-    } // para tela cheia 1
+        svg2.select("#t1"+gid).text("nvertices "+tgraph.nodes.length+"("+tgraph.nusers+"u,"+tgraph.ntags+"h), narestas "+tgraph.links.length);
+    }; // para tela cheia 1
     updateHashGraph=function(tgraph,gid){ // para tela cheia 1
       var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
       ttgraph=tgraph;
-     newnodes=ttgraph.nodes;
-     newlinks=ttgraph.links;
-     oldnodes=force2.nodes();
+     newnodes=tgraph.nodes;
+     newlinks=tgraph.links;
+     oldnodes=force2Hash.nodes();
      // anda em cada oldnodes removendo que nao estiver em new nodes
     outs=[];
     for(var i=0;i<oldnodes.length;i++){
@@ -781,18 +781,13 @@ Template.mmissa.rendered=function() {
     }
     // remover os nodes dos oldnodes
     for(var i=outs.length-1;i>=0;i--){
-        ttnodes.splice(outs[i],1);
+        ttnodes2.splice(outs[i],1);
     }
     // adicionar os nodes dos newnodes
     for(var i=0;i<ins.length;i++){
-        ttnodes.push(newnodes[ins[i]]);
+        ttnodes2.push(newnodes[ins[i]]);
     }
-      //ttnodes.push(a, b, c);
-     //   ttnodes.length = 0;
-     // ttnodes.push.apply(ttnodes,ttgraph.nodes);
-      //ttlinks.push({source: a, target: b}, {source: a, target: c}, {source: b, target: c});
-    
-    ttlinks.length = 0;
+    ttlinks2.length = 0;
     for(var ii=0;ii<newlinks.length;ii++){ // para cada aresta
         // observar o source e o target
         var tlink=newlinks[ii];
@@ -800,19 +795,17 @@ Template.mmissa.rendered=function() {
         var tnome2=newnodes[tlink.target].nome;
         var i=-1;
         do { i++; var tnn=i; 
-        } while (ttnodes[i].nome!==tnome1);
+        } while (ttnodes2[i].nome!==tnome1);
         var i=-1;
         do {  i++;var tnn2=i;
-        } while (ttnodes[i].nome!==tnome2);
+        } while (ttnodes2[i].nome!==tnome2);
         tlink.source=tnn;
         tlink.target=tnn2;
         tlink.nome_source=tnome1;
         tlink.nome_target=tnome2;
-        ttlinks.push(tlink);
+        ttlinks2.push(tlink);
     }
-    //  ttlinks.push.apply(ttlinks,ttgraph.links);
-      //ttlinks=ttgraph.links;
-      ttstart();
+      ttstartHash();
     };
 
 // rtGraph2
@@ -877,8 +870,8 @@ Template.mmissa.rendered=function() {
     updateRTGraph2=function(tgraph,gid){ // para tela cheia 1
       var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
       ttgraph=tgraph;
-     newnodes=ttgraph.nodes;
-     newlinks=ttgraph.links;
+     newnodes=tgraph.nodes;
+     newlinks=tgraph.links;
      oldnodes=force2.nodes();
      // anda em cada oldnodes removendo que nao estiver em new nodes
     outs=[];
