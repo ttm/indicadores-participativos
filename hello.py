@@ -468,9 +468,19 @@ def arenaCheias():
             sn2=sn2[:sn2.index("@")]
         sn2s+=[sn2]
         edge=sn1,sn2
-        g.add_node(sn1)
-        g.add_node(sn2)
-        g.add_edge(*edge)
+        if sn1 in g.nodes(): # quem retweetou
+            g.node[sn1]["weight"]+=1 # pois é atividade deste 
+        else:
+            g.add_node(sn1,weight=1.)
+        if sn2 in g.nodes(): # a fonte do tweet original
+            pass
+        else:
+            g.add_node(sn2,weight=0) # pois não é atividade dele
+
+        if g.has_edge(sn1,sn2):
+            g[sn1][sn2]["weight"]+=1
+        else:
+            g.add_edge(sn1, sn2, weight=1.)
     # pegar a listagem dos vertices por grau
     graus=g.degree()
     clust=x.clustering(g)
@@ -493,7 +503,7 @@ def arenaCheias():
     edges=g.edges()
     links=[]
     for edge in edges:
-        links.append({"source":cu[edge[0]],"target":cu[edge[1]],"value":1})
+        links.append({"source":cu[edge[0]],"target":cu[edge[1]],"value":g[edge[0]][edge[1]]})
     graph2={"nodes":nodes_,"links":links,"grau_max":graus_[-1],"grau_medio":n.mean(graus_),"grau_desvio":n.std(graus_),"clust_media":n.mean(clust_),"nvertices":g.number_of_nodes(),"narestas":g.number_of_edges()}
 
     # graph3 de hashtags

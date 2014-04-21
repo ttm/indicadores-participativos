@@ -478,7 +478,7 @@ Template.mmissa.rendered=function() {
             var time = Session.get("time");
             COUNTER++;
             Session.set("CCOUNTER",COUNTER);
-            if ((COUNTER%60)===0){
+            if ((COUNTER%10)===0){
                 console.log("updating");
                 updateMe();
             }
@@ -703,10 +703,6 @@ Template.mmissa.rendered=function() {
             link = svg2.selectAll(".link");
         ttstart=function() {
             console.log("in ttstart");
-          link = link.data(force2.links(), function(d) { return d.source+ "-" + d.target; });
-          link.enter().insert("line", ".node").attr("class", "link");
-          link.exit().remove();
-
             console.log("adding nodes in ttstart");
           node = node.data(force2.nodes(), function(d) { return d.nome;});
               node.enter().append("circle").style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", 8).call(force2.drag)
@@ -715,6 +711,12 @@ Template.mmissa.rendered=function() {
  node.append("title")
               .text(function(d) { return d.nome; });
                         node.exit().transition().style("fill","red").remove();
+
+          link = link.data(force2.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
+          link.enter().insert("line", ".node").attr("class", "link");
+          link.exit().remove();
+
+
 
           force2.start();
         }
@@ -740,6 +742,7 @@ Template.mmissa.rendered=function() {
       var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
       ttgraph=tgraph;
      newnodes=ttgraph.nodes;
+     newlinks=ttgraph.links;
      oldnodes=force2.nodes();
      // anda em cada oldnodes removendo que nao estiver em new nodes
     outs=[];
@@ -785,8 +788,23 @@ Template.mmissa.rendered=function() {
       //ttlinks.push({source: a, target: b}, {source: a, target: c}, {source: b, target: c});
     
     ttlinks.length = 0;
-    for(var i=0;i<ttgraph.links.length;i++){
-        ttlinks.push(ttgraph.links[i]);
+    for(var ii=0;ii<newlinks.length;ii++){ // para cada aresta
+        // observar o source e o target
+        var tlink=newlinks[ii];
+        console.log(tlink);
+        var tnome1=newnodes[tlink.source].nome;
+        var tnome2=newnodes[tlink.target].nome;
+        var i=-1;
+        do { i++; var tnn=i; 
+        } while (ttnodes[i].nome!==tnome1);
+        var i=-1;
+        do {  i++;var tnn2=i;
+        } while (ttnodes[i].nome!==tnome2);
+        tlink.source=tnn;
+        tlink.target=tnn2;
+        tlink.nome_source=tnome1;
+        tlink.nome_target=tnome2;
+        ttlinks.push(tlink);
     }
     //  ttlinks.push.apply(ttlinks,ttgraph.links);
       //ttlinks=ttgraph.links;
