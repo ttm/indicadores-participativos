@@ -367,7 +367,7 @@ def arenaCheias():
     
     avar=(CLIENT2.sna.NEWarenaNETmundial.count(),n.random.randint(1000))
     #aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
-    aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(5)
+    aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(60)
     #avar=(CLIENT.sna.HHarenaNETmundial.count(),n.random.randint(1000))
     #aa=client.sna.HHarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
     msgs=[a for a in aa]

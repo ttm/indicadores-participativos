@@ -478,7 +478,7 @@ Template.mmissa.rendered=function() {
             var time = Session.get("time");
             COUNTER++;
             Session.set("CCOUNTER",COUNTER);
-            if ((COUNTER%10)===0){
+            if ((COUNTER%60)===0){
                 console.log("updating");
                 updateMe();
             }
@@ -709,8 +709,12 @@ Template.mmissa.rendered=function() {
 
             console.log("adding nodes in ttstart");
           node = node.data(force2.nodes(), function(d) { return d.nome;});
-          node.enter().append("circle").attr("class", function(d) { return "node " + d.nome; }).attr("r", 8).call(force2.drag);
-          node.exit().remove();
+              node.enter().append("circle").style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", 8).call(force2.drag)
+.transition().duration(2000).style("fill",function(d){return color2(d.group)});
+
+ node.append("title")
+              .text(function(d) { return d.nome; });
+                        node.exit().transition().style("fill","red").remove();
 
           force2.start();
         }
