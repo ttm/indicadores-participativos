@@ -436,7 +436,7 @@ def arenaCheias():
     cu={}
     i=0
     for palavra in palavras:
-        nodes.append({"nome":palavra,"group":1,"count":i})
+        nodes.append({"nome":palavra,"group":1,"count":i,"peso_total":1})
         cp[palavra]=i
         i+=1
     users__=set([mm["user"]["screen_name"] for mm in msgs])
@@ -449,12 +449,14 @@ def arenaCheias():
             peso=mmsgs.count(palavra)
             if peso > 0:
                 if user not in cu.keys():
-                    nodes.append({"nome":user,"group":2, "count":i})
+                    nodes.append({"nome":user,"group":2, "count":i,"peso_total":peso})
                     cu[user]=i; i+=1
+                else:
+                    nodes[-1]["peso_total"]+=peso
                 countpal=cp[palavra]
                 countus=cu[user]
                 links.append({"source":countpal,"target":countus,"value":peso})
-    graph={"nodes":nodes,"links":links}
+    graph={"nodes":nodes,"links":links,"npalavras":len(palavras)}
 
     # rede de retweets
     g=x.Graph()
@@ -523,8 +525,6 @@ def arenaCheias():
         cu[tag]=i
         i+=1
     print len(tags_)
-    foousers=0
-    barusers=0
     for user in users:
         nodes.append({"nome":user,"group":2,"count":i})
         cu[user]=i
@@ -534,11 +534,8 @@ def arenaCheias():
         for tag in tags_:
             tcount=text.count(tag)
             if tcount>0:
-                foousers=1
                 links.append({"source":cu[user],"target":cu[tag],"value":tcount})
-        if foousers:
-            barusers+=1
-    graph3={"nodes":nodes,"links":links,"ntags":len(tags_),"nusers":barusers}
+    graph3={"nodes":nodes,"links":links,"ntags":len(tags_)}
 
     #graph2={"nodes":nodes_,"links":links,"grau_max":graus_[-1],"grau_medio":n.mean(graus_),"grau_desvio":n.std(graus_),"clust_media":n.mean(clust_),"nvertices":g.number_of_nodes(),"narestas":g.number_of_edges()}
     return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2,graph3=graph3)

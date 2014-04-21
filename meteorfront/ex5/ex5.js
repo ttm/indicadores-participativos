@@ -159,8 +159,7 @@ montaLT=function(tgraph){
 };
 montaRT=function(tgraph){
     rtsvg=d3.select("#rtdiv").append("svg").attr("id","rtsvg").attr("width","100%").attr("height","100%");
-    //var foobarbaz4=new hashNet(tgraph,"rtsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
-    var foobarbaz4=new hashGraph(tgraph,"rtsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+    var foobarbaz4=new hashGraph(tgraph,"rtsvg");
 };
 montaRB=function(){
     var tsetup=Template.tcheia.tsetup();
@@ -187,7 +186,8 @@ montaRB=function(){
 };
 montaLB=function(tgraph){
     lbsvg=d3.select("#lbdiv").append("svg").attr("id","lbsvg").attr("width","100%").attr("height","100%");
-    var foobarbaz3=new Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+    //var foobarbaz3=new Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+    var foobarbaz3=new wordGraph(tgraph,"lbsvg");
 };
 updateLT=function(tgraph){
     updateRTGraph2(tgraph,"ltsvg");
@@ -195,15 +195,15 @@ updateLT=function(tgraph){
 };
 
 updateRT=function(tgraph){
-    //updateGraphHash(tgraph,"rtsvg");
-    //updateInfoHash(tgraph,"rtsvg");
+    updateHashGraph(tgraph,"rtsvg");
+    updateHashInfo(tgraph,"rtsvg");
 };
 updateMe=function(){
         Meteor.call("arenaCheias", function(error,results) {
             var ttdata=results.data;
             Session.set("tdata",ttdata);
             updateLT(ttdata.graph2);
-            //updateRT(ttdata.graph3);
+            updateRT(ttdata.graph3);
         });
 };
     Template.tcheia.rendered=function(){
@@ -685,13 +685,136 @@ Template.mmissa.rendered=function() {
                 .attr("cy", function(d) { return d.y; });
         });
     };
+// terceiro quadrante
+    function wordGraph(tgraph,gid){ // para tela cheia 1
+        ttnodesWord = [],
+            ttlinksWord = [];
+        var color2 = d3.scale.category10();
+        color2("asd2"),color2("a4sd"),color2("as5sd"), color2("asd"),color2("assssadd"),color2("assd");
+        force2Word= d3.layout.force()
+            .nodes(ttnodesWord)
+            .links(ttlinksWord)
+            .charge(-12)
+            .linkDistance(30)
+            .size([Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2])
+             .on("tick", tick);
 
-// hashGraph (RT svg)
+        var svg2 = d3.select("#"+gid);
+        svg2.append("text").attr("id","t0"+gid).attr("x",20).attr("y",29).style("fill","white").text("Relacionamento por palavras");
+        svg2.append("text").attr("id","t1"+gid).attr("x",20).attr("y",59).style("fill","white");
+        svg2.append("text").attr("id","t2"+gid).attr("x",20).attr("y",89).style("fill","white");
+        var node = svg2.selectAll(".node"),
+            link = svg2.selectAll(".link");
+        ttstartWord=function() {
+            console.log("in ttstart");
+            console.log("adding nodes in ttstart");
+          node = node.data(force2Word.nodes(), function(d) { return d.nome;});
+          node.enter().append("circle")
+                      .style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", function(d){return 3+d.peso_total/2;}).call(force2Word.drag)
+                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
+
+ node.append("title")
+              .text(function(d) { return d.nome; });
+                        node.exit().transition().style("fill","red").remove();
+
+
+          link = link.data(force2Word.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
+          link.enter().insert("line", ".node").attr("class", "link")
+              .style("stroke-width", function(d) { return d.value; });
+          link.exit().remove();
+
+
+
+          force2Word.start();
+        }
+        function tick() {
+          node.attr("cx", function(d) { return d.x; })
+              .attr("cy", function(d) { return d.y; })
+
+          link.attr("x1", function(d) { return d.source.x; })
+              .attr("y1", function(d) { return d.source.y; })
+              .attr("x2", function(d) { return d.target.x; })
+              .attr("y2", function(d) { return d.target.y; });
+        }
+        updateWordGraph(tgraph,gid);
+        updateWordInfo(tgraph,gid);
+    };
+
+    updateWordInfo=function(tgraph,gid){
+        var svg2 = d3.select("#"+gid)
+        svg2.select("#t1"+gid).text("nvertices "+tgraph.nodes.length+"("+(tgraph.nodes.length-tgraph.npalavras)+"p,"+tgraph.npalavras+"h), narestas "+tgraph.links.length);
+    }; // para tela cheia 1
+    updateWordGraph=function(tgraph,gid){ // para tela cheia 1
+      var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
+      ttgraph=tgraph;
+     newnodes=tgraph.nodes;
+     newlinks=tgraph.links;
+     oldnodes=force2Word.nodes();
+     // anda em cada oldnodes removendo que nao estiver em new nodes
+    outs=[];
+    for(var i=0;i<oldnodes.length;i++){
+        var tnode=oldnodes[i];
+        var nodeout=1; // vertice estah fora
+        for(var j=0;j<newnodes.length;j++){
+            if(tnode.nome===newnodes[j].nome){
+                nodeout=0;
+            }
+        }
+        if (nodeout){
+            outs.push(i);
+        }
+    }
+    // anda em cada newnode adicionando quem nao estiver em oldnodes
+    ins=[];
+    for(var i=0;i<newnodes.length;i++){
+        tnode=newnodes[i];
+        nodein=1; // o vertice entra
+        for(var j=0;j<oldnodes.length;j++){
+            if(tnode.nome==oldnodes[j].nome){
+                nodein=0;
+            }
+        }
+        if (nodein){
+            ins.push(i);
+        }
+    }
+    // remover os nodes dos oldnodes
+    for(var i=outs.length-1;i>=0;i--){
+        ttnodesWord.splice(outs[i],1);
+    }
+    // adicionar os nodes dos newnodes
+    for(var i=0;i<ins.length;i++){
+        ttnodesWord.push(newnodes[ins[i]]);
+    }
+    ttlinksWord.length = 0;
+    for(var ii=0;ii<newlinks.length;ii++){ // para cada aresta
+        // observar o source e o target
+        var tlink=newlinks[ii];
+        var tnome1=newnodes[tlink.source].nome;
+        var tnome2=newnodes[tlink.target].nome;
+        var i=-1;
+        do { i++; var tnn=i; 
+        } while (ttnodesWord[i].nome!==tnome1);
+        var i=-1;
+        do {  i++;var tnn2=i;
+        } while (ttnodesWord[i].nome!==tnome2);
+        tlink.source=tnn;
+        tlink.target=tnn2;
+        tlink.nome_source=tnome1;
+        tlink.nome_target=tnome2;
+        ttlinksWord.push(tlink);
+    }
+      ttstartWord();
+    };
+
+
+
+// segundo quadrante
     function hashGraph(tgraph,gid){ // para tela cheia 1
         ttnodes2 = [],
             ttlinks2 = [];
         var color2 = d3.scale.category10();
-        color2("asd"),color2("assd");
+        color2("asd"),color2("assasdd"),color2("assd");
         force2Hash = d3.layout.force()
             .nodes(ttnodes2)
             .links(ttlinks2)
@@ -743,7 +866,7 @@ Template.mmissa.rendered=function() {
 
     updateHashInfo=function(tgraph,gid){
         var svg2 = d3.select("#"+gid)
-        svg2.select("#t1"+gid).text("nvertices "+tgraph.nodes.length+"("+tgraph.nusers+"u,"+tgraph.ntags+"h), narestas "+tgraph.links.length);
+        svg2.select("#t1"+gid).text("nvertices "+tgraph.nodes.length+"("+(tgraph.nodes.length-tgraph.ntags)+"u,"+tgraph.ntags+"h), narestas "+tgraph.links.length);
     }; // para tela cheia 1
     updateHashGraph=function(tgraph,gid){ // para tela cheia 1
       var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
