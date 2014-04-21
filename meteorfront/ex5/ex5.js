@@ -191,6 +191,7 @@ montaLB=function(tgraph){
 };
 updateLT=function(tgraph){
     updateRTGraph2(tgraph,"ltsvg");
+    updateRTInfo(tgraph,"ltsvg");
 };
 updateMe=function(){
         Meteor.call("arenaCheias", function(error,results) {
@@ -696,6 +697,8 @@ Template.mmissa.rendered=function() {
         var svg2 = d3.select("#"+gid)
             .attr("width", width)
             .attr("height", height);
+        svg2.append("text").attr("id","t1"+gid).attr("x",20).attr("y",59).style("fill","white");
+        svg2.append("text").attr("id","t2"+gid).attr("x",20).attr("y",89).style("fill","white");
         var node = svg2.selectAll(".node"),
             link = svg2.selectAll(".link");
         ttstart=function() {
@@ -721,8 +724,14 @@ Template.mmissa.rendered=function() {
               .attr("y2", function(d) { return d.target.y; });
         }
         updateRTGraph2(tgraph,gid);
+        updateRTInfo(tgraph,gid);
     };
 
+    updateRTInfo=function(tgraph,gid){
+        var svg2 = d3.select("#"+gid)
+        svg2.select("#t1"+gid).text("nvertices "+tgraph.nvertices+", narestas "+tgraph.narestas+", grau max "+tgraph.grau_max+", grau medio "+tgraph.grau_medio.toFixed(2));
+        svg2.select("#t2"+gid).text("clusterizacao media "+tgraph.clust_media.toFixed(2)).attr("x",20);
+    } // para tela cheia 1
     updateRTGraph2=function(tgraph,gid){ // para tela cheia 1
       var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
       ttgraph=tgraph;

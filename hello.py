@@ -473,7 +473,10 @@ def arenaCheias():
         g.add_edge(*edge)
     # pegar a listagem dos vertices por grau
     graus=g.degree()
+    clust=x.clustering(g)
     vertices=sorted(graus,key=graus.get)
+    graus_=[graus[vv] for vv in vertices]
+    clust_=[clust[vv] for vv in vertices]
     print vertices
     #nodes=g.nodes()
     nodes=vertices
@@ -491,7 +494,7 @@ def arenaCheias():
     links=[]
     for edge in edges:
         links.append({"source":cu[edge[0]],"target":cu[edge[1]],"value":1})
-    graph2={"nodes":nodes_,"links":links}
+    graph2={"nodes":nodes_,"links":links,"grau_max":graus_[-1],"grau_medio":n.mean(graus_),"grau_desvio":n.std(graus_),"clust_media":n.mean(clust_),"nvertices":g.number_of_nodes(),"narestas":g.number_of_edges()}
 
     # graph3 de hashtags
     #tags=[i.lower() for i in text_ if i.startswith("#") and "\xe2\x80\xa6" not in i]
