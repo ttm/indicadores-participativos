@@ -705,15 +705,18 @@ Template.mmissa.rendered=function() {
             console.log("in ttstart");
             console.log("adding nodes in ttstart");
           node = node.data(force2.nodes(), function(d) { return d.nome;});
-              node.enter().append("circle").style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", 8).call(force2.drag)
-.transition().duration(2000).style("fill",function(d){return color2(d.group)});
+          node.enter().append("circle")
+                      .style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", function(d){dado=d;console.log(dado.weight);return dado.grau+2;}).call(force2.drag)
+                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
 
  node.append("title")
-              .text(function(d) { return d.nome; });
+              .text(function(d) { return d.nome+",g="+d.grau+",cc="+d.clust.toFixed(2); });
                         node.exit().transition().style("fill","red").remove();
 
+
           link = link.data(force2.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
-          link.enter().insert("line", ".node").attr("class", "link");
+          link.enter().insert("line", ".node").attr("class", "link")
+              .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
 
 
@@ -780,8 +783,6 @@ Template.mmissa.rendered=function() {
     for(var i=0;i<ins.length;i++){
         ttnodes.push(newnodes[ins[i]]);
     }
-    console.log("outs",outs);
-    console.log("ins",ins);
       //ttnodes.push(a, b, c);
      //   ttnodes.length = 0;
      // ttnodes.push.apply(ttnodes,ttgraph.nodes);
@@ -791,7 +792,6 @@ Template.mmissa.rendered=function() {
     for(var ii=0;ii<newlinks.length;ii++){ // para cada aresta
         // observar o source e o target
         var tlink=newlinks[ii];
-        console.log(tlink);
         var tnome1=newnodes[tlink.source].nome;
         var tnome2=newnodes[tlink.target].nome;
         var i=-1;
