@@ -367,7 +367,7 @@ def arenaCheias():
     
     avar=(CLIENT2.sna.NEWarenaNETmundial.count(),n.random.randint(1000))
     #aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
-    aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(60)
+    aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(20)
     #avar=(CLIENT.sna.HHarenaNETmundial.count(),n.random.randint(1000))
     #aa=client.sna.HHarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
     msgs=[a for a in aa]
@@ -519,7 +519,7 @@ def arenaCheias():
     links=[]
     i=0
     for tag in tags_:
-        nodes.append({"nome":tag,"group":1,"count":i})
+        nodes.append({"nome":tag,"group":1,"count":i,"atv":ctags[i]})
         cu[tag]=i
         i+=1
     print len(tags_)
@@ -528,12 +528,14 @@ def arenaCheias():
         cu[user]=i
         i+=1
         text=string.join([msg["text"] for msg in msgs if msg["user"]["screen_name"]==user]," ").encode('utf-8').lower()
+        atv=len(text); nodes[-1]["atv"]=atv
         for tag in tags_:
             tcount=text.count(tag)
             if tcount>0:
                 links.append({"source":cu[user],"target":cu[tag],"value":tcount})
     graph3={"nodes":nodes,"links":links}
 
+    #graph2={"nodes":nodes_,"links":links,"grau_max":graus_[-1],"grau_medio":n.mean(graus_),"grau_desvio":n.std(graus_),"clust_media":n.mean(clust_),"nvertices":g.number_of_nodes(),"narestas":g.number_of_edges()}
     return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2,graph3=graph3)
 
 
