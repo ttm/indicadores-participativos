@@ -154,7 +154,7 @@ montaLB2=function(){
 };
 montaLT=function(tgraph){
     ltsvg=d3.select("#ltdiv").append("svg").attr("id","ltsvg").attr("width","100%").attr("height","100%");
-    var foobarbaz2=new rtGraph(tgraph,"ltsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
+    foobarbaz2=new rtGraph2(tgraph,"ltsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 
 };
 montaRT=function(tgraph){
@@ -190,7 +190,7 @@ montaLB=function(tgraph){
     var foobarbaz3=new Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
 };
 updateLT=function(tgraph){
-    updateRTGraph(tgraph,"ltsvg");
+    updateRTGraph2(tgraph,"ltsvg");
 };
 updateMe=function(){
         Meteor.call("arenaCheias", function(error,results) {
@@ -681,6 +681,104 @@ Template.mmissa.rendered=function() {
 
 
 
+    function rtGraph2(tgraph,gid,width,height){ // para tela cheia 1
+        ttnodes = [],
+            ttlinks = [];
+        var color2 = d3.scale.category10();
+        force2 = d3.layout.force()
+            .nodes(ttnodes)
+            .links(ttlinks)
+            .charge(-12)
+            .linkDistance(30)
+            .size([width, height])
+             .on("tick", tick);
+
+        var svg2 = d3.select("#"+gid)
+            .attr("width", width)
+            .attr("height", height);
+        var node = svg2.selectAll(".node"),
+            link = svg2.selectAll(".link");
+        ttstart=function() {
+            console.log("in ttstart");
+          link = link.data(force2.links(), function(d) { return d.source+ "-" + d.target; });
+          link.enter().insert("line", ".node").attr("class", "link");
+          link.exit().remove();
+
+            console.log("adding nodes in ttstart");
+          node = node.data(force2.nodes(), function(d) { return d.nome;});
+          node.enter().append("circle").attr("class", function(d) { return "node " + d.nome; }).attr("r", 8).call(force2.drag);
+          node.exit().remove();
+
+          force2.start();
+        }
+        function tick() {
+          node.attr("cx", function(d) { return d.x; })
+              .attr("cy", function(d) { return d.y; })
+
+          link.attr("x1", function(d) { return d.source.x; })
+              .attr("y1", function(d) { return d.source.y; })
+              .attr("x2", function(d) { return d.target.x; })
+              .attr("y2", function(d) { return d.target.y; });
+        }
+        updateRTGraph2(tgraph,gid);
+    };
+
+    updateRTGraph2=function(tgraph,gid){ // para tela cheia 1
+      var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
+      ttgraph=tgraph;
+     newnodes=ttgraph.nodes;
+     oldnodes=force2.nodes();
+     // anda em cada oldnodes removendo que nao estiver em new nodes
+    outs=[];
+    for(var i=0;i<oldnodes.length;i++){
+        var tnode=oldnodes[i];
+        var nodeout=1; // vertice estah fora
+        for(var j=0;j<newnodes.length;j++){
+            if(tnode.nome===newnodes[j].nome){
+                nodeout=0;
+            }
+        }
+        if (nodeout){
+            outs.push(i);
+        }
+    }
+    // anda em cada newnode adicionando quem nao estiver em oldnodes
+    ins=[];
+    for(var i=0;i<newnodes.length;i++){
+        tnode=newnodes[i];
+        nodein=1; // o vertice entra
+        for(var j=0;j<oldnodes.length;j++){
+            if(tnode.nome==oldnodes[j].nome){
+                nodein=0;
+            }
+        }
+        if (nodein){
+            ins.push(i);
+        }
+    }
+    // remover os nodes dos oldnodes
+    for(var i=outs.length-1;i>=0;i--){
+        ttnodes.splice(outs[i],1);
+    }
+    // adicionar os nodes dos newnodes
+    for(var i=0;i<ins.length;i++){
+        ttnodes.push(newnodes[ins[i]]);
+    }
+    console.log("outs",outs);
+    console.log("ins",ins);
+      //ttnodes.push(a, b, c);
+     //   ttnodes.length = 0;
+     // ttnodes.push.apply(ttnodes,ttgraph.nodes);
+      //ttlinks.push({source: a, target: b}, {source: a, target: c}, {source: b, target: c});
+    
+    ttlinks.length = 0;
+    for(var i=0;i<ttgraph.links.length;i++){
+        ttlinks.push(ttgraph.links[i]);
+    }
+    //  ttlinks.push.apply(ttlinks,ttgraph.links);
+      //ttlinks=ttgraph.links;
+      ttstart();
+    };
     function rtGraph(tgraph,gid,width,height){ // para tela cheia 1
         console.log(gid,width,height);
         //var width =  580,
@@ -691,7 +789,6 @@ Template.mmissa.rendered=function() {
             .linkDistance(30)
             .size([width, height]);
         var svg2 = d3.select("#"+gid)
-        //var svg = d3.select("#graph1")
             .attr("width", width)
             .attr("height", height);
         //var TTdata=Session.get('tdata');
@@ -706,7 +803,7 @@ Template.mmissa.rendered=function() {
               .attr("class", "link")
               .style("stroke-width", function(d) { return Math.sqrt(d.value); });
         var node2 = svg2.selectAll(".node")
-              .data(tgraph.nodes)
+              .data(tgraph.nodes,function(d){return d.nome})
               .enter().append("circle")
               .attr("class", "node")
               .attr("r", 5)
@@ -721,11 +818,10 @@ Template.mmissa.rendered=function() {
                 .attr("y2", function(d) { return d.target.y; });
             node2.attr("cx", function(d) { return d.x; })
                 .attr("cy", function(d) { return d.y; });
-        Session.set("force2",force2);
         });
     };
 
-updateRTGraph=function(tgraph,gid){ // para tela cheia 1
+    updateRTGraph=function(tgraph,gid){ // para tela cheia 1
         console.log("updating rtgraph");
         var color2 = d3.scale.category10();
         //var force2 = d3.layout.force()
@@ -743,9 +839,9 @@ updateRTGraph=function(tgraph,gid){ // para tela cheia 1
         //    .linkDistance(30)
         //    .size([Session.get("w")/2,Session.get("h")/2]);
         force2
-            .size([Session.get("w")/2,Session.get("h")/2])
               .nodes(tgraph.nodes)
               .links(tgraph.links)
+            .size([Session.get("w")/2,Session.get("h")/2])
               .start();
         //force2=Session.get('force2');
         //force2
@@ -755,7 +851,7 @@ updateRTGraph=function(tgraph,gid){ // para tela cheia 1
               //.start();
         //svg2.selectAll(".node").remove();
         var node2 = svg2.selectAll(".node")
-              .data(tgraph.nodes);
+              .data(tgraph.nodes,function(d){return d.nome});
             //  .attr("class", "node")
             //  .attr("r", 5)
             //    .attr("fill","black");
@@ -764,9 +860,11 @@ updateRTGraph=function(tgraph,gid){ // para tela cheia 1
               .attr("class", "node")
               .attr("r", 5)
               .style("fill", function(d) { return color2(d.group); })
-              .call(force2.drag);
+              .call(force2.drag)
+              .append("title")
+              .text(function(d) { return d.nome; });
         node2.exit().remove();
-        //svg2.selectAll(".link").remove();
+        // svg2.selectAll(".link").remove();
         var link2 = svg2.selectAll(".link")
               .data(tgraph.links);
           link2
@@ -779,8 +877,6 @@ updateRTGraph=function(tgraph,gid){ // para tela cheia 1
             // create new elements as needed
 
         //node2.exit().transition().duration(750).style("fill","black").style("fill-opacity", 1e-6).remove();
-        node2.append("title")
-              .text(function(d) { return d.nome; });
         force2.on("tick", function() {
             link2.attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
