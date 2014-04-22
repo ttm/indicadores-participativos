@@ -358,13 +358,13 @@ import string
 @app.route("/jsonTest/")
 def jsonTest():
     return jsonify(thedata=[{"data":"footeste"},{"data":"barteste"}])
-foo=open("pickledir/stopwords.cpickle","rb")
-sw=cPickle.load(foo)
-foo.close()
 import numpy as n
 @app.route("/arenaCheias/<NMSGS>/")
 def arenaCheias(NMSGS=100):
-    NMSGS=int(NMSGS)
+    foo=open("pickledir/stopwords.cpickle","rb")
+    sw=cPickle.load(foo)
+    foo.close()
+    NMSGS=int(NMSGS); print NMSGS
     
     avar=(CLIENT2.sna.NEWarenaNETmundial.count(),n.random.randint(1000))
     #aa=client2.sna.NEWarenaNETmundial.find({},{"text":1,"user.screen_name":1,"created_at":1,"_id":0}).sort("id",pymongo.DESCENDING).limit(100)
@@ -393,20 +393,18 @@ def arenaCheias(NMSGS=100):
         users=[i for i in text if i.startswith("@") and "\xe2\x80\xa6" not in i]
         text2_=[i for i in text if not i.startswith("@")]
         nusers=len(users)
-        nusers_rotos=(len(text)-len(text2_))-nusers
+        #nusers_rotos=(len(text)-len(text2_))-nusers
 
         # separar tags:
         tags=[i for i in text2_ if i.startswith("#") and "\xe2\x80\xa6" not in i]
         text2=[i for i in text2_ if not i.startswith("#")]
         ntags=len(tags)
-        ntags_rotas=(len(text)-len(text2))-ntags
+        #ntags_rotas=(len(text)-len(text2))-ntags
         # separar stopwords
-        foo=open("pickledir/stopwords.cpickle","rb")
-        sw=cPickle.load(foo)
-        foo.close()
-        text3=[tt for tt in text2 if tt not in sw]
-        sws=[tt for tt in text2 if tt in sw]
-        nsws=len(sws)
+        sw=set(sw+[u"é","be","é","q"])
+        text3=[tt for tt in text2 if (tt not in sw) and (not tt.isdigit()) and (not tt.startswith("http"))]
+        #sws=[tt for tt in text2 if tt in sw]
+        #nsws=len(sws)
         # radicalizar
         #radicalizador=k.stem.RSLPStemmer()
         #text4=[radicalizador.stem(i.decode("utf-8")).encode("utf-8") for i in text3]

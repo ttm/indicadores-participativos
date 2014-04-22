@@ -1503,25 +1503,25 @@ if (Meteor.isServer) {
     Meteor.methods({
        checkTwitter: function () {
 console.log(6);
-            return Meteor.http.call("GET", "http://brserver.heroku.com/jsonTest/"); },
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/jsonTest/"); },
        aaJson: function () {
 console.log(5);
-            return Meteor.http.call("GET", "http://brserver.heroku.com/aajson/");  },
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/aajson/");  },
        aaRedeBipartida: function () {
 console.log(4);
-            return Meteor.http.call("GET", "http://brserver.heroku.com/aaRedeBipartida/");  },
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/aaRedeBipartida/");  },
        participaBase: function () {
 console.log(3);
-            return Meteor.http.call("GET", "http://brserver.heroku.com/participaBase/");  },
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/participaBase/");  },
        arenaBase: function () {
 console.log(2);
-            return Meteor.http.call("GET", "http://brserver.heroku.com/arenaBase/");  },
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaBase/");  },
        arenaCheias: function (NMSGS) {
         if(typeof NMSGS ==="undefined"){
             NMSGS=100;
         }
 console.log(1);
-            return Meteor.http.call("GET", "http://brserver.heroku.com/arenaCheias/"+NMSGS+"/");  }
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaCheias/"+NMSGS+"/");  }
     });
 
   Meteor.startup(function () {
