@@ -198,12 +198,18 @@ updateRT=function(tgraph){
     updateHashGraph(tgraph,"rtsvg");
     updateHashInfo(tgraph,"rtsvg");
 };
+updateLB=function(tgraph){
+    updateWordGraph(tgraph,"lbsvg");
+    updateWordInfo(tgraph,"lbsvg");
+};
+
 updateMe=function(){
         Meteor.call("arenaCheias", function(error,results) {
             var ttdata=results.data;
             Session.set("tdata",ttdata);
             updateLT(ttdata.graph2);
             updateRT(ttdata.graph3);
+            updateLB(ttdata.graph);
         });
 };
     Template.tcheia.rendered=function(){

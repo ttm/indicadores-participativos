@@ -38,80 +38,90 @@ C = db[HTAG_] #collection
 foo=C.find({},{"id":1,"_id":0,"created_at":1}).sort("id",pymongo.ASCENDING) #twitterArena
 print 2
 ss=[]
-if not foo.count(): # collection n existe
-    print "colecao n existe"
-    # fazer busca geral
-
-    # e retroativa, tentar util
-    # https://dev.twitter.com/docs/api/1.1/get/search/tweets
-    # include_entities para true
-    search = t.search(q=HTAG,count=100,result_type="recent")
-    while search["statuses"]:
-        print len(search["statuses"])
-        print "batelada de status"
-        ss+=search["statuses"]
-        T.sleep(60)
-        search = t.search(q=HTAG,count=150,max_id=ss[-1]['id']-1,result_type="recent")
-    ss=ss[::-1]
-# collection já existe, adicionar tweets mais reecntes
-# inverter se realmente precisar
-
-    search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
-    while search["statuses"]:
-        print len(search["statuses"])
-        print "batelada de status mais recente"
-        ss+=search["statuses"][::-1]
-        T.sleep(60)
-        search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
-
-    try:
-        C.insert(ss)            
-    except:
-        client=pymongo.MongoClient(mdc.u2)
-        db = client['sna']
-        C = db[HTAG_] #collection
-        C.insert(ss)
-# else: se já existe, pegar os limites inferiores e superiores do BD
-else:
+simple=1
+if simple:
     print "colecao jah existe"
     quantos=foo.count()
-    primeira=foo[0]["id"]
-    dprimeira=foo[0]["created_at"]
     ultima= foo[quantos-1]["id"]
-    dultima=foo[quantos-1]["created_at"]
-    
-    search = t.search(q=HTAG,count=100,max_id=primeira-1,result_type="recent")
-    ss=[]
-    asd=[]
-    ANTES=0
-    while len(search["statuses"]):
-        ANTES=1
-        print len(search["statuses"])
-        asd.append(search["statuses"])
-        print "batelada de status"
-        ss+=search["statuses"]
-        T.sleep(60)
-        search = t.search(q=HTAG,count=100,max_id=ss[-1]['id']-1,result_type="recent")
-    asd.append(search["statuses"])
-    ss=ss[::-1]
-    #antes=[i for i in C.find()]
-    #agora=ss+antes
-    #ss=agora
-    #oid=agora[-1]["id"]
     search = t.search(q=HTAG,count=150,since_id=ultima,result_type="recent")
-    while search["statuses"]:
-        print len(search["statuses"])
-        asd.append(search["statuses"])
-        print "batelada de status mais recente"
-        ss+=search["statuses"][::-1]
-        T.sleep(60)
+    ss+=search["statuses"][::-1]
+    print len(ss)
+    C.insert(ss)
+else:
+    if not foo.count(): # collection n existe
+        print "colecao n existe"
+        # fazer busca geral
+
+        # e retroativa, tentar util
+        # https://dev.twitter.com/docs/api/1.1/get/search/tweets
+        # include_entities para true
+        search = t.search(q=HTAG,count=100,result_type="recent")
+        while search["statuses"]:
+            print len(search["statuses"])
+            print "batelada de status"
+            ss+=search["statuses"]
+            T.sleep(60)
+            search = t.search(q=HTAG,count=150,max_id=ss[-1]['id']-1,result_type="recent")
+        ss=ss[::-1]
+    # collection já existe, adicionar tweets mais reecntes
+    # inverter se realmente precisar
+
         search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
-    asd.append(search["statuses"])
-    if ss:
-        if ANTES:
-            C.remove()
-        else:
+        while search["statuses"]:
+            print len(search["statuses"])
+            print "batelada de status mais recente"
+            ss+=search["statuses"][::-1]
+            T.sleep(60)
+            search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
+
+        try:
+            C.insert(ss)            
+        except:
+            client=pymongo.MongoClient(mdc.u2)
+            db = client['sna']
+            C = db[HTAG_] #collection
             C.insert(ss)
+    # else: se já existe, pegar os limites inferiores e superiores do BD
+    else:
+        print "colecao jah existe"
+        quantos=foo.count()
+        primeira=foo[0]["id"]
+        dprimeira=foo[0]["created_at"]
+        ultima= foo[quantos-1]["id"]
+        dultima=foo[quantos-1]["created_at"]
+        
+        search = t.search(q=HTAG,count=100,max_id=primeira-1,result_type="recent")
+        ss=[]
+        asd=[]
+        ANTES=0
+        while len(search["statuses"]):
+            ANTES=1
+            print len(search["statuses"])
+            asd.append(search["statuses"])
+            print "batelada de status"
+            ss+=search["statuses"]
+            T.sleep(60)
+            search = t.search(q=HTAG,count=100,max_id=ss[-1]['id']-1,result_type="recent")
+        asd.append(search["statuses"])
+        ss=ss[::-1]
+        #antes=[i for i in C.find()]
+        #agora=ss+antes
+        #ss=agora
+        #oid=agora[-1]["id"]
+        search = t.search(q=HTAG,count=150,since_id=ultima,result_type="recent")
+        while search["statuses"]:
+            print len(search["statuses"])
+            asd.append(search["statuses"])
+            print "batelada de status mais recente"
+            ss+=search["statuses"][::-1]
+            T.sleep(60)
+            search = t.search(q=HTAG,count=150,since_id=ss[-1]['id'],result_type="recent")
+        asd.append(search["statuses"])
+        if ss:
+            if ANTES:
+                C.remove()
+            else:
+                C.insert(ss)
 
 # ativar interface de streaming
 class MyStreamer(TwythonStreamer):
