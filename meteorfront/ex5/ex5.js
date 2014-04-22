@@ -806,7 +806,7 @@ Template.mmissa.rendered=function() {
                       .style("fill","yellow").attr("r", function(d){return 3+d.peso_total/2;}).call(force2Word.drag)
                       .transition().duration(2000).style("fill",function(d){return color2(d.group)});
     d3.selectAll(".newnodeWords").append("title")
-              .text(function(d) { return d.nome; });
+              .text(function(d) { return d.nome+",w="+d.peso_total; });
                         node.exit().transition().style("fill","red").remove();
           link = link.data(force2Word.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
           link.enter().insert("line", ".node").attr("class", "link")

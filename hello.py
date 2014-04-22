@@ -429,17 +429,9 @@ def arenaCheias(NMSGS=100):
         hist_+=[d]
     ####
     palavras=freq.samples()[int(npal*0.05):int(npal*0.2)]
-    nodes=[]
-    links=[]
-    cp={}
-    cu={}
-    i=0
     gpal=x.Graph()
     for palavra in palavras:
         gpal.add_node(palavra,{"group":1})
-        nodes.append({"nome":palavra,"group":1,"count":i,"peso_total":1})
-        cp[palavra]=i
-        i+=1
     users__=set([mm["user"]["screen_name"] for mm in msgs])
     for user in users__:
         if not user:
@@ -451,38 +443,22 @@ def arenaCheias(NMSGS=100):
             if peso > 0:
                 if user not in gpal.nodes():
                     gpal.add_node(user,{"group":2})
-                if user not in cu.keys():
-                    nodes.append({"nome":user,"group":2, "count":i,"peso_total":peso})
-                    cu[user]=i; i+=1
-                else:
-                    nodes[-1]["peso_total"]+=peso
-                countpal=cp[palavra]
-                countus=cu[user]
-                links.append({"source":countpal,"target":countus,"value":peso})
                 gpal.add_edge(user,palavra,{"value":peso})
-    graph={"nodes":nodes,"links":links,"npalavras":len(palavras)}
-    GG=x.Graph()
-    for node in nodes:
-        GG.add_node(node["nome"])
-    for link in links:
-        print "link"
-        print link
-        print "nolink"
-        GG.add_edge(nodes[link["source"]]["nome"],nodes[link["target"]]["nome"])
-    print "componentes", x.number_strongly_connected_components(GG)
-    print gpal.edges(data=True)
     gpal_=x.connected_component_subgraphs(gpal)[0]
     nodes=gpal_.nodes(data=True)
+    graus=gpal_.degree(weight="weight")
     cu={}
     i=0
     nodes_=[]
     for node in nodes:
-        nodes_.append({"nome":node[0],"group":node[1]["group"]})
+        nodes_.append({"nome":node[0],"group":node[1]["group"],"peso_total":graus[node[0]]})
         cu[node[0]]=i
+        i+=1
     links=gpal_.edges(data=True)
     links_=[]
     for link in links:
         links_.append({"source":cu[link[0]],"target":cu[link[1]],"value":link[2]["value"]})
+    graph={"nodes":nodes_,"links":links_,"npalavras":len(palavras)}
         
     # rede de retweets
     g=x.Graph()
