@@ -104,9 +104,39 @@ montaLT2=function(){
     var ltsvg=d3.select("#ltdiv2").append("svg").attr("id","ltsvg2").attr("width","100%").attr("height","100%");
     renderBubbleTelao("ltsvg2");
 };
+updateBubbleTelao = function(svgid,histograma){
+        format = d3.format(",d"),
+        fill = d3.scale.category20c();
+        var vis = d3.select("#"+svgid);
+        var node = vis.selectAll("g.node")
+          .data(bubble.nodes({children:histograma}).slice(1))
+          .enter().append("svg:g")
+          .attr("class", "node")
+          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        node.append("svg:title")
+          .text(function(d) { return d.name + ": " + format(d.value); });
+        node.append("svg:circle")
+          .attr("r", function(d) { return d.r; })
+          .style("fill", function(d) { return fill(d.name); });
+        node.append("svg:text")
+          .attr("text-anchor", "middle")
+          .attr("dy", ".3em")
+          .text(function(d) { return d.name.substring(0, d.r / 3); })
+          .attr("font-family", "sans-serif")
+          .attr("stroke","black")
+          .attr("stroke-width",0.1)
+          .attr("font-size", function(d){return 4+3*Math.log(5+2*d.count)});
+        node.append("svg:text")
+          .attr("text-anchor", "middle")
+          .attr("dy", "1.6em")
+          .attr("stroke-width",0.1)
+          .attr("fill","black")
+          .text(function(d) { return d.count; })
+          .attr("font-size", function(d){return 4+2*Math.log(5+2*d.count)});
+
+};
 montaRT2=function(){
-   var tsetup=Template.tcheia.tsetup();
-    var w=tsetup.w,h=tsetup.h;
+    var w=Session.get("w"),h=Session.get("h");
     console.log(w,h);
     var ncol=1;
     var nrow=8;
@@ -116,8 +146,40 @@ montaRT2=function(){
     var tdata=Session.get('tdata');
     var msgs=tdata.msgs.slice(0,ncol*nrow);
     rtsvg=d3.select("#rtdiv2").append("svg").attr("width","100%").attr("height","100%");
-    rttexts=rtsvg.selectAll("text").data(msgs).enter().append("text").append("tspan").text(function(d,i){return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(0,90) }).attr("x",function(d,i){return 10}).attr("y",function(d,i){return 20+i*line_sep}).attr("font-size",10);
-    rttexts2=rtsvg.selectAll("text .subline").data(msgs).enter().append("text").append("tspan").text(function(d,i){return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(90) }).attr("x",function(d,i){return 10}).attr("y",function(d,i){return 15+20+i*line_sep}).attr("font-size",10);
+    rttexts=rtsvg.selectAll("text")
+            .data(msgs).enter().append("text")
+            .append("tspan")
+            .text(function(d,i){
+                return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(0,90) })
+            .attr("x",function(d,i){return 10}).attr("y",function(d,i){return 20+i*line_sep}).attr("font-size",10);
+    rttexts2=rtsvg.selectAll("text .subline")
+                   .data(msgs).enter().append("text")
+                   .append("tspan").text(function(d,i){
+                      return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(90) })
+                   .attr("x",function(d,i){return 10}).attr("y",function(d,i){return 15+20+i*line_sep}).attr("font-size",10);
+};
+updateRT2=function(){
+    var w=Session.get("w"),h=Session.get("h");
+    console.log(w,h);
+    var ncol=1;
+    var nrow=8;
+    var col_sep=(w/2)/ncol;
+    var line_sep=(h/2)/nrow;
+
+
+    var tdata=Session.get('tdata');
+    var msgs=tdata.msgs.slice(0,ncol*nrow);
+    rttexts=rtsvg.selectAll("text")
+            .data(msgs)
+            .text(function(d,i){
+                return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(0,90) })
+            .attr("x",function(d,i){return 10}).attr("y",function(d,i){return 20+i*line_sep}).attr("font-size",10);
+    rttexts2=rtsvg.selectAll("text .subline")
+                   .data(msgs)
+                   .text(function(d,i){
+                      return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(90) })
+                   .attr("x",function(d,i){return 10}).attr("y",function(d,i){return 15+20+i*line_sep}).attr("font-size",10);
+
 };
 
 montaRB2=function(geral){
@@ -237,9 +299,12 @@ updateLB=function(tgraph){
     updateWordInfo(tgraph,"lbsvg");
 };
 updateRB2=function(geral){
-    d3.select("#tInfoDiv").selectAll("p").data(geral).text(function(d){return d.info+": "+d.val});
+    //d3.select("#tInfoDiv").selectAll("p").data(geral).text(function(d){return d.info+": "+d.val});
 };
 
+updateLT2=function(hist){
+   // updateBubbleTelao("ltsvg2",hist);
+};
 updateMe=function(){
         Meteor.call("arenaCheias",Session.get("NMSGS"), function(error,results) {
             var ttdata=results.data;
@@ -248,6 +313,8 @@ updateMe=function(){
             updateRT(ttdata.graph3);
             updateLB(ttdata.graph);
             updateRB2(ttdata.geral);
+            updateRT2();
+            updateLT2(ttdata.hist);
         });
 };
     Template.tcheia.rendered=function(){
@@ -595,7 +662,7 @@ Template.mmissa.rendered=function() {
         fill = d3.scale.category20c();
     var w=Session.get("w")/2,h=Session.get("h")/2;
 
-        var bubble = d3.layout.pack()
+        bubble = d3.layout.pack()
             .sort(null)
             //.size([r, r])
             .size([w, h])
@@ -608,31 +675,8 @@ Template.mmissa.rendered=function() {
             .attr("width", w)
             .attr("height", h)
             .attr("class", "bubble");
-        var node = vis.selectAll("g.node")
-          .data(bubble.nodes({children:histograma}).slice(1))
-          .enter().append("svg:g")
-          .attr("class", "node")
-          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-        node.append("svg:title")
-          .text(function(d) { return d.name + ": " + format(d.value); });
-        node.append("svg:circle")
-          .attr("r", function(d) { return d.r; })
-          .style("fill", function(d) { return fill(d.name); });
-        node.append("svg:text")
-          .attr("text-anchor", "middle")
-          .attr("dy", ".3em")
-          .text(function(d) { return d.name.substring(0, d.r / 3); })
-          .attr("font-family", "sans-serif")
-          .attr("stroke","black")
-          .attr("stroke-width",0.1)
-          .attr("font-size", function(d){return 4+3*Math.log(5+2*d.count)});
-        node.append("svg:text")
-          .attr("text-anchor", "middle")
-          .attr("dy", "1.6em")
-          .attr("stroke-width",0.1)
-          .attr("fill","black")
-          .text(function(d) { return d.count; })
-          .attr("font-size", function(d){return 4+2*Math.log(5+2*d.count)});
+
+            updateBubbleTelao(svgid,histograma);
     };
 
 
