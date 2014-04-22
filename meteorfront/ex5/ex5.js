@@ -162,8 +162,9 @@ montaRT=function(tgraph){
     var foobarbaz4=new hashGraph(tgraph,"rtsvg");
 };
 montaRB=function(){
-    var tsetup=Template.tcheia.tsetup();
-    var w=tsetup.w,h=tsetup.h;
+    //var tsetup=Template.tcheia.tsetup();
+    //var w=tsetup.w,h=tsetup.h;
+    var w=Session.get("w"),h=Session.get("h");
     console.log(w,h);
     var col_sep=(w/2)/3;
     var line_sep=(h/2)/5;
@@ -171,11 +172,11 @@ montaRB=function(){
     
     var rbsvg=d3.select("#rbdiv").append("svg").attr("width","100%").attr("height","100%");
     var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
-    rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x",col_sep).attr("y",line_sep);
-    rbsvg.append("text").attr("id","textFlip").text("flip me").attr("x",col_sep).attr("y",3*line_sep).on("click",function(d){
+    rbsvg.append("text").attr("id","text2").text(Session.get("CCOUNTER")).attr("x","30%").attr("y","30%");
+    rbsvg.append("text").attr("id","textFlip").text("flip me").attr("x","30%").attr("y","90%").on("click",function(d){
             Session.set("screen1",0);
 });
-    rbsvg.append("text").attr("id","configMe").text("config me").attr("x",2*col_sep).attr("y",line_sep).on("click",function(d){
+    rbsvg.append("text").attr("id","configMe").text("config me").attr("x","60%").attr("y","30%").on("click",function(d){
         var invars=prompt("O que você quer?");
             console.log(invars);
         foo=invars;
@@ -184,6 +185,7 @@ montaRB=function(){
         Session.set("h",wh[1]);
 });
 };
+
 montaLB=function(tgraph){
     lbsvg=d3.select("#lbdiv").append("svg").attr("id","lbsvg").attr("width","100%").attr("height","100%");
     //var foobarbaz3=new Bipartite(tgraph,"lbsvg",Template.tcheia.tsetup().w/2,Template.tcheia.tsetup().h/2);
@@ -201,6 +203,9 @@ updateRT=function(tgraph){
 updateLB=function(tgraph){
     updateWordGraph(tgraph,"lbsvg");
     updateWordInfo(tgraph,"lbsvg");
+};
+updateRB=function(){
+    
 };
 
 updateMe=function(){
