@@ -176,6 +176,9 @@ montaRB=function(){
     rbsvg.append("text").attr("id","textFlip").text("flip me").attr("x","30%").attr("y","90%").on("click",function(d){
             Session.set("screen1",0);
 });
+    rbsvg.append("text").attr("id","helpMe").text("help").attr("x","30%").attr("y","60%").on("click",function(d){
+    alert("Os quatro retangulos verdes ao lado configuram os layouts dos grafos (basta clicar, ele mapeia o x e y).\n\nNo 'config me', coloque <width>;<height>;<nmsgs>\n\nClique no 'flip me' para alternar telao");
+});
     rbsvg.append("text").attr("id","configMe").text("config me").attr("x","60%").attr("y","30%").on("click",function(d){
         var invars=prompt("O que você quer?");
             console.log(invars);
@@ -740,7 +743,7 @@ Template.mmissa.rendered=function() {
         ttnodesWord = [],
             ttlinksWord = [];
         var color2 = d3.scale.category10();
-        color2("asd2"),color2("a4sd"),color2("as5sd"), color2("asd"),color2("assssadd"),color2("assd");
+        color2("asd2"),color2("a4sd"),color2("as5sd"), color2("asd"),color2("assssadd"),color2("assd"),color2("assdsasd");
         force2Word= d3.layout.force()
             .nodes(ttnodesWord)
             .links(ttlinksWord)
@@ -759,10 +762,14 @@ Template.mmissa.rendered=function() {
             console.log("in ttstart");
             console.log("adding nodes in ttstart");
           node = node.data(force2Word.nodes(), function(d) { return d.nome;});
-          node.enter().append("circle")
+          node.enter()
+//                     .append("rect").style("fill","orange").attr("class", function(d) { return "rect " + d.nome; }).attr("width", function(d){return 3+d.peso_total/2;}).attr("height", function(d){return 3+d.peso_total/2;})
+                    .append("circle")
                       .style("fill","yellow").attr("class", function(d) { return "node " + d.nome; }).attr("r", function(d){return 3+d.peso_total/2;}).call(force2Word.drag)
                       .transition().duration(2000).style("fill",function(d){return color2(d.group)});
-
+//node.append("rect").attr("x",function(d){return d.x}).attr("y",function(d){return d.y}).attr("width",20).attr("height",20).style("fill","yellow");
+//.text(function (d){return d.nome})
+//    node.append("svg:text").text("Aqui texto").style("fill", "#555").style("font-family", "Arial").style("font-size", 12);
  node.append("title")
               .text(function(d) { return d.nome; });
                         node.exit().transition().style("fill","red").remove();
