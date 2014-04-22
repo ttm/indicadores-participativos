@@ -104,7 +104,8 @@ montaLT2=function(){
     var ltsvg=d3.select("#ltdiv2").append("svg").attr("id","ltsvg2").attr("width","100%").attr("height","100%");
     renderBubbleTelao("ltsvg2");
 };
-updateBubbleTelao = function(svgid,histograma){
+updateBubbleTelao = function(svgid){
+        var histograma=Session.get("tdata").hist;
         format = d3.format(",d"),
         fill = d3.scale.category20c();
         var vis = d3.select("#"+svgid);
@@ -655,8 +656,6 @@ Template.mmissa.rendered=function() {
 
 
     function renderBubbleTelao(svgid){
-        var TTTdata=Session.get('tdata');
-        var histograma=TTTdata.hist;
         var r = 580,
         format = d3.format(",d"),
         fill = d3.scale.category20c();
@@ -676,7 +675,7 @@ Template.mmissa.rendered=function() {
             .attr("height", h)
             .attr("class", "bubble");
 
-            updateBubbleTelao(svgid,histograma);
+            updateBubbleTelao(svgid);
     };
 
 
@@ -882,7 +881,7 @@ Template.mmissa.rendered=function() {
     // para cada item de ttnodesWord
     // achar quem do newnodes que tem mesmo nome
     // pegar os dados dele
-    //for(var item in ttnodesWord){
+        //for(var item in ttnodesWord){
     //    var onome=ttnodesWord[item].nome;
     //    i=0;
     //    while(newnodes[i].nome!==onome){
