@@ -539,7 +539,8 @@ def arenaCheias(NMSGS=100):
     graph3={"nodes":nodes,"links":links,"ntags":len(tags_)}
 
     #graph2={"nodes":nodes_,"links":links,"grau_max":graus_[-1],"grau_medio":n.mean(graus_),"grau_desvio":n.std(graus_),"clust_media":n.mean(clust_),"nvertices":g.number_of_nodes(),"narestas":g.number_of_edges()}
-    return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2,graph3=graph3)
+    geral=[{"info":"participantes","val":len(users)},{"info":"mensagens","val":NMSGS},{"info":"npalavras","val":len(text3)},{"info":"ncaracteres","val":len(text_)}]
+    return jsonify(avar=avar,hist=hist_,collocations=col10,msgs=msgs,graph=graph,graph2=graph2,graph3=graph3,geral=geral)
 
 
 

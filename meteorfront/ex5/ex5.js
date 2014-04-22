@@ -120,23 +120,21 @@ montaRT2=function(){
     rttexts2=rtsvg.selectAll("text .subline").data(msgs).enter().append("text").append("tspan").text(function(d,i){return (d.user.screen_name+": "+d.text+", "+d.created_at).slice(90) }).attr("x",function(d,i){return 10}).attr("y",function(d,i){return 15+20+i*line_sep}).attr("font-size",10);
 };
 
-montaRB2=function(){
-   var tsetup=Template.tcheia.tsetup();
-    var w=tsetup.w,h=tsetup.h;
-    console.log(w,h);
+montaRB2=function(geral){
+    var w=Session.get("w"),h=Session.get("h");
     var col_sep=(w/2)/3;
     var line_sep=(h/2)/5;
-    var rbsvg=d3.select("#rbdiv2").append("svg").attr("width","100%").attr("height","100%");
-    var rbrec=rbsvg.append("rect").attr("width","100%").attr("height","100%").attr("fill","red");
-    rbsvg.append("text").attr("id","text3").text("flip me again").attr("x",col_sep).attr("y",line_sep).on("click",function(d){ Session.set("screen1",1);  });
-    rbsvg.append("text").attr("id","text4").attr("x",2*col_sep).attr("y",line_sep);
-    rbsvg.append("text").attr("id","text5").text("condense").attr("x",col_sep).attr("y",2*line_sep).on("click",function(d){ 
+    var rbdiv=d3.select("#rbdiv2");
+    rbdiv.append("p").attr("id","text3").text("flip me again").attr("x",col_sep).attr("y",line_sep).style("color","green").on("click",function(d){ Session.set("screen1",1);  });
+    rbdiv.append("p").attr("id","text4").attr("x",2*col_sep).attr("y",line_sep).style("color","green");
+    rbdiv.append("p").attr("id","text5").text("condense").attr("x",col_sep).attr("y",2*line_sep).style("color","green").on("click",function(d){
             Session.set("screen1",1);  
             Session.set("theTopic","AA");  
         Session.set("tcheia",0);
           setContext();
 });
-
+tgeral=geral;
+    rbdiv.append("div").attr("id","tInfoDiv").selectAll("p").data(geral).enter().append("p").text(function(d){return d.info+": "+d.val}).style("color","green");
 };
 montaLB2=function(){
    var tsetup=Template.tcheia.tsetup();
@@ -238,8 +236,8 @@ updateLB=function(tgraph){
     updateWordGraph(tgraph,"lbsvg");
     updateWordInfo(tgraph,"lbsvg");
 };
-updateRB=function(){
-    
+updateRB2=function(geral){
+    d3.select("#tInfoDiv").selectAll("p").data(geral).text(function(d){return d.info+": "+d.val});
 };
 
 updateMe=function(){
@@ -249,10 +247,11 @@ updateMe=function(){
             updateLT(ttdata.graph2);
             updateRT(ttdata.graph3);
             updateLB(ttdata.graph);
+            updateRB2(ttdata.geral);
         });
 };
     Template.tcheia.rendered=function(){
-        Session.set("screen1",1);
+        Session.set("screen1",0);
         Meteor.call("arenaCheias",Session.get("NMSGSi"), function(error,results) {
             Session.set("w",1024);
             Session.set("h",768);
@@ -265,7 +264,7 @@ updateMe=function(){
 
             montaLT2();
             montaRT2();
-            montaRB2();
+            montaRB2(ttdata.geral);
             montaLB2();
         });
     };
@@ -594,8 +593,7 @@ Template.mmissa.rendered=function() {
         var r = 580,
         format = d3.format(",d"),
         fill = d3.scale.category20c();
-   var tsetup=Template.tcheia.tsetup();
-    var w=tsetup.w/2,h=tsetup.h/2;
+    var w=Session.get("w")/2,h=Session.get("h")/2;
 
         var bubble = d3.layout.pack()
             .sort(null)
