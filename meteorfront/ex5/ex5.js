@@ -209,7 +209,7 @@ updateRB=function(){
 };
 
 updateMe=function(){
-        Meteor.call("arenaCheias", function(error,results) {
+        Meteor.call("arenaCheias",20, function(error,results) {
             var ttdata=results.data;
             Session.set("tdata",ttdata);
             updateLT(ttdata.graph2);
@@ -219,7 +219,7 @@ updateMe=function(){
 };
     Template.tcheia.rendered=function(){
         Session.set("screen1",1);
-        Meteor.call("arenaCheias", function(error,results) {
+        Meteor.call("arenaCheias",10, function(error,results) {
             Session.set("w",1024);
             Session.set("h",768);
             var ttdata=results.data;
@@ -793,6 +793,21 @@ Template.mmissa.rendered=function() {
     for(var i=outs.length-1;i>=0;i--){
         ttnodesWord.splice(outs[i],1);
     }
+    // atualizando os dados dos vertices
+    // para cada item de ttnodesWord
+    // achar quem do newnodes que tem mesmo nome
+    // pegar os dados dele
+    for(var item in ttnodesWord){
+        var onome=ttnodesWord[item].nome;
+        i=0;
+        while(newnodes[i].nome!==onome){
+            i++;
+        }
+        for (var item2 in newnodes[i]){
+            ttnodesWord[item][item2]=newnodes[i][item2];
+        }
+    }
+
     // adicionar os nodes dos newnodes
     for(var i=0;i<ins.length;i++){
         ttnodesWord.push(newnodes[ins[i]]);
@@ -917,6 +932,18 @@ Template.mmissa.rendered=function() {
     for(var i=outs.length-1;i>=0;i--){
         ttnodes2.splice(outs[i],1);
     }
+    // atualizando os dados dos vertices
+    for(var item in ttnodes2){
+        var onome=ttnodes2[item].nome;
+        i=0;
+        while(newnodes[i].nome!==onome){
+            i++;
+        }
+        for (var item2 in newnodes[i]){
+            ttnodes2[item][item2]=newnodes[i][item2];
+        }
+    }
+
     // adicionar os nodes dos newnodes
     for(var i=0;i<ins.length;i++){
         ttnodes2.push(newnodes[ins[i]]);
@@ -1043,11 +1070,8 @@ Template.mmissa.rendered=function() {
     for(var i=0;i<ins.length;i++){
         ttnodes.push(newnodes[ins[i]]);
     }
-      //ttnodes.push(a, b, c);
-     //   ttnodes.length = 0;
-     // ttnodes.push.apply(ttnodes,ttgraph.nodes);
-      //ttlinks.push({source: a, target: b}, {source: a, target: c}, {source: b, target: c});
-    
+    // atualizar os dados dos sobreviventes
+    // fazendo junto com a atualizacao das arestas
     ttlinks.length = 0;
     for(var ii=0;ii<newlinks.length;ii++){ // para cada aresta
         // observar o source e o target
@@ -1057,9 +1081,15 @@ Template.mmissa.rendered=function() {
         var i=-1;
         do { i++; var tnn=i; 
         } while (ttnodes[i].nome!==tnome1);
+        for (var avar in newnodes[tlink.source]){
+            ttnodes[i][avar]=newnodes[tlink.source][avar];
+        }
         var i=-1;
         do {  i++;var tnn2=i;
         } while (ttnodes[i].nome!==tnome2);
+        for (var avar in newnodes[tlink.target]){
+            ttnodes[i][avar]=newnodes[tlink.target][avar];
+        }
         tlink.source=tnn;
         tlink.target=tnn2;
         tlink.nome_source=tnome1;
@@ -1394,9 +1424,12 @@ console.log(3);
        arenaBase: function () {
 console.log(2);
             return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaBase/");  },
-       arenaCheias: function () {
+       arenaCheias: function (NMSGS) {
+        if(typeof NMSGS ==="undefined"){
+            NMSGS=100;
+        }
 console.log(1);
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaCheias/");  }
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaCheias/"+NMSGS+"/");  }
     });
 
   Meteor.startup(function () {
