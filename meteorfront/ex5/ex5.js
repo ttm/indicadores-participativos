@@ -183,7 +183,38 @@ montaRB=function(){
         wh=invars.split(";")
         Session.set("w",wh[0]);
         Session.set("h",wh[1]);
+        Session.set("NMSGS",wh[2]);
 });
+
+    rbsvg.append("rect").attr("x","60%").attr("y","60%").attr("width","50%").attr("height","5%").style("fill","green").on("click",function(d){
+var ppos=d3.mouse(this);
+var tb=this.getBBox();
+var delta1=(ppos[0]-tb.x)/tb.width;
+var delta2=(ppos[1]-tb.y)/tb.height;
+console.log(delta1,delta2);
+Session.set("cf1",(10*delta1/0.8)*-12);
+Session.set("lf1",(10*delta2)*30);
+});
+    rbsvg.append("rect").attr("x","60%").attr("y","70%").attr("width","50%").attr("height","5%").style("fill","green").on("click",function(d){
+var ppos=d3.mouse(this);
+var tb=this.getBBox();
+var delta1=(ppos[0]-tb.x)/tb.width;
+var delta2=(ppos[1]-tb.y)/tb.height;
+console.log(delta1,delta2);
+Session.set("cf2",(10*delta1/0.8)*-12);
+Session.set("lf2",(10*delta2)*30);
+});
+    rbsvg.append("rect").attr("x","60%").attr("y","80%").attr("width","50%").attr("height","5%").style("fill","green").on("click",function(d){
+var ppos=d3.mouse(this);
+var tb=this.getBBox();
+var delta1=(ppos[0]-tb.x)/tb.width;
+var delta2=(ppos[1]-tb.y)/tb.height;
+console.log(3,delta1,delta2);
+Session.set("cf3",(10*delta1/0.8)*-12);
+Session.set("lf3",(10*delta2)*30);
+});
+
+
 };
 
 montaLB=function(tgraph){
@@ -209,7 +240,7 @@ updateRB=function(){
 };
 
 updateMe=function(){
-        Meteor.call("arenaCheias",20, function(error,results) {
+        Meteor.call("arenaCheias",Session.get("NMSGS"), function(error,results) {
             var ttdata=results.data;
             Session.set("tdata",ttdata);
             updateLT(ttdata.graph2);
@@ -219,7 +250,7 @@ updateMe=function(){
 };
     Template.tcheia.rendered=function(){
         Session.set("screen1",1);
-        Meteor.call("arenaCheias",10, function(error,results) {
+        Meteor.call("arenaCheias",Session.get("NMSGSi"), function(error,results) {
             Session.set("w",1024);
             Session.set("h",768);
             var ttdata=results.data;
@@ -479,6 +510,14 @@ Template.mmissa.rendered=function() {
       //Session.set("theTopic","AA"); // para a interface original TTM
       Session.set("theTopic","teloes"); // para a interface de teloes
       Session.set("tcheia",1); // para a interface de teloes
+      Session.set("NMSGS",140);
+      Session.set("NMSGSi",100);
+      Session.set("cf1",-48);
+      Session.set("lf1",120);
+      Session.set("cf2",-22);
+      Session.set("lf2",220);
+      Session.set("cf3",-33);
+      Session.set("lf3",90);
       setContext();
   });
 
@@ -753,7 +792,8 @@ Template.mmissa.rendered=function() {
 
     updateWordInfo=function(tgraph,gid){
         var svg2 = d3.select("#"+gid)
-        svg2.select("#t1"+gid).text("nvertices "+tgraph.nodes.length+"("+(tgraph.nodes.length-tgraph.npalavras)+"p,"+tgraph.npalavras+"h), narestas "+tgraph.links.length);
+        svg2.select("#t1"+gid).text("entidades: "+tgraph.nodes.length+", relações: "+tgraph.links.length);
+        svg2.select("#t2"+gid).text((tgraph.nodes.length-tgraph.npalavras)+" pessoas, "+tgraph.npalavras+" n palavras");
     }; // para tela cheia 1
     updateWordGraph=function(tgraph,gid){ // para tela cheia 1
       var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
@@ -762,6 +802,11 @@ Template.mmissa.rendered=function() {
      newlinks=tgraph.links;
      oldnodes=force2Word.nodes();
      // anda em cada oldnodes removendo que nao estiver em new nodes
+
+        force2Word
+            .charge(Session.get("cf3"))
+            .linkDistance(Session.get("lf3"));
+
     outs=[];
     for(var i=0;i<oldnodes.length;i++){
         var tnode=oldnodes[i];
@@ -901,6 +946,10 @@ Template.mmissa.rendered=function() {
      newlinks=tgraph.links;
      oldnodes=force2Hash.nodes();
      // anda em cada oldnodes removendo que nao estiver em new nodes
+        force2Hash
+            .charge(Session.get("cf2"))
+            .linkDistance(Session.get("lf2"));
+     // anda em cada oldnodes removendo que nao estiver em new nodes
     outs=[];
     for(var i=0;i<oldnodes.length;i++){
         var tnode=oldnodes[i];
@@ -1025,12 +1074,17 @@ Template.mmissa.rendered=function() {
 
     updateRTInfo=function(tgraph,gid){
         var svg2 = d3.select("#"+gid)
-        svg2.select("#t1"+gid).text("nvertices "+tgraph.nvertices+", narestas "+tgraph.narestas+", grau max "+tgraph.grau_max+", grau medio "+tgraph.grau_medio.toFixed(2));
+        svg2.select("#t1"+gid).text("n pessoas "+tgraph.nvertices+", n interações "+tgraph.narestas+", grau max "+tgraph.grau_max+", grau medio "+tgraph.grau_medio.toFixed(2));
         svg2.select("#t2"+gid).text("clusterizacao media "+tgraph.clust_media.toFixed(2)).attr("x",20);
     } // para tela cheia 1
     updateRTGraph2=function(tgraph,gid){ // para tela cheia 1
       var a = {id: "a"}, b = {id: "b"}, c = {id: "c"};
       ttgraph=tgraph;
+
+
+        force2
+            .charge(Session.get("cf1"))
+            .linkDistance(Session.get("lf1"));
      newnodes=tgraph.nodes;
      newlinks=tgraph.links;
      oldnodes=force2.nodes();
