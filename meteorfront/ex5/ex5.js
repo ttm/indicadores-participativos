@@ -1081,8 +1081,8 @@ Template.mmissa.rendered=function() {
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
 
-          node = node.data(force2.nodes(), function(d) { return d.nome;}).attr("class","oldnodeRT");
-          node.enter().append("circle").attr("class","newnodeRT")
+          node = node.data(force2.nodes(), function(d) { return d.nome;}).attr("class","oldnodeRT").style("fill",function(d){return color2(d.group)});
+          node.enter().append("circle").attr("stroke","white").attr("stroke-width",2).attr("class","newnodeRT")
                       .style("fill","yellow").attr("r", function(d){return d.grau+2;}).call(force2.drag)
                       .transition().duration(2000).style("fill",function(d){return color2(d.group)});
 
