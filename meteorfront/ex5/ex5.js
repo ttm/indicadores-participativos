@@ -957,7 +957,7 @@ Template.mmissa.rendered=function() {
               .text(function(d) { return d.nome+",atv="+d.atv.toFixed(2); });
                         node.exit().transition().style("fill","red").remove();
           force2Hash.start();
-        }
+        };
         function tick() {
           node.attr("cx", function(d) { return d.x; })
               .attr("cy", function(d) { return d.y; })
