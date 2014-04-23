@@ -242,12 +242,16 @@ montaRB=function(){
 });
     rbsvg.append("text").attr("id","configMe").text("config me").attr("x","60%").attr("y","30%").on("click",function(d){
         var invars=prompt("O que você quer?");
-            console.log(invars);
         foo=invars;
         wh=invars.split(";")
-        Session.set("w",wh[0]);
-        Session.set("h",wh[1]);
-        Session.set("NMSGS",wh[2]);
+        if (wh.length===1){
+            console.log(wh[0]);
+            ssearch=invars.split(","); // primeiro nome, segundo o número do grafo
+        } else {
+            Session.set("w",wh[0]);
+            Session.set("h",wh[1]);
+            Session.set("NMSGS",wh[2]);
+        }
 });
 
     rbsvg.append("rect").attr("x","60%").attr("y","60%").attr("width","50%").attr("height","5%").style("fill","green").on("click",function(d){
@@ -580,8 +584,8 @@ Template.mmissa.rendered=function() {
       //Session.set("theTopic","AA"); // para a interface original TTM
       Session.set("theTopic","teloes"); // para a interface de teloes
       Session.set("tcheia",1); // para a interface de teloes
-      Session.set("NMSGS",20);
-      Session.set("NMSGSi",20);
+      Session.set("NMSGS",80);
+      Session.set("NMSGSi",80);
       Session.set("cf1",-48);
       Session.set("lf1",120);
       Session.set("cf2",-22);
@@ -940,23 +944,17 @@ Template.mmissa.rendered=function() {
         var node = svg2.selectAll(".node"),
             link = svg2.selectAll(".link");
         ttstartHash=function() {
-          node = node.data(force2Hash.nodes(), function(d) { return d.nome;}).attr("class","oldnodeHash");
-          node.enter().append("circle").attr("class","newnodeHash")
-                      .style("fill","yellow").attr("r", function(d){return d.atv+2;}).call(force2Hash.drag)
-                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
-
- d3.selectAll(".newnodeHash").append("title")
-              .text(function(d) { return d.nome+",atv="+d.atv.toFixed(2); });
-                        node.exit().transition().style("fill","red").remove();
-
-
           link = link.data(force2Hash.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
           link.enter().insert("line", ".node").attr("class", "link")
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
-
-
-
+          node = node.data(force2Hash.nodes(), function(d) { return d.nome;}).attr("class","oldnodeHash");
+          node.enter().append("circle").attr("class","newnodeHash")
+                      .style("fill","yellow").attr("r", function(d){return d.atv+2;}).call(force2Hash.drag)
+                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
+ d3.selectAll(".newnodeHash").append("title").attr("x",function(d){return d.x}).attr("y",function(d){return d.y})
+              .text(function(d) { return d.nome+",atv="+d.atv.toFixed(2); });
+                        node.exit().transition().style("fill","red").remove();
           force2Hash.start();
         }
         function tick() {
@@ -1502,25 +1500,25 @@ if (Meteor.isServer) {
     Meteor.methods({
        checkTwitter: function () {
 console.log(6);
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/jsonTest/"); },
+            return Meteor.http.call("GET", "http://brserver.heroku.com/jsonTest/"); },
        aaJson: function () {
 console.log(5);
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/aajson/");  },
+            return Meteor.http.call("GET", "http://brserver.heroku.com/aajson/");  },
        aaRedeBipartida: function () {
 console.log(4);
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/aaRedeBipartida/");  },
+            return Meteor.http.call("GET", "http://brserver.heroku.com/aaRedeBipartida/");  },
        participaBase: function () {
 console.log(3);
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/participaBase/");  },
+            return Meteor.http.call("GET", "http://brserver.heroku.com/participaBase/");  },
        arenaBase: function () {
 console.log(2);
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaBase/");  },
+            return Meteor.http.call("GET", "http://brserver.heroku.com/arenaBase/");  },
        arenaCheias: function (NMSGS) {
         if(typeof NMSGS ==="undefined"){
             NMSGS=100;
         }
 console.log(1);
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/arenaCheias/"+NMSGS+"/");  }
+            return Meteor.http.call("GET", "http://brserver.heroku.com/arenaCheias/"+NMSGS+"/");  }
     });
 
   Meteor.startup(function () {

@@ -467,7 +467,11 @@ def arenaCheias(NMSGS=100):
     for RT in RTs:
         sn1=RT["user"]["screen_name"]
         foo=RT["text"]
-        sn2=foo[foo.index("@")+1:foo.index(":")]
+        try:
+            bar=foo.index(":")
+        except:
+            bar=foo.index("@")+5
+        sn2=foo[foo.index("@")+1:bar]
         if "@" in sn2:
             sn2=sn2[:sn2.index("@")]
         sn2s+=[sn2]
