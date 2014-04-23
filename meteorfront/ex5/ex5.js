@@ -804,18 +804,19 @@ Template.mmissa.rendered=function() {
         var node = svg2.selectAll(".node"),
             link = svg2.selectAll(".link");
         ttstartWord=function() {
-          node = node.data(force2Word.nodes(), function(d) { return d.nome;}).attr("class","oldnodeWords");
-          node.enter()
-                    .append("circle").attr("class","newnodeWords")
-                      .style("fill","yellow").attr("r", function(d){return 3+d.peso_total/2;}).call(force2Word.drag)
-                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
-    d3.selectAll(".newnodeWords").append("title")
-              .text(function(d) { return d.nome+",w="+d.peso_total; });
-                        node.exit().transition().style("fill","red").remove();
           link = link.data(force2Word.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
           link.enter().insert("line", ".node").attr("class", "link")
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
+
+          node = node.data(force2Word.nodes(), function(d) { return d.nome;}).attr("class","oldnodeWords");
+          node.enter()
+                    .append("circle").attr("class","newnodeWords")
+                      .style("fill","yellow").attr("stroke","white").attr("stroke-width",2).attr("r", function(d){return 3+d.peso_total/2;}).call(force2Word.drag)
+                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
+    d3.selectAll(".newnodeWords").append("title")
+              .text(function(d) { return d.nome+",w="+d.peso_total; });
+                        node.exit().transition().style("fill","red").remove();
           force2Word.start();
         }
         function tick() {
@@ -949,7 +950,7 @@ Template.mmissa.rendered=function() {
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
           node = node.data(force2Hash.nodes(), function(d) { return d.nome;}).attr("class","oldnodeHash");
-          node.enter().append("circle").attr("class","newnodeHash")
+          node.enter().append("circle").attr("stroke","white").attr("stroke-width",2).attr("class","newnodeHash")
                       .style("fill","yellow").attr("r", function(d){return d.atv+2;}).call(force2Hash.drag)
                       .transition().duration(2000).style("fill",function(d){return color2(d.group)});
  d3.selectAll(".newnodeHash").append("title").attr("x",function(d){return d.x}).attr("y",function(d){return d.y})
@@ -1075,6 +1076,11 @@ Template.mmissa.rendered=function() {
         var node = svg2.selectAll(".node"),
             link = svg2.selectAll(".link");
         ttstart=function() {
+          link = link.data(force2.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
+          link.enter().insert("line", ".node").attr("class", "link")
+              .style("stroke-width", function(d) { return d.value; });
+          link.exit().remove();
+
           node = node.data(force2.nodes(), function(d) { return d.nome;}).attr("class","oldnodeRT");
           node.enter().append("circle").attr("class","newnodeRT")
                       .style("fill","yellow").attr("r", function(d){return d.grau+2;}).call(force2.drag)
@@ -1083,15 +1089,6 @@ Template.mmissa.rendered=function() {
  d3.selectAll(".newnodeRT").append("title")
               .text(function(d) { return d.nome+",g="+d.grau+",cc="+d.clust.toFixed(2); });
                         node.exit().transition().style("fill","red").remove();
-
-
-          link = link.data(force2.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
-          link.enter().insert("line", ".node").attr("class", "link")
-              .style("stroke-width", function(d) { return d.value; });
-          link.exit().remove();
-
-
-
           force2.start();
         }
         function tick() {
