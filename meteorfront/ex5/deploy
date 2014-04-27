@@ -2,6 +2,7 @@
 # Nodejitsu Meteor Deploy Script v0.3
 # v0.2, Gadi Cohen, GPLed.
 # Updated to v0.3 by Matthias Pall Gissurarson
+# usage $ deploy APPNAME [SUBDOMAIN]
  
 # Change this if you don't like it
 OUTPUT_DIR=~/tmp/demeteorized
