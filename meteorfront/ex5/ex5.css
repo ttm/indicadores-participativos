@@ -2,6 +2,7 @@
 .node {
   stroke: #fff;
   stroke-width: 1.5px;
+  fill-opacity: 0.9;
 }
 
 .link {

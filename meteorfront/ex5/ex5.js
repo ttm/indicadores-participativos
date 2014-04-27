@@ -238,8 +238,9 @@ montaRB=function(){
             Session.set("screen1",0);
 });
     rbsvg.append("text").attr("id","helpMe").text("help").attr("x","30%").attr("y","60%").on("click",function(d){
-    alert("Os quatro retangulos verdes ao lado configuram os layouts dos grafos (basta clicar, ele mapeia o x e y).\n\nNo 'config me', coloque <width>;<height>;<nmsgs>\n\nClique no 'flip me' para alternar telao");
+    alert("Os quatro retangulos verdes ao lado configuram os layouts dos grafos (basta clicar, ele mapeia o x e y).\n\nNo 'config me', coloque <width>;<height>;<nmsgs>\n\nClique no 'flip me' para alternar telao.\n\n<nome do vertice>,<numero do grafo> seleciona o vertice");
 });
+    var thePrefix=["#idRT","#idHash","#idWord"];
     rbsvg.append("text").attr("id","configMe").text("config me").attr("x","60%").attr("y","30%").on("click",function(d){
         var invars=prompt("O que você quer?");
         foo=invars;
@@ -247,6 +248,10 @@ montaRB=function(){
         if (wh.length===1){
             console.log(wh[0]);
             ssearch=invars.split(","); // primeiro nome, segundo o número do grafo
+            theID=thePrefix[ssearch[1]]+ssearch[0].replace("#","HASH");
+            console.log(ssearch);
+            console.log(theID);
+            d3.select(theID).style("fill",function(d){THED=d;console.log(3,d.r);return "black";});
         } else {
             Session.set("w",wh[0]);
             Session.set("h",wh[1]);
@@ -805,15 +810,15 @@ Template.mmissa.rendered=function() {
             link = svg2.selectAll(".link");
         ttstartWord=function() {
           link = link.data(force2Word.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
-          link.enter().insert("line", ".node").attr("class", "link")
+          link.enter().insert("line", ".link").attr("class", "link")
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
 
-          node = node.data(force2Word.nodes(), function(d) { return d.nome;}).attr("class","oldnodeWords");
+          node = node.data(force2Word.nodes(), function(d) { return d.nome;}).attr("class","oldnodeWords node").style("fill",function(d){return color2(d.group)}).attr("r", function(d){return 3+d.peso_total/2;});
           node.enter()
-                    .append("circle").attr("class","newnodeWords")
-                      .style("fill","yellow").attr("stroke","white").attr("stroke-width",2).attr("r", function(d){return 3+d.peso_total/2;}).call(force2Word.drag)
-                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
+                    .append("circle").attr("class","newnodeWords node").attr("id",function(d){return "idWord"+d.nome})
+                      .style("fill","yellow").attr("stroke","white").attr("stroke-width",2).attr("r", function(d){return 100;}).call(force2Word.drag)
+                      .transition().duration(2000).style("fill",function(d){return color2(d.group)}).attr("r", function(d){return 3+d.peso_total/2;});
     d3.selectAll(".newnodeWords").append("title")
               .text(function(d) { return d.nome+",w="+d.peso_total; });
                         node.exit().transition().style("fill","red").remove();
@@ -946,14 +951,14 @@ Template.mmissa.rendered=function() {
             link = svg2.selectAll(".link");
         ttstartHash=function() {
           link = link.data(force2Hash.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
-          link.enter().insert("line", ".node").attr("class", "link")
+          link.enter().insert("line", ".link").attr("class", "link")
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
-          node = node.data(force2Hash.nodes(), function(d) { return d.nome;}).attr("class","oldnodeHash");
-          node.enter().append("circle").attr("stroke","white").attr("stroke-width",2).attr("class","newnodeHash")
-                      .style("fill","yellow").attr("r", function(d){return d.atv+2;}).call(force2Hash.drag)
-                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
- d3.selectAll(".newnodeHash").append("title").attr("x",function(d){return d.x}).attr("y",function(d){return d.y})
+          node = node.data(force2Hash.nodes(), function(d) { return d.nome;}).attr("class","oldnodeHash node").style("fill",function(d){return color2(d.group)}).attr("r", function(d){return d.atv+2;});
+          node.enter().append("circle").attr("stroke","white").attr("stroke-width",2).attr("class","newnodeHash node")
+                      .style("fill","yellow").attr("r", function(d){return 100;}).call(force2Hash.drag)
+                      .transition().duration(2000).style("fill",function(d){return color2(d.group)}).attr("r", function(d){return d.atv+2;});
+ d3.selectAll(".newnodeHash").attr("id",function(d){return "idHash"+d.nome.replace("#","HASH")}).append("title").attr("x",function(d){return d.x}).attr("y",function(d){return d.y})
               .text(function(d) { return d.nome+",atv="+d.atv.toFixed(2); });
                         node.exit().transition().style("fill","red").remove();
           force2Hash.start();
@@ -1077,16 +1082,16 @@ Template.mmissa.rendered=function() {
             link = svg2.selectAll(".link");
         ttstart=function() {
           link = link.data(force2.links(), function(d) { return d.nome_source+ "-" + d.nome_target; });
-          link.enter().insert("line", ".node").attr("class", "link")
+          link.enter().insert("line", ".link").attr("class", "link")
               .style("stroke-width", function(d) { return d.value; });
           link.exit().remove();
 
-          node = node.data(force2.nodes(), function(d) { return d.nome;}).attr("class","oldnodeRT").style("fill",function(d){return color2(d.group)});
-          node.enter().append("circle").attr("stroke","white").attr("stroke-width",2).attr("class","newnodeRT")
-                      .style("fill","yellow").attr("r", function(d){return d.grau+2;}).call(force2.drag)
-                      .transition().duration(2000).style("fill",function(d){return color2(d.group)});
+          node = node.data(force2.nodes(), function(d) { return d.nome;}).attr("class","oldnodeRT node").style("fill",function(d){return color2(d.group)}).attr("r", function(d){return d.grau+2;});
+          node.enter().append("circle").attr("stroke","white").attr("stroke-width",2).attr("class","newnodeRT node")
+                      .style("fill","yellow").call(force2.drag).attr("r", function(d){return 100;})
+                      .transition().duration(2000).style("fill",function(d){return color2(d.group)}).attr("r", function(d){return d.grau+2;});
 
- d3.selectAll(".newnodeRT").append("title")
+ d3.selectAll(".newnodeRT").attr("id",function(d){return "idRT"+d.nome}).append("title")
               .text(function(d) { return d.nome+",g="+d.grau+",cc="+d.clust.toFixed(2); });
                         node.exit().transition().style("fill","red").remove();
           force2.start();
