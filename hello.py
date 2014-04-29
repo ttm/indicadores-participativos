@@ -561,6 +561,10 @@ def arenaBase():
     exclude = set(string.punctuation)
     text= ''.join(ch for ch in text if ch not in exclude)
     text=text.encode('utf-8').split()
+
+    foo=open("pickledir/stopwords.cpickle","rb")
+    sw=cPickle.load(foo)
+    foo.close()
     text=[tt for tt in text if tt not in sw]
     #print text
     kk=k.Text(text)
@@ -620,6 +624,9 @@ def partcipaBase():
     exclude = set(string.punctuation)
     text= ''.join(ch for ch in text if ch not in exclude)
     text=text.encode('utf-8').split()
+    foo=open("pickledir/stopwords.cpickle","rb")
+    sw=cPickle.load(foo)
+    foo.close()
     text=[tt for tt in text if tt not in sw]
     #print text
     kk=k.Text(text)
