@@ -8,6 +8,7 @@ function setContext(){
  }
  if(Session.get("theTopic")==="AA"){
      Meteor.call("aaRedeBipartida", function(error,results) {
+        console.log("entrei");
          Session.set("tdata",results);
          atualizaLaterais(results);
          renderGraph("graph1");
@@ -395,9 +396,9 @@ updateMe=function(){
         var tdata=Session.get('tdata');
 
         if (Session.get("theTopic")==="AA"){
-            if (tdata.data){
-                var nmsgs=tdata.data.nmsgs;
-                var nusers=tdata.data.nusers;
+            if (tdata){
+                var nmsgs= tdata.nmsgs;
+                var nusers=tdata.nusers;
             } else {
                 var nmsgs=0;
                 var nusers=0;

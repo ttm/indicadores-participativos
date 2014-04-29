@@ -701,6 +701,11 @@ def aaRedeBipartida():
     exclude = set(string.punctuation)
     tokensFOO = ''.join(ch for ch in tokensFOO if ch not in exclude)
     tokens=tokensFOO.split()
+
+    foo=open("pickledir/stopwords.cpickle","rb")
+    sw=cPickle.load(foo)
+    foo.close()
+
     tokens=[tt for tt in tokens if tt not in sw]
     kk=k.Text(tokens)
 
