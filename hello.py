@@ -350,7 +350,7 @@ def face(hashtag=None):
 
 import rdflib as r
 g=r.Graph()
-g.load("/home/r/repos/fimDoMundo/textos/SparQL/scripts/storeOpaPopulada.rdf")
+g.load("http://hera.ethymos.com.br:1080/skills/storeOpaPopulada.rdf")
 @app.route('/httpSparql/')
 def httpSparql():
     print "yey"
