@@ -352,7 +352,7 @@ import rdflib as r, cPickle as pickle
 #g=r.Graph()
 #g.load("./storeOpaPopulada.rdf")
 f=open("pickledir/storeOpa.pic","rb")
-d1=pickle.load(f)
+g=pickle.load(f)
 f.close()
 @app.route('/httpSparql/')
 def httpSparql():
