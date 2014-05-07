@@ -348,11 +348,14 @@ def twitter(hashtag=None):
 def face(hashtag=None):
     return "in construction"
 
-import rdflib as r
-g=r.Graph()
+import rdflib as r, cPickle as pickle
+#g=r.Graph()
+#g.load("./storeOpaPopulada.rdf")
+f=open("pickledir/storeOpa.pic","rb")
+d1=pickle.load(f)
+f.close()
 @app.route('/httpSparql/')
 def httpSparql():
-    g.load("./storeOpaPopulada.rdf")
     print "yey"
     q= request.args.get("q").replace("::1::3::uw","#")
     print q
