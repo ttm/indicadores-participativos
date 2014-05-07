@@ -1,5 +1,5 @@
 <head>
-  <title>ex5</title>
+  <title>MMISSA - Monitoramente Massivo e Interativo da Sociedade pela Sociedade para Aproveitamento</title>
 </head>
 
 <body>
@@ -104,6 +104,17 @@
     </center>
 </template>
 <template name="theHash">
+    {{#if context.isSparQL}}
+<div><textarea rows="8" cols="70" id="sparqlText">
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX opa: <http://purl.org/socialparticipation/opa#>
+PREFIX dc: <http://purl.org/dc/terms/>
+
+SELECT ?y ?c ?z  WHERE { ?x a opa:Participant. ?x foaf:name ?y . ?x opa:visibleProfile ?z . ?x dc:created ?c }
+</textarea></div>
+<div>  <input type="button" value="executa query" onClick="puxaSparql()"/></div>
+<div id="respostaQuery"></div>
+    {{/if}}
     {{#if context.isAA}}
         Total de {{context.nmsgs}} escritas por {{context.nusers}} usuários. 
         <svg id="graph1" width="200px" height="200px">
