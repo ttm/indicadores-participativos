@@ -2,13 +2,15 @@ function setContext(){
  if(Session.get("theTopic")==="teloes"){
     Session.set("tcheia",1);
  }
- if(Session.get("theTopic")==="teloes"){
+ if(Session.get("theTopic")==="SparQL"){
+    tfoo="bar";
+    atualizaLeft();
+    atualizaRight();
  }
  if(Session.get("theTopic")==="emails"){
  }
  if(Session.get("theTopic")==="AA"){
      Meteor.call("aaRedeBipartida", function(error,results) {
-        console.log("entrei");
          Session.set("tdata",results);
          atualizaLaterais(results);
          renderGraph("graph1");
@@ -16,7 +18,7 @@ function setContext(){
     });
   }
   if(Session.get("theTopic")==="arenaNETmundial"){
-    Meteor.call("arenaBase", function(error,results) {
+    Meteor.call("arenaBase",20, function(error,results) {
          Session.set("tdata",results);
          atualizaLaterais(results);
          renderGraph("graph1a");
@@ -33,14 +35,46 @@ function setContext(){
     });
   }
 };
+atualizaLeft= function(){
+ if(Session.get("theTopic")==="SparQL"){
+        var thebar=d3.select("#leftbar");
+        thebar.select("h3").text("descrição");
+        thebar.selectAll("p").remove();
+        thebar.append("p").text("Acesso via queries SparQL aos dados do Participa.br")
+}
+}
+puxaSparql=function(){
+    console.log("dentro joe");
+query=document.getElementById("sparqlText").value;
+query=query.replace("#","::1::3::uw");
+
+     Meteor.call("acessaSparql",query, function(error,results) {
+        thefoo=results;
+        var itens=d3.select("#respostaQuery").selectAll("p")
+                                   .data(results.data.sparqlRes);
+        itens.enter().append("p");
+        itens.text(function (d){return d});
+        itens.exit().remove();
+});
+}
+atualizaRight= function(){
+ if(Session.get("theTopic")==="SparQL"){
+        var thebar=d3.select("#rightbar");
+        thebar.select("h3").text("direções");
+        thebar.selectAll("p").remove();
+        thebar.append("p").text("Acesse os dados via HTTP no link: XXX, ");
+}
+}
 function atualizaLaterais(results){
      var col=results.data.collocations;
      var thebar=d3.select("#leftbar");
+        thebar.select("h3").text("termos associados");
      parags=thebar.selectAll("p").data(col);
      parags.enter().append("p");
      parags.text(function(d){return d[0]+" "+d[1]});
      parags.exit().remove();
      var thebar=d3.select("#rightbar");
+        thebar.select("h3").text("mensagens mais recentes");
      parags=thebar.selectAll("p").data(results.data.msgs);
      parags.enter().append("p");
     if (Session.get("theTopic")==="arenaNETmundial"){
@@ -355,10 +389,12 @@ updateMe=function(){
     Template.rightbar.rendered = function(){
          var thebar=d3.select("#rightbar").style("background","blue").style("padding","10px");
          thebar.append("h3").text("mensagens mais recentes");
+        atualizaRight();
 };
     Template.leftbar.rendered = function(){
          var thebar=d3.select("#leftbar").style("background","blue").style("padding","10px");
          thebar.append("h3").text("termos associados");
+        atualizaLeft();
 };
     Template.hello.greeting2 = function () {
         return "Autorregulação Algorítmica";
@@ -375,7 +411,7 @@ updateMe=function(){
     Template.tfooter.ticket=function(){
         return Math.random()*100000;
     };
-    Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{topic:"Endpoint Sparql"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"teloes"},{"topic":"sobre"}];
+    Template.toptopics.topics=[{"topic":"#arenaNETmundial"},{"topic":"#Participabr"},{"topic":"AA"},{topic:"SparQL"},{"topic":"megarrede"},{"topic":"emails"},{"topic":"doação de dados"},{"topic":"teloes"},{"topic":"sobre"}];
     for(var i=0;i<Template.toptopics.topics.length;i++){
         Template.toptopics.topics[i].tid=Template.toptopics.topics[i].topic.replace(/#/g,"");
     }
@@ -394,6 +430,10 @@ updateMe=function(){
     });
     Template.theHash.context=function(){
         var tdata=Session.get('tdata');
+
+        if (Session.get("theTopic")==="SparQL"){
+            return {theTopic : Session.get("theTopic"), isSparQL: 1};
+        }
 
         if (Session.get("theTopic")==="AA"){
             if (tdata){
@@ -465,8 +505,8 @@ Template.toptopics.rendered=function() {
         //.attr("y",10     )
         .attr("width",janela*(1-alpha_margemx))
         .attr("height",altura*(1-alpha_margemy))
-        .attr("stroke-width",function(d){return d.topic==="AA" ? "5" : "0"})
-        .attr("stroke",      function(d){return d.topic==="AA" ? "white" : "black"})
+        .attr("stroke-width",function(d){return d.topic==="SparQL" ? "5" : "0"})
+        .attr("stroke",      function(d){return d.topic==="SparQL" ? "white" : "black"})
         .on("click",function(d){
             console.log(d.topic); 
             d3.selectAll(".topicMenuRect").attr("stroke-width","0").attr("stroke","black");
@@ -588,8 +628,8 @@ Template.mmissa.rendered=function() {
       Session.set('time', new Date);
       }, 1000);
       //Session.set("theTopic","AA"); // para a interface original TTM
-      Session.set("theTopic","teloes"); // para a interface de teloes
-      Session.set("tcheia",1); // para a interface de teloes
+      Session.set("theTopic","SparQL"); // para a interface de teloes
+      Session.set("tcheia",0); // para a interface de teloes
       Session.set("NMSGS",80);
       Session.set("NMSGSi",80);
       Session.set("cf1",-48);
@@ -627,7 +667,6 @@ Template.mmissa.rendered=function() {
                         moveMmissa();
                     }
                 }
-                console.log("handdata");
                 if ((COUNTER%10)===0){
                     if(Session.get("theTopic")==="Participabr"){
                         Meteor.call("participaBase", function(error,results) {
@@ -1302,7 +1341,6 @@ Template.mmissa.rendered=function() {
 
 
 
-//    function minGraph(graph,gid,width,height){
     function layout2(inputNodes, inputLinks) {
        var force = d3.layout.force();
        var nodes = force.nodes();
@@ -1520,8 +1558,9 @@ console.log(2);
         if(typeof NMSGS ==="undefined"){
             NMSGS=100;
         }
-console.log(1);
-            return Meteor.http.call("GET", "http://brserver.heroku.com/arenaCheias/"+NMSGS+"/");  }
+            return Meteor.http.call("GET", "http://brserver.heroku.com/arenaCheias/"+NMSGS+"/");  },
+       acessaSparql: function (query) {
+            return Meteor.http.call("GET", "http://brserver.heroku.com/httpSparql/?q="+query);  }
     });
 
   Meteor.startup(function () {

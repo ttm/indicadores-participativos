@@ -348,6 +348,21 @@ def twitter(hashtag=None):
 def face(hashtag=None):
     return "in construction"
 
+import rdflib as r
+g=r.Graph()
+g.load("/home/r/repos/fimDoMundo/textos/SparQL/scripts/storeOpaPopulada.rdf")
+@app.route('/httpSparql/')
+def httpSparql():
+    print "yey"
+    q= request.args.get("q").replace("::1::3::uw","#")
+    print q
+    res=g.query(q)
+    print res
+    res=[i for i in res]
+    print res
+    return jsonify(sparqlRes=res)
+
+
 from maccess import dbc
 
 import nltk as k
