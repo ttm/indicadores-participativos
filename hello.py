@@ -350,9 +350,9 @@ def face(hashtag=None):
 
 import rdflib as r
 g=r.Graph()
-#g.load("./storeOpaPopulada.rdf")
 @app.route('/httpSparql/')
 def httpSparql():
+    g.load("./storeOpaPopulada.rdf")
     print "yey"
     q= request.args.get("q").replace("::1::3::uw","#")
     print q
