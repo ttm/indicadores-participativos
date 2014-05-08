@@ -4,7 +4,8 @@ class mdc:
 class dbc:
     h="mysql15.teia.org.br"# your host, usually localhost
     u="teia16"             # your username
-    p="pAAinelAAweb"         # your password
+    #p="pAAinelAAweb"         # your password
+    p="wuuPh67ee5ru"         # your password
     d="teia16"               # name of the data base
 #TWITTER_API_KEY             
 #TWITTER_API_KEY_SECRET      
