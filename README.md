@@ -50,26 +50,23 @@ aa ..
 
 
 == TODO ==
-- Passar a comunicação com o mongodb direto p JS.
-- Fazer o hover dos vértices funcionarem.
-- Colocar medidas topológicas na tabela reordenável.
+- Fazer versões mínimas do hello.py e do ex5.js
 - Possibilizar que se faça a rede de amizades completa (de todos os que twitaram)
 e a rede de interações (quem responde quem). Junto aos filtros multivariáveis para o sistema.
-- Adicionar sons para a rede complexa ou as tabelas. Iniciar as sonificações e possibilidades
+-* Adicionar sons para a rede complexa ou as tabelas. Iniciar as sonificações e possibilidades*
 de composições e disponibilização das músicas/mídia.
 - Nas facilidades de uso, acrescentar decomposicao espectral e outras contas com as divs de barra.
 - Fazer com áudio, dar N<controlavel> amostras para a síntese do período, decompor ela e plotar as equações, permitir modificar as variáveis e as curvas. Tocar o som.
-- Colocar documentação em latex nas páginas e baixável.
-- iniciar o app em meteor, d3 e cofeescript.
+-* Colocar documentação em latex nas páginas e baixável.*
+- uso de cofeescript.
 - colocar espaços para os usuários doarem seus dados (quais quiser, com dicas).
 - iniciar etiquetação semântica da plataforma.
-- explicitar estrutura: servidor json, apresentador meteor e node+express, mineradores python, servidores heroku, bases de dado mongolab ou mongohq. Participabr. Especificar limites por usuário e outras +. Não esquecer do bot local p fazer backup dos dados, já que eh muito reativa e aberta para modificações e rasuras.
+-* explicitar estrutura: servidor json, apresentador meteor e node+express, mineradores python, servidores heroku, bases de dado mongolab ou mongohq. Participabr. Especificar limites por usuário e outras +. Não esquecer do bot local p fazer backup dos dados, já que eh muito reativa e aberta para modificações e rasuras.*
 - abrir espaço para criações de gambis com os dados.
 - abrir espaço para produção de mídia (sons, música, imagens, animações)
 - renderizar com o d3 um svg interessante para o fundo do body, talvez já liberar controle do fundo com widgets apropriadas.
 - colocar logos svgzadas com d3 p brincar.
 - visitar libs de álgebra linear, estatística, cálculo diferencial, geometria e álgebra (grupos, aneis, etc).
 - priorizar coleta e publicização de sugestões e pedidos (com espaço no header e listagens especiais).
-- lido todo o tutorial de d3js do Scott Murray. É necessário ler os tutoriais da wiki: https://github.com/mbostock/d3/wiki/Tutorials
 - manter um campo aberto no minimongo, para a pessoa inscrever o que quiser no BD (qualquer estrutura representável como variável JS/json). 
 - estudar integração com carnaval, vivace, leet, meemoo e noflo.
