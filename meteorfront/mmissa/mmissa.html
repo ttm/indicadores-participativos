@@ -1,5 +1,5 @@
 <head>
-  <title>mmissa</title>
+  <title>mmissa: monitoramento massivo e interativo da sociedade pela sociedade para aproveitamento</title>
 </head>
 
 <body>
@@ -23,12 +23,13 @@
 </template>
 
 <template name="mmissa">
-    <rect id="rectMmissa" width="11%" height="17%" style="fill:rgb(200,20,25);stroke-width:0.5%;stroke:rgb(0,2,100)" x="82%" y="35%"><title>MMISSA</title></rect>
+    <rect id="rectMmissa" width="11%" height="17%" style="fill:rgb(200,20,25);stroke-width:0.5%;stroke:rgb(0,2,100)" x="82%" y="35%"><title>mmissa: Monitoramento Massivo e Interativo da Sociedade pela Sociedade para Aproveitamento</title></rect>
+    <text x="85%" y="45%" id="textoMmissa">{{texto}}</text>
 </template>
 
 <template name="contador">
     <rect id="rectContador" width="11%" height="17%" style="fill:rgb(2,200,255);stroke-width:0.5%;stroke:rgb(0,2,100)" x="82%" y="15%"><title>contador</title></rect>
-    <text x="85%" y="20%">{{segundos}}</text>
+    <text x="84%" y="25%">{{contagem}}//{{mousepos}}</text>
 </template>
 <template name="controladores">
     <rect id="rectControladores" width="11%" height="17%" style="fill:rgb(160,200,10);stroke-width:0.5%;stroke:rgb(0,2,100)" x="7%" y="15%"><title>Controladores</title></rect>
