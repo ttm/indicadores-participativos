@@ -20,10 +20,26 @@ Meteor.setInterval(function () {
 
   Template.mmissa.events({
     'click': function () {
-        d3.select("#rectMmissa").transition().style("fill","rgb("+256*Math.random()+","+256*Math.random()+","+256*Math.random()+")").attr("height",(10+20*Math.random())+"%");
-    },
+        d3.select("#rectMmissa").transition().attr("height",(20+20*Math.random())+"%");
+    d3.selectAll("rect").style("fill",function(d){
+        acor="rgb("+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+")";
+        return acor;});
+    }
   });
 
+  Template.controladores.events({
+    'click': function(evt){
+    ee=evt;
+    px=evt.offsetX;
+    py=evt.offsetY;
+    ee0=d3.select("#rectControladores");
+    fx=ee0.property("x").baseVal.value;
+    fy=ee0.property("y").baseVal.value;
+    rx=px-fx;
+    ry=py-fy;
+    d3.selectAll("rect").attr("rx",rx).attr("ry",ry);
+},
+});
 
   Template.hello.events({
     'click': function () {
