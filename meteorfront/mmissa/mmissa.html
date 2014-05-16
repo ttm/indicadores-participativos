@@ -14,5 +14,24 @@
     <rect id="rectC" width="40%" height="70%" style="fill:rgb(255,20,2);stroke-width:1%;stroke:rgb(0,200,0)" x="30%" y="5%" />
     <rect id="rectR" width="15%" height="70%" style="fill:rgb(255,200,55);stroke-width:1%;stroke:rgb(0,200,0)" x="80%" y="5%" />
 
+   {{> controladores}} 
+   {{> contador}} 
+   {{> mmissa}} 
+
+
 </svg>
 </template>
+
+<template name="mmissa">
+    <rect id="rectMmissa" width="11%" height="17%" style="fill:rgb(200,20,25);stroke-width:0.5%;stroke:rgb(0,2,100)" x="82%" y="35%"><title>MMISSA</title></rect>
+</template>
+
+<template name="contador">
+    <rect id="rectContador" width="11%" height="17%" style="fill:rgb(2,200,255);stroke-width:0.5%;stroke:rgb(0,2,100)" x="82%" y="15%"><title>contador</title></rect>
+    <text x="85%" y="20%">{{segundos}}</text>
+</template>
+<template name="controladores">
+    <rect id="rectControladores" width="11%" height="17%" style="fill:rgb(160,200,10);stroke-width:0.5%;stroke:rgb(0,2,100)" x="7%" y="15%"><title>Controladores</title></rect>
+</template>
+
+

@@ -1,13 +1,16 @@
 if (Meteor.isClient) {
-    ii=10;
-    Session.set("ii",10);
-  Template.hello.greeting = function () {
-    return "Welcome to mmissa."+Session.get("ii");
+Meteor.setInterval(function () {
+  Session.set('time', new Date);
+}, 1000);
+
+
+  Template.contador.segundos= function () {
+    ttime=Session.get("time")
+    return [ttime.getMinutes(),ttime.getSeconds()];
   };
 
   Template.hello.events({
-    'click input': function () {
-      // template data, if any, is available in 'this'
+    'click': function () {
       if (typeof console !== 'undefined')
         console.log("You pressed the button");
     }
