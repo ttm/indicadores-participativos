@@ -1,8 +1,7 @@
-if (Meteor.isClient) {
+                if (Meteor.isClient) {
 Meteor.setInterval(function () {
   Session.set('time', new Date);
 }, 1000);
-
   Template.mmissa.texto= function(){
     return "MMISSA";
 }
@@ -11,10 +10,9 @@ Meteor.setInterval(function () {
     return [Session.get("mx"),Session.get("my")];
 };
   Template.contador.contagem= function () {
-    d3.select("#textoMmissa").transition().attr("x",(84+2*Math.random())+"%")
+    d3.select("#textoMmissa").transition().attr("x",(84+2*Math.random())+"%") //TTM
                         .attr("y",(44+2*Math.random())+"%")
                         .attr("font-size",15+10*Math.random());
-
     ttime=Session.get("time")
     if(ttime)
         return [ttime.getMinutes(),ttime.getSeconds()];
@@ -85,7 +83,7 @@ Meteor.setInterval(function () {
 
 };
 
-}
+                    }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
