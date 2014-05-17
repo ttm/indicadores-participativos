@@ -63,12 +63,26 @@ Meteor.setInterval(function () {
         menu.push({palavra:topicos[i],x:fx+x,y:fy+y});
 }
     ee1=d3.select("#svg0");
-    ee1.selectAll("text #menuText").data(menu)
-                .enter().append("text")
-                .text(function (d){return d.palavra})
-                        .attr("font-size",15+10*Math.random())
-                .attr("x", function(d) { return d.x+"%"; })
-               .attr("y", function(d)  { return d.y+"%";});
+    groups=ee1.selectAll("g #menuItem").data(menu)
+      .enter().append("svg").attr("id",function(d){return "id"+d.palavra;})
+                .attr("x", function(d) { return d.x-1+"%"; })
+               .attr("y", function(d)  { return d.y-4+"%";});
+               groups.append("rect")
+                .style("fill", "white")
+                .attr("width", function(d) { return "10%"; })
+                .attr("height", function(d) { return "5%"; });
+
+    groups.append("text")
+                .attr("x", function(d) { return 0; })
+               .attr("y", function(d)  { return "4%";})
+                .text(function (d){return d.palavra});
+    groups.on("click",function(d){
+                        ddd=d;
+                        aa=d3.select(this).attr("x","22%");
+});
+// quero que quando eu clique, sobre só o que eu clique,
+// lá encima. O resto some.
+
 };
 
 }
