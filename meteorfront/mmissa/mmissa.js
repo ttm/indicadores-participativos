@@ -47,29 +47,29 @@ Meteor.setInterval(function () {
   });
   Template.hello.rendered=function(){
     topicos=["aa","hashtags","participabr","arenanetmundial","teloes","escritos","emails","doação de dados","sobre"];
-    ee0=d3.select("#rectC");
-    fx=ee0.property("x").baseVal.valueInSpecifiedUnits;
-    fy=ee0.property("y").baseVal.valueInSpecifiedUnits;
-    width=ee0.property("width").baseVal.valueInSpecifiedUnits;
-    height=ee0.property("height").baseVal.valueInSpecifiedUnits;
+    //ee0=d3.select("#rectC");
+    //fx=ee0.property("x").baseVal.valueInSpecifiedUnits;
+    //fy=ee0.property("y").baseVal.valueInSpecifiedUnits;
+    //width=ee0.property("width").baseVal.valueInSpecifiedUnits;
+    //height=ee0.property("height").baseVal.valueInSpecifiedUnits;
     menu=[];
     for(var i=0; i<topicos.length; i++){
-        var x=(0.2+i%3)*(width/3);
-        var y=(1+Math.floor(i/3))*(height/4);
-        menu.push({palavra:topicos[i],x:fx+x,y:fy+y});
+        var x=(0.2+i%3)*(100.0/3);
+        var y=(1+Math.floor(i/3))*(100.0/4);
+        menu.push({palavra:topicos[i],x:x,y:y});
 }
-    ee1=d3.select("#svg0");
+    ee1=d3.select("#svgC");
     groups=ee1.selectAll("g #menuItem").data(menu)
       .enter().append("svg").attr("id",function(d){return "id"+d.palavra;})
                 .attr("x", function(d) { return d.x-1+"%"; })
                .attr("y", function(d)  { return d.y-4+"%";});
                groups.append("rect")
                 .style("fill", "white")
-                .attr("width", function(d) { return "10%"; })
+                .attr("width", function(d) { return "25%"; })
                 .attr("height", function(d) { return "5%"; });
 
     groups.append("text")
-                .attr("x", function(d) { return 0; })
+                .attr("x", function(d) { return "1%"; })
                .attr("y", function(d)  { return "4%";})
                 .text(function (d){return d.palavra});
     groups.on("click",function(d){
