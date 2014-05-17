@@ -6,7 +6,6 @@ Meteor.setInterval(function () {
     return "MMISSA";
 }
   Template.contador.mousepos= function () {
-    //return [10,20];
     return [Session.get("mx"),Session.get("my")];
 };
   Template.contador.contagem= function () {
@@ -28,19 +27,18 @@ Meteor.setInterval(function () {
     },
   });
 
-  Template.controladores.events({
-    'click': function(evt){
-        var px=evt.offsetX;
-        var py=evt.offsetY;
-        var ee0=d3.select("#rectControladores");
-        var fx=ee0.property("x").baseVal.value;
-        var fy=ee0.property("y").baseVal.value;
-        var rx=px-fx;
-        var ry=py-fy;
+  Template.controladores.rendered=function(){
+        var ee0=d3.select("#rectControladores").on("click",function(d){
+                console.log("yoeu");
+                ddd=d;
+                ttt=this;
+                coor=d3.mouse(this);
+                console.log(coor[0],coor[1]);
+            var rx=coor[0];
+            var ry=coor[1];
         d3.selectAll("rect").attr("rx",rx).attr("ry",ry);
-},
-});
-
+        });
+};
   Template.hello.events({
      'mousemove': function(evt){
         Session.set("mx",evt.clientX);
