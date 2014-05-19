@@ -13,10 +13,17 @@
   <svg id="svgL" x="5%" y="5%" width="15%" height="70%">
     <rect id="rectL" style="fill:rgb(2,200,255);stroke-width:1%;stroke:rgb(0,200,0)"  width="100%" height="100%"/>
   </svg>
+    {{#if option}}
+  <svg id="svgC2" x="30%" y="5%"  width="40%" height="70%">
+    <rect id="rectC2" width="100%" height="100%" style="fill:rgb(255,20,2);stroke-width:1%;stroke:rgb(0,200,0)"/>
+        {{> optionTemplate}}
+  </svg>
+    {{else}}
   <svg id="svgC" x="30%" y="5%"  width="40%" height="70%">
     <rect id="rectC" width="100%" height="100%" style="fill:rgb(255,20,2);stroke-width:1%;stroke:rgb(0,200,0)"/>
-    {{> tCentral}}
+        {{> tCentral}}
   </svg>
+    {{/if}}
   <svg id="svgR"  x="80%" y="5%" width="15%" height="70%" >
     <rect id="rectR" width="100%" height="100%" style="fill:rgb(255,200,55);stroke-width:1%;stroke:rgb(0,200,0)"/>
   </svg>
@@ -29,10 +36,27 @@
 </svg>
 </template>
 
+<template name="musica">
+    <svg id="musica"  x="15%" y="15%" width="70%" height="70%"></svg>
+    {{tsync}}
+</template>
+<template name="optionTemplate">
+        <text x="15%" y="55%">The Ambiguous Achronim</text>
+</template>
+<template name="tHash">
+        <text x="15%" y="55%">click for retweet network</text>
+        <text x="15%" y="65%">click for hash network</text>
+        <text x="15%" y="75%" id="wNet">click for word network</text>
+</template>
 <template name="tCentral">
-    <text x="85%" y="5%">{{SELECTED}}</text>
+    <text x="65%" y="5%">{{HASH}},{{SELECTED}}</text>
+    {{#if isMusica}}
+        {{> musica}}
+    {{/if}}
     {{#if isHash}}
-        <text x="15%" y="55%">this is the hash</text>
+        {{#if hasHash}}
+            {{> tHash}}
+        {{/if}}
     {{/if}}
     {{#if isSobre}}
 <svg x="15%" y="15%">
