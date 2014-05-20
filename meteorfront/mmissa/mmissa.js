@@ -1,4 +1,78 @@
                 if (Meteor.isClient) {
+/////////////////////// BEGIN AUDIO SETUP
+// Example showing how to produce a tone using Web Audio API.
+var oscillator;
+var amp;
+function fixOscillator(osc)
+{
+    if (typeof osc.start == 'undefined') {
+        osc.start = function(when) {
+            osc.noteOn(when);
+        }
+    }
+    if (typeof osc.stop == 'undefined') {
+        osc.stop = function(when) {
+            osc.noteOff(when);
+        }
+    }
+}
+// Create an AudioCOntext and a JavaScriptNode.
+var contextClass = (window.AudioContext ||
+            window.webkitAudioContext ||
+            window.mozAudioContext ||
+            window.oAudioContext);
+context=new contextClass();
+function initAudio() {
+    if( context )  {
+        oscillator = context.createOscillator();
+        fixOscillator(oscillator);
+        oscillator.frequency.value = 440;
+        amp = context.createGainNode();
+        amp.gain.value = 0;
+    
+        // Connect ooscillator to amp and amp to the mixer of the context.
+        // This is like connecting cables between jacks on a modular synth.
+        oscillator.connect(amp);
+        amp.connect(context.destination);
+        oscillator.start(0);
+    }
+}
+// Set the frequency of the oscillator and start it running.
+function startTone( frequency ) {
+        oscillator = context.createOscillator();
+        fixOscillator(oscillator);
+        oscillator.frequency.value = 440;
+        amp = context.createGainNode();
+        amp.gain.value = 0;
+    
+        // Connect ooscillator to amp and amp to the mixer of the context.
+        // This is like connecting cables between jacks on a modular synth.
+        oscillator.connect(amp);
+        amp.connect(context.destination);
+        oscillator.start(0);
+    var now = context.currentTime;
+    oscillator.frequency.setValueAtTime(frequency, now);
+    // Ramp up the gain so we can hear the sound.
+    // We can ramp smoothly to the desired value.
+    // First we should cancel any previous scheduled events that might interfere.
+    amp.gain.cancelScheduledValues(now);
+    // Anchor beginning of ramp at current value.
+    amp.gain.setValueAtTime(amp.gain.value, now);
+    amp.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.1);
+    return [amp, oscillator];
+}
+ST=startTone;
+function stopTone(amp) {
+    var now = context.currentTime;
+    amp.gain.cancelScheduledValues(now);
+    amp.gain.setValueAtTime(amp.gain.value, now);
+    amp.gain.linearRampToValueAtTime(0.0, context.currentTime + 1.0);
+}
+ST2=stopTone;
+// init once the page has finished loading.
+window.onload = initAudio;
+////////////////////// END AUDIO SETUP
+
 Session.set("OPTION",0);
 Session.set("SELECTED",0);
 Meteor.setInterval(function () {
@@ -111,13 +185,19 @@ Template.tCentral.hasHash=function(){
         }
     }
 }
-    
+foos=[];    
 Template.musica.tsync=function(){
     ttime=Session.get("time");
+    for(var i=0;i<foos.length;i++){
+        ST2(foos[i][0]);
+    }
+    foos=[];
     d3.selectAll(".node").style("fill",function(d){
         chance=Math.random();
         if(chance<0.1){
             acor="red";
+            foo=ST(d.degree*100);
+            foos.push(foo);
         } else {
             //acor="rgb("+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+")";}
             acor="blue";}
