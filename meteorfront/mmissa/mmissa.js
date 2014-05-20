@@ -192,7 +192,7 @@ Template.musica.tsync=function(){
         ST2(foos[i][0]);
     }
     foos=[];
-    d3.selectAll(".node").style("fill",function(d){
+    d3.selectAll(".node circle").style("fill",function(d){
         chance=Math.random();
         if(chance<0.1){
             acor="red";
@@ -221,21 +221,24 @@ Meteor.call("redeTeste",function(error,result){
       .start();
 
   var link = tsvg.selectAll(".link")
-      .data(graph.links)
+      .data(force.links())
     .enter().append("line")
       .attr("class", "link")
       .style("stroke-width", function(d) { return Math.sqrt(d.value); });
 
   var node = tsvg.selectAll(".node")
-      .data(graph.nodes)
-    .enter().append("circle")
+      .data(force.nodes())
+    .enter().append("g")
       .attr("class", "node")
-      .attr("r", 5)
-      .style("fill", function(d) { return color(d.group); })
       .call(force.drag);
+  
+node.append("circle")
+      .attr("r", 5)
+      .style("fill", function(d) { ddd=d; return color(d.group); });
 
   node.append("title")
       .text(function(d) { return d.name; });
+
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
@@ -243,8 +246,9 @@ Meteor.call("redeTeste",function(error,result){
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
-    node.attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+//    node.attr("cx", function(d) { return d.x; })
+//        .attr("cy", function(d) { return d.y; });
   });
 });
 };
