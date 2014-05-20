@@ -114,9 +114,13 @@ Template.tCentral.hasHash=function(){
     
 Template.musica.tsync=function(){
     ttime=Session.get("time");
-    console.log(Math.random());
     d3.selectAll(".node").style("fill",function(d){
-        acor="rgb("+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+")";
+        chance=Math.random();
+        if(chance<0.1){
+            acor="red";
+        } else {
+            //acor="rgb("+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+")";}
+            acor="blue";}
         return acor;});
 };
 Template.musica.rendered=function(){
