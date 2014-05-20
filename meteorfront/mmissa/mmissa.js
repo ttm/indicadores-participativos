@@ -192,16 +192,37 @@ Template.musica.tsync=function(){
         ST2(foos[i][0]);
     }
     foos=[];
-    d3.selectAll(".node circle").style("fill",function(d){
-        chance=Math.random();
-        if(chance<0.1){
-            acor="red";
-            foo=ST(d.degree*100);
-            foos.push(foo);
-        } else {
-            //acor="rgb("+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+")";}
-            acor="blue";}
-        return acor;});
+
+
+nodes= d3.selectAll(".node")[0];
+for(var i=0;i<nodes.length;i++){
+    if(Math.random()<0.1){
+        node=nodes[i];
+        tnode=node.getElementsByTagName("text")[0];
+        tnode.textContent="owyeah";
+        cnode=node.getElementsByTagName("circle")[0];
+        cnode.style.fill="red";
+        foo=ST(node.__data__.degree*100);
+        foos.push(foo);
+    } else {
+        node=nodes[i];
+        tnode=node.getElementsByTagName("text")[0];
+        tnode.textContent="";
+        cnode=node.getElementsByTagName("circle")[0];
+        cnode.style.fill="blue";
+    }
+}
+//    d3.selectAll(".node circle").style("fill",function(d){
+//        chance=Math.random();
+//        if(chance<0.1){
+//            ddd=this;
+//            acor="red";
+//            foo=ST(d.degree*100);
+//            foos.push(foo);
+//        } else {
+//            //acor="rgb("+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+")";}
+//            acor="blue";}
+//        return acor;});
 };
 Template.musica.rendered=function(){
     tsvg=d3.select("#musica");
@@ -235,6 +256,11 @@ Meteor.call("redeTeste",function(error,result){
 node.append("circle")
       .attr("r", 5)
       .style("fill", function(d) { ddd=d; return color(d.group); });
+
+node.append("text")
+    .attr("x", 12)
+    .attr("dy", ".35em")
+    .text(function(d) { return ""; });
 
   node.append("title")
       .text(function(d) { return d.name; });
