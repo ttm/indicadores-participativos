@@ -22,6 +22,21 @@ var contextClass = (window.AudioContext ||
             window.mozAudioContext ||
             window.oAudioContext);
 context=new contextClass();
+
+var bufferSize = Math.pow(2,12);
+var whiteNoise = context.createScriptProcessor(bufferSize, 1, 1);
+sinTable=[];
+for(var i=0;i<bufferSize;i++){
+    sinTable.push(Math.sin(2*Math.PI*(i/bufferSize)));
+}
+whiteNoise.onaudioprocess = function(e) {
+    var output = e.outputBuffer.getChannelData(0);
+    for (var i = 0; i < bufferSize; i++) {
+        //output[i]=sinTable[i/10.];
+    }
+};
+whiteNoise.connect(context.destination);
+
 function initAudio() {
     if( context )  {
         oscillator = context.createOscillator();
@@ -29,7 +44,6 @@ function initAudio() {
         oscillator.frequency.value = 440;
         amp = context.createGainNode();
         amp.gain.value = 0;
-    
         // Connect ooscillator to amp and amp to the mixer of the context.
         // This is like connecting cables between jacks on a modular synth.
         oscillator.connect(amp);
@@ -38,8 +52,9 @@ function initAudio() {
     }
 }
 // Set the frequency of the oscillator and start it running.
-function startTone( frequency ) {
+function startTone( frequency,ttype ) {
         oscillator = context.createOscillator();
+        oscillator.type=ttype;
         fixOscillator(oscillator);
         oscillator.frequency.value = 440;
         amp = context.createGainNode();
@@ -190,26 +205,27 @@ Template.musica.tsync=function(){
     ttime=Session.get("time");
     for(var i=0;i<foos.length;i++){
         ST2(foos[i][0]);
+        delete foos[i];
     }
     foos=[];
 
-
+ttypes=[0,3,1,2];
 nodes= d3.selectAll(".node")[0];
 for(var i=0;i<nodes.length;i++){
-    if(Math.random()<0.1){
+    if(Math.random()<0.03){
         node=nodes[i];
         tnode=node.getElementsByTagName("text")[0];
-        tnode.textContent="owyeah";
+        tnode.textContent=node.__data__.nome;
         cnode=node.getElementsByTagName("circle")[0];
-        cnode.style.fill="red";
-        foo=ST(node.__data__.degree*100);
+        d3.select(cnode).transition().style("fill","red").attr("r",10);
+        foo=ST(node.__data__.grau*10+300,ttypes[Math.floor(node.__data__.clust/0.25)]);
         foos.push(foo);
     } else {
         node=nodes[i];
         tnode=node.getElementsByTagName("text")[0];
         tnode.textContent="";
         cnode=node.getElementsByTagName("circle")[0];
-        cnode.style.fill="blue";
+        d3.select(cnode).transition().style("fill","blue").attr("r",5);
     }
 }
 //    d3.selectAll(".node circle").style("fill",function(d){
@@ -234,8 +250,8 @@ var force = d3.layout.force()
     .linkDistance(30)
     .size([width, height]);
 
-Meteor.call("redeTeste",function(error,result){
-    graph=result.data;
+Meteor.call("redeTeste2",function(error,result){
+    graph=result.data.graph;
   force
       .nodes(graph.nodes)
       .links(graph.links)
@@ -387,6 +403,8 @@ if (Meteor.isServer) {
             return Meteor.http.call("GET", "http://0.0.0.0:5000/json/"); },
        redeTeste: function () {
             return Meteor.http.call("GET", "http://0.0.0.0:5000/redeTeste/"); },
+       redeTeste2: function () {
+            return Meteor.http.call("GET", "http://0.0.0.0:5000/redeTeste2/"); },
     });
   Meteor.startup(function () {
   });
