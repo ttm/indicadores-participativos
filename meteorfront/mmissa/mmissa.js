@@ -1,3 +1,26 @@
+Router.map(function() {
+  this.route('musica', {
+    path: '/musica', 
+    onRun: function() {
+      console.log('load one');
+      Session.set("SELECTED","idmusica");
+      Session.set("ROUTED",1);
+    },
+    onBeforeAction: function() {
+      console.log('before one');
+    }
+  });
+  this.route('', {
+    path: '/', 
+    onRun: function() {
+      console.log('load two');
+    },
+    onBeforeAction: function() {
+      console.log('before two');
+    }
+  });
+});
+
                 if (Meteor.isClient) {
 /////////////////////// BEGIN AUDIO SETUP
 // Example showing how to produce a tone using Web Audio API.
@@ -89,6 +112,7 @@ window.onload = initAudio;
 ////////////////////// END AUDIO SETUP
 
 Session.set("OPTION",0);
+Session.set("ROUTED",0);
 Session.set("SELECTED",0);
 Meteor.setInterval(function () {
   Session.set('time', new Date);
@@ -142,6 +166,11 @@ Meteor.setInterval(function () {
 }
   });
   Template.hello.rendered=function(){
+    console.log("seesion is", Session.get("SELECTED"));
+    console.log("routed is", Session.get("ROUTED"));
+    if(!Session.get("ROUTED")){
+    console.log("yey");
+    
     topicos=["aa","hashtags","participabr","arenanetmundial","teloes","musica","emails","doação de dados","sobre"];
     menu=[];
     for(var i=0; i<topicos.length; i++){
@@ -183,6 +212,7 @@ Meteor.setInterval(function () {
                         }
     Session.set("SELECTED",SELECTED);
       });
+}
 };
 Template.tCentral.SELECTED=function(){
     Session.get("SELECTED");
@@ -218,7 +248,8 @@ for(var i=0;i<nodes.length;i++){
         tnode.textContent=node.__data__.nome;
         cnode=node.getElementsByTagName("circle")[0];
         d3.select(cnode).transition().style("fill","red").attr("r",10);
-        foo=ST(node.__data__.grau*10+300,ttypes[Math.floor(node.__data__.clust/0.25)]);
+        console.log(Math.floor((node.__data__.clust)/0.27),ttypes[Math.floor((node.__data__.clust)/0.27)]);
+        foo=ST(node.__data__.grau*10+300,ttypes[Math.floor((node.__data__.clust)/0.27)]);
         foos.push(foo);
     } else {
         node=nodes[i];
