@@ -22,23 +22,6 @@ Router.map(function() {
 });
 
                 if (Meteor.isClient) {
-/////////////////////// BEGIN AUDIO SETUP
-// Example showing how to produce a tone using Web Audio API.
-var oscillator;
-var amp;
-function fixOscillator(osc)
-{
-    if (typeof osc.start == 'undefined') {
-        osc.start = function(when) {
-            osc.noteOn(when);
-        }
-    }
-    if (typeof osc.stop == 'undefined') {
-        osc.stop = function(when) {
-            osc.noteOff(when);
-        }
-    }
-}
 // Create an AudioCOntext and a JavaScriptNode.
 var contextClass = (window.AudioContext ||
             window.webkitAudioContext ||
@@ -46,71 +29,45 @@ var contextClass = (window.AudioContext ||
             window.oAudioContext);
 context=new contextClass();
 
-var bufferSize = Math.pow(2,12);
+var bufferSize =Math.pow(2,12);
+var  lambda_f=Math.pow(2,10); // tamanho da tabela
 var whiteNoise = context.createScriptProcessor(bufferSize, 1, 1);
 sinTable=[];
-for(var i=0;i<bufferSize;i++){
-    sinTable.push(Math.sin(2*Math.PI*(i/bufferSize)));
+triTable=[];
+sqrTable=[];
+sawTable=[];
+noise=[];
+for(var i=0;i<lambda_f;i++){
+    sinTable.push(Math.sin(2*Math.PI*(i/lambda_f)));
+    triTable.push(1-Math.abs(2-4*(i/lambda_f)));
+    if(i<lambda_f/2){
+        sqrTable.push(1);
+    } else {
+        sqrTable.push(-1);
+    }
+    sawTable.push(2*(i/lambda_f)-1);
 }
+tables=[sinTable,triTable,sqrTable,sawTable];
+f_a=context.sampleRate;
+vozes=[[0,200,0.1],[1,150,0.3]]; // 0 sin 1 tri 2 sqr 3 saw
+fator=lambda_f/f_a;
+ii=0;
 whiteNoise.onaudioprocess = function(e) {
     var output = e.outputBuffer.getChannelData(0);
     for (var i = 0; i < bufferSize; i++) {
-        //output[i]=sinTable[i/10.];
+        ii+=1;
+        foo_i=ii*fator;
+        val=0;
+        for(var j=0;j<vozes.length;j++){
+            voz=vozes[j];
+            tvoz=voz;
+            indice=Math.floor(foo_i*voz[1])%lambda_f;
+            val+=tables[voz[0]][indice]*voz[2];
+        }
+        output[i]=val;
     }
 };
 whiteNoise.connect(context.destination);
-
-function initAudio() {
-    if( context )  {
-        oscillator = context.createOscillator();
-        fixOscillator(oscillator);
-        oscillator.frequency.value = 440;
-        amp = context.createGainNode();
-        amp.gain.value = 0;
-        // Connect ooscillator to amp and amp to the mixer of the context.
-        // This is like connecting cables between jacks on a modular synth.
-        oscillator.connect(amp);
-        amp.connect(context.destination);
-        oscillator.start(0);
-    }
-}
-// Set the frequency of the oscillator and start it running.
-function startTone( frequency,ttype ) {
-        oscillator = context.createOscillator();
-        oscillator.type=ttype;
-        fixOscillator(oscillator);
-        oscillator.frequency.value = 440;
-        amp = context.createGainNode();
-        amp.gain.value = 0;
-    
-        // Connect ooscillator to amp and amp to the mixer of the context.
-        // This is like connecting cables between jacks on a modular synth.
-        oscillator.connect(amp);
-        amp.connect(context.destination);
-        oscillator.start(0);
-    var now = context.currentTime;
-    oscillator.frequency.setValueAtTime(frequency, now);
-    // Ramp up the gain so we can hear the sound.
-    // We can ramp smoothly to the desired value.
-    // First we should cancel any previous scheduled events that might interfere.
-    amp.gain.cancelScheduledValues(now);
-    // Anchor beginning of ramp at current value.
-    amp.gain.setValueAtTime(amp.gain.value, now);
-    amp.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.1);
-    return [amp, oscillator];
-}
-ST=startTone;
-function stopTone(amp) {
-    var now = context.currentTime;
-    amp.gain.cancelScheduledValues(now);
-    amp.gain.setValueAtTime(amp.gain.value, now);
-    amp.gain.linearRampToValueAtTime(0.0, context.currentTime + 1.0);
-}
-ST2=stopTone;
-// init once the page has finished loading.
-window.onload = initAudio;
-////////////////////// END AUDIO SETUP
-
 Session.set("OPTION",0);
 Session.set("ROUTED",0);
 Session.set("SELECTED",0);
@@ -233,13 +190,7 @@ Template.tCentral.hasHash=function(){
 foos=[];    
 Template.musica.tsync=function(){
     ttime=Session.get("time");
-    for(var i=0;i<foos.length;i++){
-        ST2(foos[i][0]);
-        delete foos[i];
-    }
-    foos=[];
 
-ttypes=[0,3,1,2];
 nodes= d3.selectAll(".node")[0];
 for(var i=0;i<nodes.length;i++){
     if(Math.random()<0.03){
@@ -248,9 +199,6 @@ for(var i=0;i<nodes.length;i++){
         tnode.textContent=node.__data__.nome;
         cnode=node.getElementsByTagName("circle")[0];
         d3.select(cnode).transition().style("fill","red").attr("r",10);
-        console.log(Math.floor((node.__data__.clust)/0.27),ttypes[Math.floor((node.__data__.clust)/0.27)]);
-        foo=ST(node.__data__.grau*10+300,ttypes[Math.floor((node.__data__.clust)/0.27)]);
-        foos.push(foo);
     } else {
         node=nodes[i];
         tnode=node.getElementsByTagName("text")[0];
@@ -259,17 +207,7 @@ for(var i=0;i<nodes.length;i++){
         d3.select(cnode).transition().style("fill","blue").attr("r",5);
     }
 }
-//    d3.selectAll(".node circle").style("fill",function(d){
-//        chance=Math.random();
-//        if(chance<0.1){
-//            ddd=this;
-//            acor="red";
-//            foo=ST(d.degree*100);
-//            foos.push(foo);
-//        } else {
-//            //acor="rgb("+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+","+Math.floor(256*Math.random())+")";}
-//            acor="blue";}
-//        return acor;});
+
 };
 Template.musica.rendered=function(){
     tsvg=d3.select("#musica");
