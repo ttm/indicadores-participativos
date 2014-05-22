@@ -49,23 +49,38 @@ for(var i=0;i<lambda_f;i++){
 }
 tables=[sinTable,triTable,sqrTable,sawTable];
 f_a=context.sampleRate;
-vozes=[[0,200,0.1],[1,150,0.3]]; // 0 sin 1 tri 2 sqr 3 saw
+vozes=[[0,210,0.1],[1,150,0.3]]; // 0 sin 1 tri 2 sqr 3 saw
 fator=lambda_f/f_a;
 ii=0;
+vozes_=[];
+vozesB=[];
+nota_nova=1;
 whiteNoise.onaudioprocess = function(e) {
     var output = e.outputBuffer.getChannelData(0);
     for (var i = 0; i < bufferSize; i++) {
         ii+=1;
         foo_i=ii*fator;
         val=0;
-        for(var j=0;j<vozes.length;j++){
-            voz=vozes[j];
-            tvoz=voz;
+        for(var j=0;j<vozes_.length;j++){
+            voz=vozes_[j];
             indice=Math.floor(foo_i*voz[1])%lambda_f;
             val+=tables[voz[0]][indice]*voz[2];
         }
-        output[i]=val;
+        if(nota_nova){
+            ramp=i/bufferSize;
+        } else {
+            ramp=1;
+        }
+        valB=0;
+        for(var j=0;j<vozesB.length;j++){
+            voz=vozesB[j];
+            indice=Math.floor(foo_i*voz[1])%lambda_f;
+            valB+=tables[voz[0]][indice]*voz[2];
+        }
+
+        output[i]=val*ramp+valB*(1-ramp);
     }
+    nota_nova=0;
 };
 whiteNoise.connect(context.destination);
 Session.set("OPTION",0);
@@ -103,17 +118,30 @@ Meteor.setInterval(function () {
         return acor;});
     },
   });
+F0=200;
+  Template.controladores.tf0=function(){
+    Session.get("time");
+    return F0.toFixed(2);
+}
 
   Template.controladores.rendered=function(){
         var ee0=d3.select("#rectControladores").on("click",function(d){
                 console.log("yoeu");
                 ddd=d;
-                ttt=this;
                 coor=d3.mouse(this);
                 console.log(coor[0],coor[1]);
             var rx=coor[0];
             var ry=coor[1];
         d3.selectAll("rect").attr("rx",rx).attr("ry",ry);
+        });
+        tscale=d3.scale.linear().domain([0,d3.select("#rectf0")[0][0].getBBox().width]).range([60,5000]);
+        d3.select("#rectf0").on("click",function(d){
+                ttt=this;
+                bbox=this.getBBox();
+                coor=d3.mouse(this);
+                xx=coor[0];
+                console.log(xx);
+                F0=tscale(xx);
         });
 };
   Template.hello.events({
@@ -192,6 +220,8 @@ Template.musica.tsync=function(){
     ttime=Session.get("time");
 
 nodes= d3.selectAll(".node")[0];
+vozesB=vozes_;
+vozes_=[];
 for(var i=0;i<nodes.length;i++){
     if(Math.random()<0.03){
         node=nodes[i];
@@ -199,6 +229,7 @@ for(var i=0;i<nodes.length;i++){
         tnode.textContent=node.__data__.nome;
         cnode=node.getElementsByTagName("circle")[0];
         d3.select(cnode).transition().style("fill","red").attr("r",10);
+        vozes_.push([Math.floor(node.__data__.clust/0.26),200+20*node.__data__.grau,0.1]);
     } else {
         node=nodes[i];
         tnode=node.getElementsByTagName("text")[0];
@@ -207,7 +238,7 @@ for(var i=0;i<nodes.length;i++){
         d3.select(cnode).transition().style("fill","blue").attr("r",5);
     }
 }
-
+nota_nova=1;
 };
 Template.musica.rendered=function(){
     tsvg=d3.select("#musica");
