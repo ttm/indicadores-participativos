@@ -399,11 +399,11 @@ Template.tCentral.isSobre=function(){
 if (Meteor.isServer) {
     Meteor.methods({
        jsonTest: function () {
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/json/"); },
+            return Meteor.http.call("GET", "http://brserver2.heroku.com/json/"); },
        redeTeste: function () {
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/redeTeste/"); },
+            return Meteor.http.call("GET", "http://brserver2.heroku.com/redeTeste/"); },
        redeTeste2: function () {
-            return Meteor.http.call("GET", "http://0.0.0.0:5000/redeTeste2/"); },
+            return Meteor.http.call("GET", "http://brserver2.heroku.com/redeTeste2/"); },
     });
   Meteor.startup(function () {
   });
