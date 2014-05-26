@@ -16,7 +16,8 @@ from maccess import mdc
 client=pymongo.MongoClient(mdc.u1)
 CLIENT=client # para o bd do app em si, usuários, etc
 aa=CLIENT.sna.HHParticipabr.find()
-msgs_=[a for a in aa[200:300]]
+print CLIENT.sna.HHParticipabr.count()
+msgs_=[a for a in aa[700:800]]
 
 
 g=x.Graph()
