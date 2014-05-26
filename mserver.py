@@ -17,7 +17,7 @@ client=pymongo.MongoClient(mdc.u1)
 CLIENT=client # para o bd do app em si, usuários, etc
 aa=CLIENT.sna.HHParticipabr.find()
 print CLIENT.sna.HHParticipabr.count(),"AA"
-msgs_=[a for a in aa[100:200] if a]
+msgs_=[(a["text"],a["user"]["screen_name"]) for a in aa[100:200] if a]
 print msgs_[0]
 
 
