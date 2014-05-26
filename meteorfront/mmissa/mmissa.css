@@ -1,0 +1,13 @@
+/* CSS declarations go here */
+body {
+background:#3b69b3;color:#662200;font-family:Sans-serif}
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+

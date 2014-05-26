@@ -1,0 +1,128 @@
+<head>
+  <title>mmissa: monitoramento massivo e interativo da sociedade pela sociedade para aproveitamento</title>
+</head>
+
+<body>
+  {{> hello}}
+</body>
+
+<template name="hello">
+<svg id="svg0">
+        <rect id="rect0" width="100%" height="80%" style="fill:#3b69b3" />
+  <svg id="svgL" x="5%" y="5%" width="15%" height="70%">
+    <rect id="rectL" style="fill:#1A5027"  width="100%" height="100%"/>
+  </svg>
+    {{#if option}}
+  <svg id="svgC2" x="30%" y="5%"  width="40%" height="70%">
+    <rect id="rectC2" width="100%" height="100%" style="fill:#1A5027"/>
+        {{> optionTemplate}}
+  </svg>
+    {{else}}
+  <svg id="svgC" x="30%" y="5%"  width="40%" height="70%">
+    <rect id="rectC" width="100%" height="100%" style="fill:#1A5027"/>
+        {{> tCentral}}
+  </svg>
+    {{/if}}
+  <svg id="svgR"  x="80%" y="5%" width="15%" height="70%" >
+    <rect id="rectR" width="100%" height="100%" style="fill:#1A5027"/>
+  </svg>
+   {{> controladores}} 
+   {{> contador}} 
+   {{> mmissa}} 
+</svg>
+<img src="http://www.metapesquisa.com.br/multimidia/max1280937333brasao_brasil_280x300.gif" alt="presidência da república" width="10%" align="left" style="float:left">
+<center>
+<img src="http://labmacambira.sourceforge.net/figs/original-logo.png" alt="laboratório macambira" width="10%"  style="float:left;margin-left:35%">
+</center>
+<img src="http://13minionu.files.wordpress.com/2012/05/onu.jpg?w=300&h=265" alt="onu" width="10%" align="right" style="float:right">
+</template>
+
+<template name="musica">
+    <svg id="musica"  x="15%" y="15%" width="70%" height="70%"></svg>
+    {{tsync}}
+</template>
+<template name="optionTemplate">
+        <text x="15%" y="55%">The Ambiguous Achronim</text>
+</template>
+<template name="tHash">
+        <text x="15%" y="55%">click for retweet network</text>
+        <text x="15%" y="65%">click for hash network</text>
+        <text x="15%" y="75%" id="wNet">click for word network</text>
+</template>
+<template name="tCentral">
+    <text x="65%" y="5%">{{HASH}},{{SELECTED}}</text>
+    {{#if isMusica}}
+        {{> musica}}
+    {{/if}}
+    {{#if isHash}}
+        {{#if hasHash}}
+            {{> tHash}}
+        {{/if}}
+    {{/if}}
+    {{#if isSobre}}
+<svg x="15%" y="15%">
+<path id="MyPath2" 
+        d="
+        M 200, 200
+        m -125, 0
+        a 125,125 0 1,1  250,0
+        a 125,125 0 1,1 -250,0"
+  fill="none"/>
+<path id="MyPath3" 
+        d="
+        M 200, 200
+        m -100, 0
+        a 100,100 0 1,1  200,0
+        a 100,100 0 1,1 -200,0"
+  fill="none"/>
+<path id="MyPath4" 
+        d="
+        M50 50
+        L350 50
+        L350 350
+        L50 350
+        L50 50"
+  fill="none"/>
+
+  <text class="sobreText" font-family="Verdana" font-size="22.5" id="sobreText1">
+    <textPath xlink:href="#MyPath2">
+      mmissa: Monitoramento Massivo e Interativo da
+    </textPath>
+  </text>
+  <text class="sobreText" font-family="Verdana" font-size="22.5" id="sobreText1">
+    <textPath xlink:href="#MyPath3">
+     da Sociedade pela Sociedade para Aproveitamento
+    </textPath>
+  </text>
+  <text class="sobreText" font-family="Verdana" font-size="22.5" id="sobreText2">
+    <textPath xlink:href="#MyPath4">
+        d3, meteor, mongo, flask, nltk, networkx, rdf, owl, sparql, foaf, dublin core, ops, opa, json, html, xml
+    </textPath>
+  </text>
+</svg>
+    {{/if}}
+</template>
+<template name="mmissa">
+    <rect id="rectMmissa" width="11%" height="17%" style="fill:#f5c516;stroke-width:0%" x="82%" y="35%"><title>mmissa: Monitoramento Massivo e Interativo da Sociedade pela Sociedade para Aproveitamento</title></rect>
+    <text x="85%" y="45%" id="textoMmissa">{{texto}}</text>
+</template>
+
+<template name="contador">
+    <rect id="rectContador" width="11%" height="17%" style="fill:#f5c516 
+;stroke-width:0%" x="82%" y="15%"><title>contador</title></rect>
+    <text x="84%" y="25%">{{contagem}}//{{mousepos}}</text>
+</template>
+<template name="controladores">
+  <svg id="svgControladores" width="11%" height="17%" x="7%" y="15%">
+    <rect id="rectControladores" width="100%" height="100%" style="fill:#f5c516 
+;stroke-width:0.0%"><title>Controladores</title></rect>
+  </svg>
+  <svg id="svgf0" width="11%" height="7%" x="7%" y="35%">
+    <rect id="rectf0" width="100%" height="100%" style="fill:#f5c516;stroke-width:0%"><title>f0: {{tf0}}</title></rect>
+  </svg>
+    <text x="7%" y="55%">Click around.</text>
+    <text x="7%" y="60%">Click "musica".</text>
+    <text x="7%" y="65%">Click até sair som.</text>
+</template>
+
+

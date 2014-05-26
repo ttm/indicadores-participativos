@@ -1133,9 +1133,8 @@ def procura(atag):
 #@app.route("/palavra/<atag>/")
 #def bsum(atag):
 #    return "Palavra procurada: %s.\n\nResultados no face:\nResultados no twitter:"%(atag,)
-
+print 2
 if __name__ == "__main__":
-    #app.run()
     app.debug = True
     app.run(host='0.0.0.0')
     #app.run(debug=True)
