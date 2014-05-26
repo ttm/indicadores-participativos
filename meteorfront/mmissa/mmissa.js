@@ -77,7 +77,6 @@ whiteNoise.onaudioprocess = function(e) {
             indice=Math.floor(foo_i*voz[1])%lambda_f;
             valB+=tables[voz[0]][indice]*voz[2];
         }
-
         output[i]=val*ramp+valB*(1-ramp);
     }
     nota_nova=0;
@@ -134,7 +133,7 @@ F0=200;
             var ry=coor[1];
         d3.selectAll("rect").attr("rx",rx).attr("ry",ry);
         });
-        tscale=d3.scale.linear().domain([0,d3.select("#rectf0")[0][0].getBBox().width]).range([60,5000]);
+        tscale=d3.scale.linear().domain([0,d3.select("#rectf0")[0][0].getBBox().width]).range([60,500]);
         d3.select("#rectf0").on("click",function(d){
                 ttt=this;
                 bbox=this.getBBox();
@@ -166,7 +165,7 @@ F0=200;
     ee1=d3.select("#svgC");
     groups=ee1.selectAll("g").data(menu)
       .enter().append("svg").attr("class","menuItem").attr("id",function(d){return "id"+d.palavra;})
-                .style("fill", "white")
+                .style("fill", "#f5c516")
                 .attr("x", function(d) { return d.x-1+"%"; })
                .attr("y", function(d)  { return d.y-4+"%";});
                groups.append("rect")
@@ -174,7 +173,7 @@ F0=200;
                 .attr("width", function(d) { return "25%"; })
                 .attr("height", function(d) { return "12%"; });
     groups.append("text")
-                .style("fill", "black")
+                .style("fill", "#662200")
                 .attr("x", function(d) { return "1%"; }).style("stroke-width","0%")
                .attr("y", function(d)  { return "6%";})
                 .text(function (d){return d.palavra});
@@ -229,7 +228,7 @@ for(var i=0;i<nodes.length;i++){
         tnode.textContent=node.__data__.nome;
         cnode=node.getElementsByTagName("circle")[0];
         d3.select(cnode).transition().style("fill","red").attr("r",10);
-        vozes_.push([Math.floor(node.__data__.clust/0.26),200+20*node.__data__.grau,0.1]);
+        vozes_.push([Math.floor(node.__data__.clust/0.26),F0+20*node.__data__.grau,0.1]);
     } else {
         node=nodes[i];
         tnode=node.getElementsByTagName("text")[0];
