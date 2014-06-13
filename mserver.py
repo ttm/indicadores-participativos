@@ -4,21 +4,21 @@ import pymongo, __builtin__, datetime
 from dateutil import parser
 import time as T, networkx as x, json # json.dumps
 import MySQLdb, cPickle, numpy as n
-#c=pymongo.MongoClient()
-#db=c["mytest"]
-#col=db["twitter"]
-#ff=col.find()
-#aa=ff[0]
-#bb=aa["arenaNETmundial"]
-#msgs=[(i["text"],i["user"]["screen_name"]) for i in bb[2000:2200]]
+c=pymongo.MongoClient()
+db=c["mytest"]
+col=db["twitter"]
+ff=col.find()
+aa=ff[0]
+bb=aa["arenaNETmundial"]
+msgs_=[(i["text"],i["user"]["screen_name"]) for i in bb[2000:2200]]
 
-from maccess import mdc
-client=pymongo.MongoClient(mdc.u1)
-CLIENT=client # para o bd do app em si, usuários, etc
-aa=CLIENT.sna.HHParticipabr.find()
-print CLIENT.sna.HHParticipabr.count(),"AA"
-msgs_=[(a["text"],a["user"]["screen_name"]) for a in aa[100:300] if a]
-print msgs_[0]
+#from maccess import mdc
+#client=pymongo.MongoClient(mdc.u1)
+#CLIENT=client # para o bd do app em si, usuários, etc
+#aa=CLIENT.sna.HHParticipabr.find()
+#print CLIENT.sna.HHParticipabr.count(),"AA"
+#msgs_=[(a["text"],a["user"]["screen_name"]) for a in aa[100:300] if a]
+#print msgs_[0]
 
 
 g=x.Graph()
