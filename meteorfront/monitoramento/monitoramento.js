@@ -9,11 +9,33 @@ Accounts.ui.config({
 });
 
 Template.hello.rendered=function(){
-        Meteor.call('getFFriends',"639917658", function(err, data) {
+        Meteor.call('getFriends', function(err, data) {
+            tdata=data;
              $('#result').text(JSON.stringify(data, undefined, 4));
          });
-
 };
+  Template.hello.events({
+    'click input': function () {
+      // template data, if any, is available in 'this'
+      nodes=tdata.data;
+      links=[];
+      for(var i=0;i<nodes.length;i++){
+        var tid1=nodes[i].id;
+        Meteor.call('getFFriends',tid1, function(err, data) {
+            nodes2=data.data;
+            for(var j=0;j<nodes2.length;j++){
+                var tid2=nodes2[j].id;
+                links.push([tid1,tid2]);
+            }
+        });
+        console.log(tid1);
+      }
+      if (typeof console !== 'undefined')
+        console.log("You pressed the button");
+
+    }
+  });
+
 }
 
 if (Meteor.isServer) {
@@ -48,9 +70,6 @@ Facebook.prototype.getFriends = function() {
 Facebook.prototype.getFFriends = function(tid) {
     console.log(tid+"AA");
     console.log(tid+'?fields=friends');
-    //return this.query("/"+tid+'/friends');
-    //return this.query(tid+'?fields=friends');
-    //return this.query(tid+'/friends');
     return this.query('me/mutualfriends/'+tid);
 }
 Meteor.methods({
